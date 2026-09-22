@@ -35,7 +35,7 @@ curl -fsSL \
 tar xzf /tmp/src.tgz --strip-components=1 -C /opt/cang
 rm -f /tmp/src.tgz
 
-# environment
+if test ! -f /opt/cang/.env; then # generated once, preserved across redeploys
 DB_PASS="$(openssl rand -hex 24)"
 SESSION_SECRET="$(openssl rand -hex 32)"
 ADMIN_PASS="$(openssl rand -base64 18 | tr -d '/+=' | head -c 20)"
@@ -68,7 +68,7 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 SMTP_URL=
 ENVEOF
-chmod 600 /opt/cang/.env
+chmod 600 /opt/cang/.env; fi
 
 # build and start
 cd /opt/cang
