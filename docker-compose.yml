@@ -65,6 +65,7 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://cang.vn}
+        NODE_OPTIONS: ${BUILD_NODE_OPTIONS:-}
     image: ${APP_IMAGE:-cang/app:latest}
     restart: unless-stopped
     env_file: .env

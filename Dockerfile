@@ -22,7 +22,10 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 # ---------- build ----------
 FROM deps AS build
 ARG NEXT_PUBLIC_APP_URL=https://cang.vn
+# Caps the build heap so `next build` is not OOM-killed on small instances (1–2 GB VPS).
+ARG NODE_OPTIONS=
 ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL} \
+    NODE_OPTIONS=${NODE_OPTIONS} \
     NEXT_TELEMETRY_DISABLED=1 \
     NODE_ENV=production
 COPY . .
@@ -44,7 +47,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 
 # ---------- runner ----------
 FROM node:${NODE_VERSION}-alpine AS runner
-RUN apk add --no-cache postgresql16-client tini \
+RUN apk add --no-cache postgresql-client tini \
  && addgroup -S -g 1001 nodejs && adduser -S -u 1001 -G nodejs nextjs
 WORKDIR /app
 ENV NODE_ENV=production \

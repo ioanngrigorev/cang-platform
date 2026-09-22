@@ -10,5 +10,5 @@ dist
 storage/uploads
 playwright-report
 test-results
-tsconfig.tsbuildinfo
+/tmp
 .claude/
