@@ -4,7 +4,7 @@ import { siteUrl } from "@/lib/seo";
 import { getSitemapEntries } from "@/modules/catalog/queries";
 import { getPublishedPageSlugs } from "@/modules/content/queries";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 type Entry = MetadataRoute.Sitemap[number];
 
