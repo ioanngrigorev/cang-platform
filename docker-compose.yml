@@ -112,7 +112,7 @@ services:
       - caddyconfig:/config
     depends_on:
       app:
-        condition: service_healthy
+        condition: service_started
     logging:
       driver: json-file
       options: { max-size: "20m", max-file: "5" }
