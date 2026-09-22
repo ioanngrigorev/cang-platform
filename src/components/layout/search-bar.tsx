@@ -156,7 +156,7 @@ export function SearchBar({
           aria-activedescendant={active >= 0 ? `${id}-opt-${active}` : undefined}
           className={cn("min-w-0 flex-1 bg-transparent px-4 text-ink-900 placeholder:text-steel-400 focus:outline-none", size === "lg" ? "text-base" : "text-sm")}
         />
-        <button type="submit" className="flex items-center gap-2 bg-ink-900 px-4 text-sm font-semibold text-white hover:bg-ink-800 sm:px-6">
+        <button type="submit" className="flex items-center gap-2 bg-lac-500 px-4 text-sm font-semibold text-white hover:bg-lac-600 sm:px-6">
           {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
           <span className="hidden sm:inline">{tc("actions.search")}</span>
         </button>
