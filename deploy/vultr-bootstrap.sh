@@ -49,7 +49,7 @@ ACME_EMAIL=ivan_grigorev@icloud.com
 POSTGRES_USER=cang
 POSTGRES_PASSWORD=${DB_PASS}
 POSTGRES_DB=cang
-DATABASE_URL=postgresql://cang:${DB_PASS}@db:5432/cang?schema=public
+DATABASE_URL=postgresql://cang:${DB_PASS}@db:5432/cang
 
 REDIS_URL=redis://redis:6379
 SESSION_SECRET=${SESSION_SECRET}
