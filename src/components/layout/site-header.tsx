@@ -68,7 +68,7 @@ export async function SiteHeader({ showSearch = true }: { showSearch?: boolean }
               {l.label}
             </Link>
           ))}
-          <Link href="/register?type=seller" className="ml-auto font-semibold text-brass-700 hover:text-brass-800">
+          <Link href="/register?type=seller" className="ml-auto font-semibold text-jade-600 hover:text-jade-700">
             {t("becomeSupplier")} →
           </Link>
         </div>
