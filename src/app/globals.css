@@ -1,4 +1,4 @@
-@import "@fontsource-variable/inter";
+@apply bg-paper text-ink-900 font-sans;
 @import "@fontsource-variable/manrope";
 
 @tailwind base;
@@ -71,3 +71,8 @@
     text-wrap: balance;
   }
 }
+
+
+/* Palette variables. Tailwind colours resolve through these, so a palette is a set of numbers, not a rebuild. */
+@layer base{:root, [data-palette="market"]{--ink-50: 250 246 241; --ink-100: 242 235 226; --ink-200: 227 215 201; --ink-300: 203 185 165; --ink-400: 168 145 123; --ink-500: 134 112 92; --ink-600: 107 87 72; --ink-700: 85 69 58; --ink-800: 61 50 41; --ink-900: 42 33 28; --ink-950: 26 20 17; --brass-50: 255 251 230; --brass-100: 255 243 184; --brass-200: 255 231 112; --brass-300: 255 219 51; --brass-400: 255 205 0; --brass-500: 232 180 0; --brass-600: 196 146 0; --brass-700: 156 114 0; --brass-800: 125 91 6; --brass-900: 104 75 11; --steel-50: 250 247 242; --steel-100: 242 237 229; --steel-200: 231 222 210; --steel-300: 212 200 184; --steel-400: 179 165 150; --steel-500: 138 122 112; --steel-600: 111 97 89; --steel-700: 88 76 70; --steel-800: 67 58 53; --steel-900: 47 41 38; --lac-50: 254 242 241; --lac-100: 252 222 219; --lac-200: 248 186 181; --lac-300: 240 141 133; --lac-400: 229 90 80; --lac-500: 218 37 29; --lac-600: 189 26 22; --lac-700: 156 23 20; --lac-800: 129 24 21; --lac-900: 108 24 21; --paper: 255 251 245;
+                                           @layer base{:root{--jade-50: 231 247 240; --jade-100: 196 239 221; --jade-200: 142 224 191; --jade-300: 82 204 157; --jade-400: 34 179 129; --jade-500: 15 157 107; --jade-600: 11 127 86; --jade-700: 9 102 70; --jade-800: 10 83 58; --jade-900: 9 69 48; --lotus-50: 253 241 244; --lotus-100: 251 221 228; --lotus-200: 247 188 203; --lotus-300: 241 148 170; --lotus-400: 232 106 138; --lotus-500: 217 74 112; --lotus-600: 191 51 89; --lotus-700: 158 39 73; --lotus-800: 131 35 63; --lotus-900: 111 33 56;
