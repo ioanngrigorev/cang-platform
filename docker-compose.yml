@@ -1,0 +1,124 @@
+# CANG — production stack for a single Ubuntu VPS (Sprintbox).
+#
+#   docker compose up -d            start everything (app runs migrations first, then node server.js)
+#   docker compose logs -f app      follow application logs
+#   docker compose exec app node_modules/.bin/tsx src/db/seed/index.ts   seed reference + platform data (see deploy/README.md)
+#
+# Secrets and configuration come from ./.env (copy .env.example). POSTGRES_* must match DATABASE_URL.
+# See docs/06-system-architecture.md §12 and deploy/README.md.
+
+name: cang
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cang}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-cang}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - effective_cache_size=2GB
+      - -c
+      - work_mem=16MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - max_connections=100
+      - -c
+      - log_min_duration_statement=500
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cang} -d ${POSTGRES_DB:-cang}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://cang.vn}
+    image: ${APP_IMAGE:-cang/app:latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      # Inside the compose network the database and redis are reachable by service name.
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-cang}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-cang}}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    entrypoint: ["/sbin/tini", "--", "/app/deploy/entrypoint.sh"]
+    volumes:
+      - uploads:/app/storage/uploads
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options: { max-size: "50m", max-file: "10" }
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-cang.vn}
+      ACME_EMAIL: ${ACME_EMAIL:-ops@cang.vn}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
+
+volumes:
+  pgdata:
+  redisdata:
+  uploads:
+  caddydata:
+  caddyconfig:

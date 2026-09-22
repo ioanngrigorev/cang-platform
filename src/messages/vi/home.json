@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "title": "Tìm nguồn hàng từ các nhà sản xuất Việt Nam đã xác minh",
+    "description": "CANG là sàn thương mại B2B công nghiệp của Việt Nam: nhà máy đã xác minh, giá theo bậc số lượng, RFQ được báo giá trong 48 giờ, thanh toán Bảo đảm giao dịch, kiểm định, logistics và tài chính cho người mua toàn cầu."
+  },
+  "hero": {
+    "eyebrow": "Nguồn hàng từ Việt Nam",
+    "title": "Tìm nguồn hàng trực tiếp từ các nhà sản xuất Việt Nam đã xác minh",
+    "subtitle": "So sánh báo giá trực tiếp từ nhà máy, thanh toán qua ngân hàng đối tác có giấy phép và theo dõi từng container — bằng tiếng Anh và tiếng Việt.",
+    "tryLabel": "Gợi ý",
+    "chips": {
+      "garments": "May mặc",
+      "furniture": "Nội thất",
+      "electronics": "Điện tử",
+      "machinery": "Máy móc",
+      "packaging": "Bao bì",
+      "footwear": "Giày dép"
+    },
+    "postRfq": "Đăng yêu cầu báo giá",
+    "browseManufacturers": "Xem nhà sản xuất",
+    "howItWorks": "CANG hoạt động thế nào"
+  },
+  "stats": {
+    "verifiedManufacturers": "Nhà sản xuất đã xác minh",
+    "products": "Sản phẩm giá tận xưởng",
+    "clusters": "Cụm công nghiệp",
+    "countries": "Quốc gia đã xuất khẩu"
+  },
+  "sections": {
+    "viewAll": "Xem tất cả",
+    "allCategories": "Tất cả danh mục",
+    "allManufacturers": "Tất cả nhà sản xuất",
+    "allProducts": "Tất cả sản phẩm",
+    "allGuides": "Tất cả hướng dẫn",
+    "productsCount": "{count} sản phẩm",
+    "suppliersCount": "{count} nhà cung cấp",
+    "verifiedCount": "{count} đã xác minh",
+    "madeInVietnamSubtitle": "Tìm nhà sản xuất theo ngành",
+    "trendingSubtitle": "Được người mua xem nhiều nhất tháng này",
+    "newSuppliersSubtitle": "Nhà máy mới tham gia gần đây",
+    "empty": "Chưa có nội dung."
+  },
+  "postRfq": {
+    "eyebrow": "Yêu cầu báo giá",
+    "subtitle": "Mô tả sản phẩm một lần. Chúng tôi ghép nối với các nhà máy có đúng năng lực và chứng nhận; báo giá được hiển thị trong bảng so sánh có cấu trúc.",
+    "step1Title": "Mô tả nhu cầu của bạn",
+    "step1Body": "Thông số kỹ thuật, số lượng, giá mục tiêu, điểm đến và thời hạn.",
+    "step2Title": "Được ghép với nhà máy đã xác minh",
+    "step2Body": "Tự động ghép theo danh mục, ngành và chứng nhận. Bạn cũng có thể mời nhà cung cấp cụ thể.",
+    "step3Title": "So sánh và đặt hàng an toàn",
+    "step3Body": "So sánh báo giá song song, lấy mẫu, rồi thanh toán Bảo đảm giao dịch qua ngân hàng đối tác có giấy phép.",
+    "cta": "Đăng RFQ — miễn phí",
+    "browse": "Xem các RFQ đang mở",
+    "openRfqs": "{count} RFQ đang mở ngay lúc này"
+  },
+  "whyVietnam": {
+    "subtitle": "Nước xuất khẩu may mặc và giày dép lớn thứ hai thế giới, đồng thời là cứ điểm điện tử và nội thất tăng trưởng nhanh nhất Đông Nam Á.",
+    "fta": {
+      "value": "16",
+      "label": "Hiệp định thương mại tự do",
+      "body": "EVFTA, CPTPP, UKVFTA và RCEP xoá bỏ hoặc giảm thuế tại EU, Anh, Nhật Bản, Canada, Úc và nhiều thị trường khác."
+    },
+    "cost": {
+      "value": "30–50%",
+      "label": "Chi phí nhân công thấp hơn Trung Quốc",
+      "body": "Mức lương cạnh tranh cùng năng suất và tự động hoá cải thiện nhanh trong các khu chế xuất."
+    },
+    "workforce": {
+      "value": "56 triệu",
+      "label": "Lực lượng lao động",
+      "body": "Trẻ, có học vấn và giàu kinh nghiệm sản xuất xuất khẩu; tuổi trung vị 33."
+    },
+    "sectors": {
+      "value": "400+ tỷ USD",
+      "label": "Kim ngạch xuất khẩu hàng năm",
+      "body": "Điện tử, may mặc, giày dép, nội thất, máy móc, thuỷ sản, cà phê và bao bì dẫn đầu."
+    },
+    "cta": "Vì sao chọn Việt Nam"
+  },
+  "tradeAssurance": {
+    "eyebrow": "Bảo vệ người mua",
+    "body": "Tiền đặt cọc và thanh toán còn lại được giữ trong tài khoản riêng tại ngân hàng đối tác có giấy phép tại Việt Nam và chỉ được giải ngân khi các mốc giao hàng được xác nhận. CANG không bao giờ giữ tiền của khách hàng.",
+    "point1": "Tiền do ngân hàng đối tác có giấy phép giữ, không phải CANG",
+    "point2": "Giải ngân theo chứng từ vận chuyển hoặc xác nhận nhận hàng",
+    "point3": "Thời hạn khiếu nại với sự hoà giải của CANG",
+    "point4": "Tuỳ chọn kiểm định bên thứ ba trước khi giải ngân",
+    "cta": "Bảo đảm giao dịch hoạt động thế nào"
+  },
+  "services": {
+    "subtitle": "Mọi việc sau báo giá được các đối tác có giấy phép xử lý ngay trong đơn hàng của bạn.",
+    "logistics": {
+      "title": "Logistics",
+      "body": "Báo giá vận tải biển, hàng không và đường sắt từ đối tác giao nhận, khai báo hải quan và bảo hiểm, theo dõi theo từng mốc."
+    },
+    "inspection": {
+      "title": "Kiểm định chất lượng",
+      "body": "Đánh giá nhà máy và kiểm tra trước xuất hàng theo phương pháp lấy mẫu AQL, báo cáo được tải lên đơn hàng trong 24 giờ."
+    },
+    "financing": {
+      "title": "Tài trợ thương mại",
+      "body": "Vốn lưu động và tài trợ sản xuất cho nhà máy, tài trợ nhập khẩu cho người mua — từ các tổ chức cho vay được cấp phép."
+    },
+    "learnMore": "Tìm hiểu thêm"
+  },
+  "guides": {
+    "subtitle": "Hướng dẫn thực tế cho người nhập khẩu lần đầu và nhà máy Việt Nam vươn ra toàn cầu.",
+    "readingTime": "{minutes} phút đọc",
+    "read": "Đọc hướng dẫn"
+  },
+  "banner": {
+    "learnMore": "Tìm hiểu thêm",
+    "hero": {
+      "title": "Mua hàng trực tiếp từ các nhà sản xuất Việt Nam đã được xác minh",
+      "subtitle": "So sánh báo giá, thanh toán qua ngân hàng đối tác được cấp phép và theo dõi từng container — bằng tiếng Anh và tiếng Việt.",
+      "cta": "Đăng yêu cầu báo giá"
+    },
+    "secondary": {
+      "title": "Bảo đảm giao dịch cho mọi đơn hàng",
+      "subtitle": "Tiền đặt cọc và phần thanh toán còn lại do một ngân hàng Việt Nam được cấp phép giữ và chỉ giải ngân theo từng mốc giao hàng.",
+      "cta": "Cách thức hoạt động"
+    }
+  }
+}

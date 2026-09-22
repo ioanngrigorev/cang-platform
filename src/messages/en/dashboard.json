@@ -1,0 +1,37 @@
+{
+  "welcome": "Welcome, {name}",
+  "welcomeNew": "Welcome to CANG, {name}! Your account is ready.",
+  "actingAs": "Acting as",
+  "noCompany": "You are not a member of any company yet.",
+  "createCompany": "Set up your company",
+  "unreadNotifications": "{count, plural, =0 {No new notifications} one {# new notification} other {# new notifications}}",
+  "markAllRead": "Mark all as read",
+  "noNotifications": "You're all caught up.",
+  "quickActions": "Quick actions",
+  "recentActivity": "Recent activity",
+  "gettingStarted": "Getting started",
+  "completeProfile": "Complete your company profile",
+  "completeProfileHint": "Profiles with logo, description and certifications receive 3× more inquiries.",
+  "submitVerification": "Get verified",
+  "submitVerificationHint": "Verified suppliers rank higher and unlock Trade Assurance.",
+  "addProducts": "Add your first product",
+  "addProductsHint": "Products are indexed for buyers worldwide within minutes.",
+  "postFirstRfq": "Post your first RFQ",
+  "postFirstRfqHint": "Matching Vietnamese suppliers are notified automatically.",
+  "viewProfile": "View public profile",
+  "team": {
+    "title": "Team",
+    "invite": "Invite member",
+    "role": "Role",
+    "member": "Member"
+  },
+  "settings": {
+    "title": "Account settings",
+    "profile": "Your profile",
+    "password": "Password",
+    "language": "Language",
+    "security": "Security",
+    "twoFactor": "Two-factor authentication",
+    "twoFactorHint": "Add an extra layer of security to your account (coming soon)."
+  }
+}

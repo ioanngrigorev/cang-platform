@@ -1,0 +1,16 @@
+{
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "description": "Trang bạn tìm không tồn tại hoặc đã được di chuyển.",
+    "home": "Về trang chủ"
+  },
+  "generic": {
+    "title": "Đã xảy ra lỗi",
+    "description": "Đã có lỗi không mong muốn. Đội ngũ của chúng tôi đã được thông báo.",
+    "retry": "Thử lại"
+  },
+  "forbidden": {
+    "title": "Không có quyền truy cập",
+    "description": "Bạn không có quyền xem trang này."
+  }
+}

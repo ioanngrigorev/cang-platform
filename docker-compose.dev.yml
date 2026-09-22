@@ -1,0 +1,37 @@
+# CANG — local development infrastructure only (the app runs on the host with `pnpm dev`).
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/cang"   (matches .env.example)
+#   REDIS_URL="redis://localhost:6379"                                   (optional; unused by app code today)
+
+name: cang-dev
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cang
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cang"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata_dev:/data
+
+volumes:
+  pgdata_dev:
+  redisdata_dev:

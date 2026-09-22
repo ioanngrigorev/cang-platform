@@ -1,0 +1,432 @@
+{
+  "common": {
+    "home": "Home",
+    "onThisPage": "On this page",
+    "readingTime": "{minutes, plural, one {# min read} other {# min read}}",
+    "lastUpdated": "Last updated {date}",
+    "notFound": "This page is not available in your language yet.",
+    "backTo": "Back to {name}",
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "contactUs": "Contact us",
+    "postRfq": "Post an RFQ",
+    "becomeSupplier": "Become a supplier",
+    "browseManufacturers": "Browse manufacturers",
+    "demoPartner": "Demo partner",
+    "partners": "Partners",
+    "faq": "Frequently asked questions",
+    "howItWorks": "How it works",
+    "disclaimerTitle": "Important",
+    "coverage": "Coverage",
+    "countries": "Countries",
+    "services": "Services"
+  },
+  "guides": {
+    "title": "Guides",
+    "metaTitle": "Sourcing & export guides for Vietnam",
+    "metaDescription": "Practical guides for importing from Vietnam and for Vietnamese factories selling to the world: Incoterms, export documents, RFQs, quality control and payments.",
+    "subtitle": "Practical, step-by-step guides written for first-time importers and for Vietnamese factories going global.",
+    "eyebrow": "Guide",
+    "read": "Read guide",
+    "empty": "No guides published yet.",
+    "moreGuides": "More guides",
+    "cta": "Ready to start sourcing?",
+    "ctaBody": "Post a request for quotation and receive offers from verified Vietnamese factories within 48 hours."
+  },
+  "legal": {
+    "title": "Legal",
+    "eyebrow": "Legal",
+    "allDocuments": "All legal documents",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "trade-assurance-terms": "Trade Assurance Terms",
+    "aup": "Acceptable Use Policy",
+    "notice": "These documents form a binding agreement between you and CANG. If you have questions, contact legal@cang.vn."
+  },
+  "help": {
+    "title": "Help center",
+    "eyebrow": "Support",
+    "metaDescription": "Answers to common questions about buying and selling on CANG: accounts, RFQs, quotations, orders, Trade Assurance, shipping and disputes.",
+    "stillNeedHelp": "Still need help?",
+    "stillNeedHelpBody": "Our support team in Ho Chi Minh City replies within one business day, in English and Vietnamese.",
+    "contact": "Contact support",
+    "quickLinks": "Quick links",
+    "links": {
+      "buyerGuide": "Buyer guide",
+      "supplierGuide": "Supplier guide",
+      "tradeAssurance": "Trade Assurance",
+      "pricing": "Plans & pricing",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "about": {
+    "eyebrow": "About CANG",
+    "metaDescription": "CANG is Vietnam's B2B industrial marketplace, connecting verified Vietnamese manufacturers with buyers worldwide through RFQs, Trade Assurance, logistics and financing partners.",
+    "stats": {
+      "manufacturers": "Manufacturers listed",
+      "products": "Products",
+      "clusters": "Industrial clusters",
+      "countries": "Export destinations"
+    }
+  },
+  "contact": {
+    "title": "Contact CANG",
+    "eyebrow": "Contact",
+    "metaDescription": "Get in touch with the CANG team: buyer and supplier support, partnerships, billing and technical questions. Offices in Ho Chi Minh City and Hanoi.",
+    "subtitle": "Questions about sourcing, selling or partnering with CANG? We reply within one business day.",
+    "formTitle": "Send us a message",
+    "formSubtitle": "Signed in as {name}. Your message opens a support ticket you can follow in your dashboard.",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help?",
+    "category": "Topic",
+    "categories": {
+      "general": "General question",
+      "buyer": "Buying & sourcing",
+      "supplier": "Selling & supplier account",
+      "partnership": "Partnership",
+      "billing": "Billing & plans",
+      "technical": "Technical issue"
+    },
+    "message": "Message",
+    "messagePlaceholder": "Tell us what you need. Include order or RFQ numbers if relevant.",
+    "send": "Send message",
+    "sent": "Message sent",
+    "sentBody": "Your ticket {number} has been created. We'll reply by e-mail and in your dashboard.",
+    "anonymousTitle": "Sign in to send a message",
+    "anonymousBody": "Messages open a support ticket linked to your account. Create a free account or sign in, or reach us directly below.",
+    "signIn": "Sign in",
+    "register": "Create account",
+    "channels": "Other ways to reach us",
+    "email": "E-mail",
+    "phone": "Phone",
+    "hours": "Support hours",
+    "hoursValue": "Monday–Friday, 08:30–18:00 (GMT+7)",
+    "offices": "Offices",
+    "hcmc": "Ho Chi Minh City",
+    "hcmcAddress": "Level 12, Saigon Trade Center, 37 Ton Duc Thang, District 1",
+    "hanoi": "Hanoi",
+    "hanoiAddress": "Level 8, Capital Place, 29 Lieu Giai, Ba Dinh",
+    "supplierOnboarding": "Supplier onboarding",
+    "supplierOnboardingBody": "Vietnamese factories: our onboarding team can list your products and verify your company within 5 business days."
+  },
+  "whyVietnam": {
+    "title": "Why source from Vietnam",
+    "eyebrow": "Why Vietnam",
+    "metaDescription": "Why global buyers source from Vietnam: 16 free-trade agreements, competitive labour costs, a 56-million-strong workforce and $400B+ in annual exports across electronics, apparel, furniture and more.",
+    "stats": {
+      "title": "Vietnam in numbers",
+      "fta": {
+        "value": "16",
+        "label": "Free-trade agreements",
+        "body": "EVFTA, CPTPP, UKVFTA, RCEP and more reduce or remove duties in the EU, UK, Japan, Canada and Australia."
+      },
+      "exports": {
+        "value": "$400B+",
+        "label": "Annual exports",
+        "body": "Electronics, apparel, footwear, furniture, machinery, seafood and coffee lead the way."
+      },
+      "workforce": {
+        "value": "56M",
+        "label": "Working-age population",
+        "body": "Young, literate and experienced in export manufacturing; median age 33."
+      },
+      "cost": {
+        "value": "30–50%",
+        "label": "Lower labour cost than China",
+        "body": "Competitive wages with rapidly rising productivity in export processing zones."
+      },
+      "growth": {
+        "value": "6–7%",
+        "label": "Average GDP growth",
+        "body": "One of Asia's fastest-growing economies for two decades."
+      },
+      "ports": {
+        "value": "3",
+        "label": "Deep-water port complexes",
+        "body": "Cai Mep–Thi Vai, Lach Huyen and Da Nang connect factories to every major trade lane."
+      }
+    },
+    "faq": {
+      "q1": "Is Vietnam cheaper than China for manufacturing?",
+      "a1": "For labour-intensive categories such as garments, footwear, furniture and bags, Vietnamese factory labour typically costs 30–50% less than coastal China, while quality and export experience are comparable. For highly automated categories the gap is smaller, so buyers compare landed cost, not just unit price.",
+      "q2": "Which products is Vietnam best known for?",
+      "a2": "Vietnam is the world's second-largest exporter of apparel and footwear, a top-five furniture exporter and a fast-growing electronics assembly hub (smartphones, components, consumer electronics). Packaging, plastics, machinery parts, seafood, coffee and cashews are also major export categories.",
+      "q3": "How do free-trade agreements help my imports?",
+      "a3": "Under EVFTA (EU), UKVFTA (UK), CPTPP (Japan, Canada, Australia, Mexico and others) and RCEP, most Vietnamese-origin goods enter with reduced or zero duty once rules of origin are met. Your supplier issues the certificate of origin; CANG guides list the documents per market.",
+      "q4": "How long does production and shipping take?",
+      "a4": "Typical lead times on CANG are 30–60 days for production after sample approval. Sea freight adds roughly 25–35 days to Europe, 20–30 days to the US West Coast and 7–12 days within Asia.",
+      "q5": "How do I verify a Vietnamese supplier?",
+      "a5": "Look for the Verified Manufacturer badge (business registration, tax code and factory ownership checked by CANG), certifications on file, buyer reviews from completed orders and, for larger orders, a third-party factory audit booked through the Inspection service."
+    },
+    "cta": "Start sourcing from Vietnam",
+    "ctaBody": "Browse verified manufacturers by industry and province, or post an RFQ and let matching factories quote.",
+    "browseClusters": "Explore industrial clusters"
+  },
+  "tradeAssurance": {
+    "title": "Trade Assurance",
+    "eyebrow": "Buyer protection",
+    "metaDescription": "How CANG Trade Assurance protects payments: funds held by a licensed partner bank, released on confirmed milestones, with inspection and dispute mediation. CANG never holds client money.",
+    "subtitle": "Pay with confidence. Your deposit and balance sit in a segregated account at a licensed Vietnamese partner bank and are released to the factory only when agreed milestones are confirmed.",
+    "flowTitle": "How a protected order flows",
+    "flow": {
+      "buyer": "Buyer accepts quotation",
+      "escrow": "Deposit to partner-bank escrow",
+      "confirmation": "Funds confirmed",
+      "supplier": "Supplier starts production",
+      "production": "Production milestones",
+      "inspection": "Optional inspection",
+      "shipment": "Shipment & documents",
+      "release": "Funds released to supplier"
+    },
+    "coverageTitle": "What is covered",
+    "coverage": {
+      "c1Title": "Product not shipped",
+      "c1Body": "If the supplier fails to ship by the agreed date, your funds are refunded in full from the escrow account.",
+      "c2Title": "Quality does not match the order",
+      "c2Body": "Open a dispute within the inspection window with photos or an inspection report; a CANG mediator facilitates refund, replacement or price adjustment.",
+      "c3Title": "Quantity or specification mismatch",
+      "c3Body": "Shortages and deviations from the agreed specification are covered up to the order value.",
+      "c4Title": "Documents and Incoterm compliance",
+      "c4Body": "Release requires the shipping documents defined in the order (B/L or AWB, packing list, invoice, certificate of origin)."
+    },
+    "disputesTitle": "Disputes and mediation",
+    "disputesBody": "Either party can open a dispute from the order page. Both sides submit evidence; a CANG mediator proposes a resolution within 5 business days. If unresolved, the escrow instruction follows the outcome of the partner bank's dispute procedure.",
+    "disputeSteps": {
+      "s1": "Open dispute within the inspection window",
+      "s2": "Submit evidence (photos, reports, documents)",
+      "s3": "Mediator proposal within 5 business days",
+      "s4": "Refund, partial refund, replacement or release"
+    },
+    "disclaimer": "CANG never holds client money. Escrow-style protection is provided by licensed Vietnamese partner banks under the State Bank of Vietnam's supervision. CANG operates the marketplace, instructs milestone releases and mediates disputes.",
+    "fees": "Trade Assurance is included in the platform commission on protected orders. There is no separate fee for buyers.",
+    "faq": {
+      "q1": "Who holds my money?",
+      "a1": "A licensed Vietnamese partner bank holds funds in a segregated escrow-style account in your order's name. CANG never takes possession of client money.",
+      "q2": "When is the supplier paid?",
+      "a2": "Funds are released according to the payment schedule in the order — typically a deposit on production start and the balance on shipping documents or delivery confirmation.",
+      "q3": "Can I add a third-party inspection?",
+      "a3": "Yes. Book a pre-shipment inspection from the order page; release of the final balance can be conditioned on a passed inspection report.",
+      "q4": "How long do I have to raise a dispute?",
+      "a4": "The inspection window is defined in the order (7 days by default after delivery confirmation). Disputes raised within the window pause the final release.",
+      "q5": "Which payment methods are supported?",
+      "a5": "International bank transfer (SWIFT) in USD or EUR, and domestic transfer in VND for Vietnamese buyers. Card and trade-finance options are offered by partners on eligible orders."
+    },
+    "cta": "Find verified manufacturers",
+    "ctaBody": "Every order on CANG can be protected. Start with an RFQ or browse products with tiered pricing.",
+    "platformLine": "CANG is a technology platform and never holds client money — funds sit with licensed partner institutions.",
+    "platformLineTitle": "Where your money sits"
+  },
+  "logistics": {
+    "title": "Logistics",
+    "eyebrow": "Freight & customs",
+    "metaDescription": "Book sea, air and rail freight from Vietnam with CANG's partner forwarders: factory pickup, warehousing, customs brokerage, insurance and milestone tracking inside your order.",
+    "subtitle": "Freight quotes from licensed partner forwarders, booked inside your order and tracked milestone by milestone from the factory gate to your warehouse.",
+    "servicesTitle": "Services",
+    "services": {
+      "FACTORY_PICKUP": "Factory pickup",
+      "DOMESTIC_TRANSPORT": "Domestic transport",
+      "WAREHOUSING": "Warehousing & consolidation",
+      "FREIGHT_FORWARDING": "Freight forwarding",
+      "SEA_FREIGHT": "Sea freight (FCL / LCL)",
+      "AIR_FREIGHT": "Air freight",
+      "RAIL_FREIGHT": "Rail freight",
+      "CUSTOMS_BROKERAGE": "Customs brokerage",
+      "LAST_MILE": "Last-mile delivery",
+      "CARGO_INSURANCE": "Cargo insurance"
+    },
+    "serviceBodies": {
+      "SEA_FREIGHT": "Full and less-than-container loads from Cat Lai, Cai Mep–Thi Vai, Hai Phong and Da Nang to every major port.",
+      "AIR_FREIGHT": "Samples, urgent replenishment and high-value goods from SGN and HAN, door to door.",
+      "RAIL_FREIGHT": "China–Europe rail via Hanoi for 18–22 day transit to Central Europe at sea-like rates.",
+      "CUSTOMS_BROKERAGE": "Export declarations, certificates of origin (EVFTA, CPTPP, RCEP) and import clearance at destination.",
+      "WAREHOUSING": "Consolidate multiple suppliers into one shipment at partner warehouses near the ports.",
+      "CARGO_INSURANCE": "All-risk marine insurance quoted with your freight."
+    },
+    "modes": {
+      "SEA_FCL": "Sea FCL",
+      "SEA_LCL": "Sea LCL",
+      "AIR": "Air",
+      "RAIL": "Rail",
+      "ROAD": "Road",
+      "COURIER": "Courier",
+      "MULTIMODAL": "Multimodal"
+    },
+    "flowTitle": "From factory gate to your door",
+    "flow": {
+      "factory": "Factory",
+      "pickup": "Pickup",
+      "warehouse": "Warehouse",
+      "port": "Port / airport",
+      "international": "International leg",
+      "customs": "Customs",
+      "buyer": "Buyer"
+    },
+    "providersTitle": "Partner forwarders",
+    "providersBody": "Licensed forwarders integrated with CANG. Request quotes from several at once from your order.",
+    "transit": "Typical transit times",
+    "transitRows": {
+      "eu": "Vietnam → Europe (sea)",
+      "euDays": "28–35 days",
+      "usw": "Vietnam → US West Coast (sea)",
+      "uswDays": "18–25 days",
+      "use": "Vietnam → US East Coast (sea)",
+      "useDays": "32–40 days",
+      "asia": "Vietnam → Japan / Korea (sea)",
+      "asiaDays": "7–12 days",
+      "air": "Air, door to door",
+      "airDays": "3–7 days"
+    },
+    "cta": "Get a freight quote",
+    "ctaBody": "Freight is requested from the order page after a quotation is accepted. Not ready? Post an RFQ to start.",
+    "disclaimer": "Logistics services are provided by independent, licensed forwarders and carriers. CANG coordinates quotes, bookings and tracking but is not the carrier of record.",
+    "route": "Route",
+    "duration": "Typical transit"
+  },
+  "financing": {
+    "title": "Trade financing",
+    "eyebrow": "Financing",
+    "metaDescription": "Working-capital and production financing for Vietnamese factories, import financing and buy-now-pay-later for international buyers — from regulated lenders integrated with CANG.",
+    "subtitle": "Regulated lenders integrated with your CANG orders: factories fund production against purchase orders, buyers pay on terms.",
+    "forBuyers": "For buyers",
+    "forBuyersBody": "Pay suppliers upfront through Trade Assurance while you settle with the lender on 30–120 day terms.",
+    "forSellers": "For suppliers",
+    "forSellersBody": "Turn an accepted purchase order into working capital before the buyer's balance arrives.",
+    "products": {
+      "IMPORT_FINANCING": "Import financing",
+      "PURCHASE_FINANCING": "Purchase financing",
+      "BNPL": "Buy now, pay later",
+      "INVOICE_FINANCING": "Invoice financing",
+      "WORKING_CAPITAL": "Working capital",
+      "PRODUCTION_FINANCING": "Production financing",
+      "INVOICE_FACTORING": "Invoice factoring",
+      "RECEIVABLES_FINANCING": "Receivables financing",
+      "PURCHASE_ORDER_FINANCING": "Purchase-order financing"
+    },
+    "productBodies": {
+      "IMPORT_FINANCING": "Finance the landed cost of an order; repay after goods arrive and sell through.",
+      "BNPL": "Split the order into instalments over 60–120 days with a partner fintech.",
+      "PURCHASE_FINANCING": "Credit line drawn per order, secured by the goods and Trade Assurance documents.",
+      "WORKING_CAPITAL": "Revolving facility sized on your CANG transaction history.",
+      "PRODUCTION_FINANCING": "Advance up to 70% of an accepted PO to buy materials and pay wages.",
+      "PURCHASE_ORDER_FINANCING": "Lender pays your material suppliers directly against the buyer's PO.",
+      "INVOICE_FACTORING": "Sell the export invoice at shipment and receive cash within 48 hours, non-recourse.",
+      "RECEIVABLES_FINANCING": "Borrow against outstanding export receivables from verified buyers.",
+      "INVOICE_FINANCING": "Short-term advance against issued invoices on completed orders."
+    },
+    "providerTypes": {
+      "BANK": "Bank",
+      "NON_BANK_LENDER": "Non-bank lender",
+      "FINTECH": "Fintech",
+      "FACTORING_COMPANY": "Factoring company",
+      "EXPORT_CREDIT_AGENCY": "Export credit agency"
+    },
+    "providersTitle": "Lending partners",
+    "regulator": "Regulated by",
+    "amountRange": "Ticket size",
+    "tenor": "Tenor",
+    "tenorDays": "{min}–{max} days",
+    "indicativeRate": "Indicative rate",
+    "howTitle": "How an application works",
+    "how": {
+      "s1": "Apply from an order or your dashboard — CANG pre-fills company, order and transaction data.",
+      "s2": "Your application is routed to the lender whose criteria you match. Decisions typically within 3 business days.",
+      "s3": "Accept the offer; disbursement flows into the order's payment schedule and repayments are tracked in your dashboard."
+    },
+    "eligibility": "Eligibility",
+    "eligibilityBody": "Verified companies with at least one completed order on CANG, or a signed purchase order from a verified counterparty. Lenders run their own credit and KYC checks.",
+    "disclaimer": "CANG is not a lender and does not provide credit, guarantees or financial advice. Financing products are offered by independent, regulated institutions under their own terms; approval and pricing are at their discretion. Indicative rates shown are for illustration.",
+    "cta": "Check your eligibility",
+    "ctaBody": "Sign in and open Financing in your dashboard to see the products available to your company."
+  },
+  "inspection": {
+    "title": "Quality inspection",
+    "eyebrow": "Quality control",
+    "metaDescription": "Book factory audits and pre-production, during-production, pre-shipment and container-loading inspections in Vietnam through CANG's partner inspection companies. AQL sampling, reports within 24 hours.",
+    "subtitle": "Independent inspectors across Vietnam, booked from your order. Reports with photos and AQL results land in your dashboard within 24 hours.",
+    "typesTitle": "Five inspection types",
+    "types": {
+      "FACTORY_AUDIT": "Factory audit",
+      "PRE_PRODUCTION": "Pre-production inspection",
+      "DURING_PRODUCTION": "During-production inspection",
+      "PRE_SHIPMENT": "Pre-shipment inspection",
+      "CONTAINER_LOADING": "Container loading supervision"
+    },
+    "typeBodies": {
+      "FACTORY_AUDIT": "On-site verification of legal status, capacity, equipment, quality systems and social compliance before you commit to a supplier.",
+      "PRE_PRODUCTION": "Checks raw materials, components and the approved sample against your specification before mass production starts.",
+      "DURING_PRODUCTION": "Inspection at 20–60% completion to catch defects early and confirm the schedule.",
+      "PRE_SHIPMENT": "AQL sampling of finished, packed goods for workmanship, function, labelling and packaging.",
+      "CONTAINER_LOADING": "Supervision of quantity, carton condition and container sealing on loading day."
+    },
+    "when": "When",
+    "whenValues": {
+      "FACTORY_AUDIT": "Before ordering",
+      "PRE_PRODUCTION": "Before production",
+      "DURING_PRODUCTION": "Mid-production",
+      "PRE_SHIPMENT": "Before shipment",
+      "CONTAINER_LOADING": "Loading day"
+    },
+    "providersTitle": "Partner inspection companies",
+    "howTitle": "How it works",
+    "how": {
+      "s1": "Choose the inspection type and date from the order page; the factory is notified automatically.",
+      "s2": "The partner sends a local inspector; findings are recorded against your specification and AQL level.",
+      "s3": "The report is uploaded to the order. If tied to Trade Assurance, the final payment waits for a passed report."
+    },
+    "pricing": "Pricing",
+    "pricingBody": "Inspections are quoted per man-day by the partner (typically USD 250–350 in Vietnam, travel included). Factory audits are quoted per scope.",
+    "disclaimer": "Inspections are performed by independent, accredited inspection companies. Reports reflect the inspector's findings on the day; CANG does not certify products.",
+    "cta": "Book an inspection",
+    "ctaBody": "Inspections are booked from an order. Start with an RFQ or browse verified manufacturers."
+  },
+  "pricing": {
+    "title": "Plans & pricing for suppliers",
+    "eyebrow": "For suppliers",
+    "metaDescription": "CANG supplier plans: list products for free, upgrade for priority RFQs, verification, analytics and lead generation. Buyers always use CANG for free.",
+    "subtitle": "Start free. Upgrade when you want more visibility, verification and buyer leads. Buyers never pay to source on CANG.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlySave": "Save {percent}%",
+    "perMonth": "/ month",
+    "perYear": "/ year",
+    "billedYearly": "{amount} billed yearly",
+    "free": "Free",
+    "custom": "Custom",
+    "cta": "Choose plan",
+    "ctaEnterprise": "Talk to sales",
+    "ctaFree": "Start for free",
+    "popular": "Most popular",
+    "limits": {
+      "products": "{n} products",
+      "seats": "{n} team seats",
+      "rfqResponses": "{n} RFQ responses / month",
+      "unlimited": "Unlimited"
+    },
+    "commissionTitle": "Transaction commission",
+    "commissionBody": "A success-based commission of 2–5% (by category) applies to orders completed with Trade Assurance and is invoiced to the supplier after payment release. No commission on orders you settle outside the platform.",
+    "buyersTitle": "For buyers: always free",
+    "buyersBody": "Posting RFQs, comparing quotations, messaging suppliers and using Trade Assurance costs nothing. Optional services (inspection, freight, financing) are quoted by partners per order.",
+    "faq": {
+      "q1": "Can I change plans later?",
+      "a1": "Yes. Upgrades apply immediately with a pro-rated charge; downgrades take effect at the end of the billing period.",
+      "q2": "What does verification include?",
+      "a2": "Pro includes business verification (registration, tax code, ownership documents). Verified Manufacturer adds an on-site factory audit and the Factory Audited badge.",
+      "q3": "How do I pay?",
+      "a3": "Bank transfer in VND or USD, or card through a partner payment provider. Invoices with VAT are issued automatically.",
+      "q4": "Is there a contract period?",
+      "a4": "Monthly plans renew monthly and can be cancelled any time. Yearly plans are billed once for 12 months at a discount.",
+      "q5": "Do buyers see which plan I am on?",
+      "a5": "No. Buyers see your badges, verification status, reviews and response rate — not your plan."
+    },
+    "cta2": "Create your supplier account",
+    "cta2Body": "List your first products in under 30 minutes. Our onboarding team in Ho Chi Minh City can help in Vietnamese or English.",
+    "planTag": {
+      "FREE": "",
+      "PRO": "",
+      "PREMIUM": "Most popular",
+      "ENTERPRISE": ""
+    }
+  }
+}

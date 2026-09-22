@@ -1,0 +1,16 @@
+{
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "home": "Back to homepage"
+  },
+  "generic": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Our team has been notified.",
+    "retry": "Try again"
+  },
+  "forbidden": {
+    "title": "Access denied",
+    "description": "You don't have permission to view this page."
+  }
+}

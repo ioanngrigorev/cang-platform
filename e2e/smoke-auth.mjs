@@ -1,0 +1,26 @@
+import { chromium } from "@playwright/test";
+const shots = "/tmp/claude-0/-home-claude/346c916b-5466-575b-adaa-ddaf8337ffa5/scratchpad/shots";
+const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+await page.goto("http://localhost:3000/en/login");
+await page.screenshot({ path: `${shots}/login.png` });
+await page.fill("#email", "buyer@nordwind-outdoor.de");
+await page.fill("#password", "Password123!");
+await page.click("button[type=submit]");
+await page.waitForURL(/\/en\/buyer/, { timeout: 30000 });
+console.log("logged in ->", page.url());
+await page.screenshot({ path: `${shots}/buyer.png` });
+// register flow
+const page2 = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await page2.goto("http://localhost:3000/en/register?type=seller");
+await page2.screenshot({ path: `${shots}/register.png`, fullPage: true });
+await page2.fill("#name", "Test Seller");
+await page2.fill("#email", `seller${Date.now()}@example.com`);
+await page2.fill("#companyName", "Test Factory Co");
+await page2.fill("#password", "Password123!");
+await page2.fill("#confirmPassword", "Password123!");
+await page2.check("input[name=acceptTerms]");
+await page2.click("button[type=submit]");
+await page2.waitForURL(/\/en\/seller/, { timeout: 30000 });
+console.log("registered ->", page2.url());
+await browser.close();

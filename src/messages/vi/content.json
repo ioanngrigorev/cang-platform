@@ -1,0 +1,432 @@
+{
+  "common": {
+    "home": "Trang chủ",
+    "onThisPage": "Trong trang này",
+    "readingTime": "{minutes} phút đọc",
+    "lastUpdated": "Cập nhật lần cuối {date}",
+    "notFound": "Trang này chưa có bản tiếng Việt.",
+    "backTo": "Quay lại {name}",
+    "learnMore": "Tìm hiểu thêm",
+    "getStarted": "Bắt đầu",
+    "contactUs": "Liên hệ với chúng tôi",
+    "postRfq": "Đăng yêu cầu báo giá",
+    "becomeSupplier": "Trở thành nhà cung cấp",
+    "browseManufacturers": "Xem nhà sản xuất",
+    "demoPartner": "Đối tác demo",
+    "partners": "Đối tác",
+    "faq": "Câu hỏi thường gặp",
+    "howItWorks": "Cách thức hoạt động",
+    "disclaimerTitle": "Lưu ý quan trọng",
+    "coverage": "Phạm vi bảo vệ",
+    "countries": "Quốc gia",
+    "services": "Dịch vụ"
+  },
+  "guides": {
+    "title": "Cẩm nang",
+    "metaTitle": "Cẩm nang tìm nguồn hàng & xuất khẩu Việt Nam",
+    "metaDescription": "Hướng dẫn thực tế cho doanh nghiệp nhập khẩu từ Việt Nam và cho nhà máy Việt Nam bán hàng ra thế giới: Incoterms, chứng từ xuất khẩu, RFQ, kiểm soát chất lượng và thanh toán.",
+    "subtitle": "Hướng dẫn thực tế, từng bước, dành cho nhà nhập khẩu lần đầu và các nhà máy Việt Nam muốn vươn ra toàn cầu.",
+    "eyebrow": "Cẩm nang",
+    "read": "Đọc bài",
+    "empty": "Chưa có cẩm nang nào được xuất bản.",
+    "moreGuides": "Cẩm nang khác",
+    "cta": "Sẵn sàng tìm nguồn hàng?",
+    "ctaBody": "Đăng yêu cầu báo giá và nhận chào giá từ các nhà máy Việt Nam đã xác minh trong vòng 48 giờ."
+  },
+  "legal": {
+    "title": "Pháp lý",
+    "eyebrow": "Pháp lý",
+    "allDocuments": "Tất cả tài liệu pháp lý",
+    "terms": "Điều khoản dịch vụ",
+    "privacy": "Chính sách bảo mật",
+    "cookies": "Chính sách cookie",
+    "trade-assurance-terms": "Điều khoản Bảo đảm giao dịch",
+    "aup": "Chính sách sử dụng hợp lệ",
+    "notice": "Các tài liệu này tạo thành thoả thuận ràng buộc giữa bạn và CANG. Nếu có thắc mắc, vui lòng liên hệ legal@cang.vn."
+  },
+  "help": {
+    "title": "Trung tâm trợ giúp",
+    "eyebrow": "Hỗ trợ",
+    "metaDescription": "Giải đáp các câu hỏi thường gặp về mua và bán trên CANG: tài khoản, RFQ, báo giá, đơn hàng, Bảo đảm giao dịch, vận chuyển và tranh chấp.",
+    "stillNeedHelp": "Vẫn cần hỗ trợ?",
+    "stillNeedHelpBody": "Đội ngũ hỗ trợ tại TP. Hồ Chí Minh phản hồi trong vòng một ngày làm việc, bằng tiếng Việt và tiếng Anh.",
+    "contact": "Liên hệ hỗ trợ",
+    "quickLinks": "Liên kết nhanh",
+    "links": {
+      "buyerGuide": "Cẩm nang người mua",
+      "supplierGuide": "Cẩm nang nhà cung cấp",
+      "tradeAssurance": "Bảo đảm giao dịch",
+      "pricing": "Gói dịch vụ & giá",
+      "terms": "Điều khoản dịch vụ",
+      "privacy": "Chính sách bảo mật"
+    }
+  },
+  "about": {
+    "eyebrow": "Về CANG",
+    "metaDescription": "CANG là sàn thương mại B2B công nghiệp của Việt Nam, kết nối các nhà sản xuất Việt Nam đã xác minh với người mua toàn cầu thông qua RFQ, Bảo đảm giao dịch, logistics và đối tác tài chính.",
+    "stats": {
+      "manufacturers": "Nhà sản xuất niêm yết",
+      "products": "Sản phẩm",
+      "clusters": "Cụm công nghiệp",
+      "countries": "Thị trường xuất khẩu"
+    }
+  },
+  "contact": {
+    "title": "Liên hệ CANG",
+    "eyebrow": "Liên hệ",
+    "metaDescription": "Liên hệ đội ngũ CANG: hỗ trợ người mua và nhà cung cấp, hợp tác, thanh toán và kỹ thuật. Văn phòng tại TP. Hồ Chí Minh và Hà Nội.",
+    "subtitle": "Có câu hỏi về tìm nguồn hàng, bán hàng hay hợp tác với CANG? Chúng tôi phản hồi trong vòng một ngày làm việc.",
+    "formTitle": "Gửi tin nhắn cho chúng tôi",
+    "formSubtitle": "Đang đăng nhập với tên {name}. Tin nhắn của bạn sẽ tạo một yêu cầu hỗ trợ có thể theo dõi trong bảng điều khiển.",
+    "subject": "Tiêu đề",
+    "subjectPlaceholder": "Chúng tôi có thể giúp gì?",
+    "category": "Chủ đề",
+    "categories": {
+      "general": "Câu hỏi chung",
+      "buyer": "Mua hàng & tìm nguồn",
+      "supplier": "Bán hàng & tài khoản nhà cung cấp",
+      "partnership": "Hợp tác",
+      "billing": "Thanh toán & gói dịch vụ",
+      "technical": "Sự cố kỹ thuật"
+    },
+    "message": "Nội dung",
+    "messagePlaceholder": "Hãy cho chúng tôi biết bạn cần gì. Kèm mã đơn hàng hoặc RFQ nếu có.",
+    "send": "Gửi tin nhắn",
+    "sent": "Đã gửi tin nhắn",
+    "sentBody": "Yêu cầu {number} đã được tạo. Chúng tôi sẽ phản hồi qua e-mail và trong bảng điều khiển của bạn.",
+    "anonymousTitle": "Đăng nhập để gửi tin nhắn",
+    "anonymousBody": "Tin nhắn sẽ tạo một yêu cầu hỗ trợ gắn với tài khoản của bạn. Hãy tạo tài khoản miễn phí hoặc đăng nhập, hoặc liên hệ trực tiếp theo thông tin bên dưới.",
+    "signIn": "Đăng nhập",
+    "register": "Tạo tài khoản",
+    "channels": "Các kênh liên hệ khác",
+    "email": "E-mail",
+    "phone": "Điện thoại",
+    "hours": "Giờ hỗ trợ",
+    "hoursValue": "Thứ Hai–Thứ Sáu, 08:30–18:00 (GMT+7)",
+    "offices": "Văn phòng",
+    "hcmc": "TP. Hồ Chí Minh",
+    "hcmcAddress": "Tầng 12, Saigon Trade Center, 37 Tôn Đức Thắng, Quận 1",
+    "hanoi": "Hà Nội",
+    "hanoiAddress": "Tầng 8, Capital Place, 29 Liễu Giai, Ba Đình",
+    "supplierOnboarding": "Đăng ký nhà cung cấp",
+    "supplierOnboardingBody": "Nhà máy Việt Nam: đội ngũ onboarding của chúng tôi có thể niêm yết sản phẩm và xác minh doanh nghiệp của bạn trong 5 ngày làm việc."
+  },
+  "whyVietnam": {
+    "title": "Vì sao nên tìm nguồn hàng từ Việt Nam",
+    "eyebrow": "Vì sao Việt Nam",
+    "metaDescription": "Vì sao người mua toàn cầu chọn Việt Nam: 16 hiệp định thương mại tự do, chi phí lao động cạnh tranh, lực lượng lao động 56 triệu người và kim ngạch xuất khẩu hơn 400 tỷ USD mỗi năm.",
+    "stats": {
+      "title": "Việt Nam qua các con số",
+      "fta": {
+        "value": "16",
+        "label": "Hiệp định thương mại tự do",
+        "body": "EVFTA, CPTPP, UKVFTA, RCEP và nhiều hiệp định khác giảm hoặc xoá bỏ thuế quan tại EU, Anh, Nhật Bản, Canada và Úc."
+      },
+      "exports": {
+        "value": "400+ tỷ USD",
+        "label": "Kim ngạch xuất khẩu hằng năm",
+        "body": "Điện tử, may mặc, giày dép, nội thất, máy móc, thuỷ sản và cà phê dẫn đầu."
+      },
+      "workforce": {
+        "value": "56 triệu",
+        "label": "Dân số trong độ tuổi lao động",
+        "body": "Trẻ, có học vấn và giàu kinh nghiệm sản xuất xuất khẩu; tuổi trung vị 33."
+      },
+      "cost": {
+        "value": "30–50%",
+        "label": "Chi phí lao động thấp hơn Trung Quốc",
+        "body": "Mức lương cạnh tranh với năng suất tăng nhanh tại các khu chế xuất."
+      },
+      "growth": {
+        "value": "6–7%",
+        "label": "Tăng trưởng GDP bình quân",
+        "body": "Một trong những nền kinh tế tăng trưởng nhanh nhất châu Á trong hai thập kỷ."
+      },
+      "ports": {
+        "value": "3",
+        "label": "Cụm cảng nước sâu",
+        "body": "Cái Mép–Thị Vải, Lạch Huyện và Đà Nẵng kết nối nhà máy với mọi tuyến thương mại lớn."
+      }
+    },
+    "faq": {
+      "q1": "Sản xuất tại Việt Nam có rẻ hơn Trung Quốc không?",
+      "a1": "Với các ngành thâm dụng lao động như may mặc, giày dép, nội thất và túi xách, chi phí nhân công tại nhà máy Việt Nam thường thấp hơn 30–50% so với vùng duyên hải Trung Quốc, trong khi chất lượng và kinh nghiệm xuất khẩu tương đương. Với các ngành tự động hoá cao, chênh lệch nhỏ hơn, nên người mua so sánh chi phí giao đến nơi thay vì chỉ đơn giá.",
+      "q2": "Việt Nam nổi tiếng với những sản phẩm nào?",
+      "a2": "Việt Nam là nước xuất khẩu may mặc và giày dép lớn thứ hai thế giới, nằm trong top 5 xuất khẩu nội thất và là trung tâm lắp ráp điện tử tăng trưởng nhanh (điện thoại, linh kiện, điện tử tiêu dùng). Bao bì, nhựa, phụ tùng máy móc, thuỷ sản, cà phê và hạt điều cũng là các nhóm hàng xuất khẩu chủ lực.",
+      "q3": "Các hiệp định thương mại tự do giúp gì cho hàng nhập khẩu của tôi?",
+      "a3": "Theo EVFTA (EU), UKVFTA (Anh), CPTPP (Nhật Bản, Canada, Úc, Mexico và các nước khác) và RCEP, hầu hết hàng hoá xuất xứ Việt Nam được hưởng thuế suất giảm hoặc bằng 0 khi đáp ứng quy tắc xuất xứ. Nhà cung cấp cấp giấy chứng nhận xuất xứ; cẩm nang của CANG liệt kê chứng từ theo từng thị trường.",
+      "q4": "Thời gian sản xuất và vận chuyển mất bao lâu?",
+      "a4": "Thời gian sản xuất điển hình trên CANG là 30–60 ngày sau khi duyệt mẫu. Vận tải biển thêm khoảng 25–35 ngày tới châu Âu, 20–30 ngày tới bờ Tây Hoa Kỳ và 7–12 ngày trong khu vực châu Á.",
+      "q5": "Làm sao để xác minh một nhà cung cấp Việt Nam?",
+      "a5": "Hãy tìm huy hiệu Nhà sản xuất đã xác minh (giấy đăng ký kinh doanh, mã số thuế và quyền sở hữu nhà máy được CANG kiểm tra), chứng nhận đã lưu hồ sơ, đánh giá từ người mua sau đơn hàng hoàn tất và, với đơn hàng lớn, đặt kiểm định nhà máy độc lập qua dịch vụ Kiểm định."
+    },
+    "cta": "Bắt đầu tìm nguồn hàng từ Việt Nam",
+    "ctaBody": "Xem nhà sản xuất đã xác minh theo ngành và tỉnh thành, hoặc đăng RFQ để các nhà máy phù hợp báo giá.",
+    "browseClusters": "Khám phá các cụm công nghiệp"
+  },
+  "tradeAssurance": {
+    "title": "Bảo đảm giao dịch",
+    "eyebrow": "Bảo vệ người mua",
+    "metaDescription": "Cách Bảo đảm giao dịch của CANG bảo vệ khoản thanh toán: tiền được ngân hàng đối tác có giấy phép giữ, giải ngân theo mốc đã xác nhận, kèm kiểm định và hoà giải tranh chấp. CANG không bao giờ giữ tiền của khách hàng.",
+    "subtitle": "Thanh toán an tâm. Tiền đặt cọc và phần còn lại nằm trong tài khoản tách biệt tại ngân hàng đối tác Việt Nam có giấy phép, chỉ được giải ngân cho nhà máy khi các mốc đã thoả thuận được xác nhận.",
+    "flowTitle": "Quy trình một đơn hàng được bảo vệ",
+    "flow": {
+      "buyer": "Người mua chấp nhận báo giá",
+      "escrow": "Đặt cọc vào tài khoản ký quỹ tại ngân hàng đối tác",
+      "confirmation": "Xác nhận tiền đã vào",
+      "supplier": "Nhà cung cấp bắt đầu sản xuất",
+      "production": "Các mốc sản xuất",
+      "inspection": "Kiểm định (tuỳ chọn)",
+      "shipment": "Giao hàng & chứng từ",
+      "release": "Giải ngân cho nhà cung cấp"
+    },
+    "coverageTitle": "Những gì được bảo vệ",
+    "coverage": {
+      "c1Title": "Hàng không được giao",
+      "c1Body": "Nếu nhà cung cấp không giao hàng đúng ngày đã thoả thuận, tiền của bạn được hoàn trả toàn bộ từ tài khoản ký quỹ.",
+      "c2Title": "Chất lượng không đúng đơn hàng",
+      "c2Body": "Mở tranh chấp trong thời hạn kiểm tra kèm hình ảnh hoặc báo cáo kiểm định; hoà giải viên CANG hỗ trợ hoàn tiền, đổi hàng hoặc điều chỉnh giá.",
+      "c3Title": "Sai số lượng hoặc quy cách",
+      "c3Body": "Thiếu hàng và sai lệch so với quy cách đã thoả thuận được bảo vệ tới giá trị đơn hàng.",
+      "c4Title": "Chứng từ và tuân thủ Incoterm",
+      "c4Body": "Việc giải ngân yêu cầu đầy đủ chứng từ vận chuyển quy định trong đơn hàng (B/L hoặc AWB, phiếu đóng gói, hoá đơn, giấy chứng nhận xuất xứ)."
+    },
+    "disputesTitle": "Tranh chấp và hoà giải",
+    "disputesBody": "Cả hai bên đều có thể mở tranh chấp từ trang đơn hàng. Hai bên nộp bằng chứng; hoà giải viên CANG đề xuất phương án trong 5 ngày làm việc. Nếu không giải quyết được, lệnh ký quỹ tuân theo kết quả quy trình tranh chấp của ngân hàng đối tác.",
+    "disputeSteps": {
+      "s1": "Mở tranh chấp trong thời hạn kiểm tra",
+      "s2": "Nộp bằng chứng (hình ảnh, báo cáo, chứng từ)",
+      "s3": "Đề xuất của hoà giải viên trong 5 ngày làm việc",
+      "s4": "Hoàn tiền, hoàn một phần, đổi hàng hoặc giải ngân"
+    },
+    "disclaimer": "CANG không bao giờ giữ tiền của khách hàng. Cơ chế bảo vệ kiểu ký quỹ do các ngân hàng đối tác Việt Nam có giấy phép cung cấp dưới sự giám sát của Ngân hàng Nhà nước Việt Nam. CANG vận hành sàn giao dịch, ra lệnh giải ngân theo mốc và hoà giải tranh chấp.",
+    "fees": "Bảo đảm giao dịch đã bao gồm trong phí hoa hồng nền tảng đối với đơn hàng được bảo vệ. Người mua không phải trả thêm phí riêng.",
+    "faq": {
+      "q1": "Ai giữ tiền của tôi?",
+      "a1": "Một ngân hàng đối tác Việt Nam có giấy phép giữ tiền trong tài khoản tách biệt kiểu ký quỹ đứng tên đơn hàng của bạn. CANG không bao giờ nắm giữ tiền của khách hàng.",
+      "q2": "Khi nào nhà cung cấp được thanh toán?",
+      "a2": "Tiền được giải ngân theo lịch thanh toán trong đơn hàng — thường là đặt cọc khi bắt đầu sản xuất và phần còn lại khi có chứng từ vận chuyển hoặc xác nhận giao hàng.",
+      "q3": "Tôi có thể thêm kiểm định độc lập không?",
+      "a3": "Có. Đặt kiểm định trước giao hàng từ trang đơn hàng; việc giải ngân phần còn lại có thể được đặt điều kiện theo báo cáo kiểm định đạt.",
+      "q4": "Tôi có bao lâu để mở tranh chấp?",
+      "a4": "Thời hạn kiểm tra được quy định trong đơn hàng (mặc định 7 ngày sau khi xác nhận giao hàng). Tranh chấp mở trong thời hạn sẽ tạm dừng việc giải ngân cuối cùng.",
+      "q5": "Những phương thức thanh toán nào được hỗ trợ?",
+      "a5": "Chuyển khoản quốc tế (SWIFT) bằng USD hoặc EUR, và chuyển khoản nội địa bằng VND cho người mua Việt Nam. Thẻ và tài trợ thương mại được đối tác cung cấp cho các đơn hàng đủ điều kiện."
+    },
+    "cta": "Tìm nhà sản xuất đã xác minh",
+    "ctaBody": "Mọi đơn hàng trên CANG đều có thể được bảo vệ. Bắt đầu bằng một RFQ hoặc xem sản phẩm với giá theo bậc số lượng.",
+    "platformLine": "CANG là nền tảng công nghệ và không bao giờ giữ tiền của khách hàng — dòng tiền nằm tại các tổ chức đối tác được cấp phép.",
+    "platformLineTitle": "Tiền của bạn được giữ ở đâu"
+  },
+  "logistics": {
+    "title": "Logistics",
+    "eyebrow": "Vận tải & hải quan",
+    "metaDescription": "Đặt vận tải biển, hàng không và đường sắt từ Việt Nam với các đối tác giao nhận của CANG: lấy hàng tại nhà máy, kho bãi, khai báo hải quan, bảo hiểm và theo dõi từng mốc ngay trong đơn hàng.",
+    "subtitle": "Báo giá cước từ các đối tác giao nhận có giấy phép, đặt ngay trong đơn hàng và theo dõi từng mốc từ cổng nhà máy tới kho của bạn.",
+    "servicesTitle": "Dịch vụ",
+    "services": {
+      "FACTORY_PICKUP": "Lấy hàng tại nhà máy",
+      "DOMESTIC_TRANSPORT": "Vận chuyển nội địa",
+      "WAREHOUSING": "Kho bãi & gom hàng",
+      "FREIGHT_FORWARDING": "Giao nhận vận tải",
+      "SEA_FREIGHT": "Vận tải biển (FCL / LCL)",
+      "AIR_FREIGHT": "Vận tải hàng không",
+      "RAIL_FREIGHT": "Vận tải đường sắt",
+      "CUSTOMS_BROKERAGE": "Khai báo hải quan",
+      "LAST_MILE": "Giao hàng chặng cuối",
+      "CARGO_INSURANCE": "Bảo hiểm hàng hoá"
+    },
+    "serviceBodies": {
+      "SEA_FREIGHT": "Nguyên container và hàng lẻ từ Cát Lái, Cái Mép–Thị Vải, Hải Phòng và Đà Nẵng tới mọi cảng lớn.",
+      "AIR_FREIGHT": "Hàng mẫu, bổ sung gấp và hàng giá trị cao từ SGN và HAN, giao tận nơi.",
+      "RAIL_FREIGHT": "Đường sắt Trung Quốc–châu Âu qua Hà Nội, 18–22 ngày tới Trung Âu với giá tương đương đường biển.",
+      "CUSTOMS_BROKERAGE": "Khai báo xuất khẩu, giấy chứng nhận xuất xứ (EVFTA, CPTPP, RCEP) và thông quan nhập khẩu tại điểm đến.",
+      "WAREHOUSING": "Gom hàng từ nhiều nhà cung cấp thành một lô tại kho đối tác gần cảng.",
+      "CARGO_INSURANCE": "Bảo hiểm hàng hải mọi rủi ro, báo giá cùng cước vận chuyển."
+    },
+    "modes": {
+      "SEA_FCL": "Biển FCL",
+      "SEA_LCL": "Biển LCL",
+      "AIR": "Hàng không",
+      "RAIL": "Đường sắt",
+      "ROAD": "Đường bộ",
+      "COURIER": "Chuyển phát",
+      "MULTIMODAL": "Đa phương thức"
+    },
+    "flowTitle": "Từ cổng nhà máy tới cửa kho của bạn",
+    "flow": {
+      "factory": "Nhà máy",
+      "pickup": "Lấy hàng",
+      "warehouse": "Kho",
+      "port": "Cảng / sân bay",
+      "international": "Chặng quốc tế",
+      "customs": "Hải quan",
+      "buyer": "Người mua"
+    },
+    "providersTitle": "Đối tác giao nhận",
+    "providersBody": "Các đơn vị giao nhận có giấy phép tích hợp với CANG. Yêu cầu báo giá từ nhiều đối tác cùng lúc ngay trong đơn hàng.",
+    "transit": "Thời gian vận chuyển điển hình",
+    "transitRows": {
+      "eu": "Việt Nam → Châu Âu (biển)",
+      "euDays": "28–35 ngày",
+      "usw": "Việt Nam → Bờ Tây Hoa Kỳ (biển)",
+      "uswDays": "18–25 ngày",
+      "use": "Việt Nam → Bờ Đông Hoa Kỳ (biển)",
+      "useDays": "32–40 ngày",
+      "asia": "Việt Nam → Nhật Bản / Hàn Quốc (biển)",
+      "asiaDays": "7–12 ngày",
+      "air": "Hàng không, giao tận nơi",
+      "airDays": "3–7 ngày"
+    },
+    "cta": "Nhận báo giá cước",
+    "ctaBody": "Cước vận chuyển được yêu cầu từ trang đơn hàng sau khi chấp nhận báo giá. Chưa sẵn sàng? Hãy đăng RFQ để bắt đầu.",
+    "disclaimer": "Dịch vụ logistics do các đơn vị giao nhận và hãng vận chuyển độc lập, có giấy phép cung cấp. CANG điều phối báo giá, đặt chỗ và theo dõi nhưng không phải là đơn vị vận chuyển.",
+    "route": "Tuyến vận chuyển",
+    "duration": "Thời gian vận chuyển điển hình"
+  },
+  "financing": {
+    "title": "Tài trợ thương mại",
+    "eyebrow": "Tài chính",
+    "metaDescription": "Vốn lưu động và tài trợ sản xuất cho nhà máy Việt Nam, tài trợ nhập khẩu và mua trước trả sau cho người mua quốc tế — từ các tổ chức tín dụng được cấp phép tích hợp với CANG.",
+    "subtitle": "Các tổ chức tín dụng được cấp phép tích hợp với đơn hàng CANG của bạn: nhà máy có vốn sản xuất theo đơn đặt hàng, người mua thanh toán theo kỳ hạn.",
+    "forBuyers": "Dành cho người mua",
+    "forBuyersBody": "Thanh toán trước cho nhà cung cấp qua Bảo đảm giao dịch trong khi bạn tất toán với bên cho vay theo kỳ hạn 30–120 ngày.",
+    "forSellers": "Dành cho nhà cung cấp",
+    "forSellersBody": "Biến đơn đặt hàng đã chấp nhận thành vốn lưu động trước khi người mua thanh toán phần còn lại.",
+    "products": {
+      "IMPORT_FINANCING": "Tài trợ nhập khẩu",
+      "PURCHASE_FINANCING": "Tài trợ mua hàng",
+      "BNPL": "Mua trước, trả sau",
+      "INVOICE_FINANCING": "Tài trợ hoá đơn",
+      "WORKING_CAPITAL": "Vốn lưu động",
+      "PRODUCTION_FINANCING": "Tài trợ sản xuất",
+      "INVOICE_FACTORING": "Bao thanh toán hoá đơn",
+      "RECEIVABLES_FINANCING": "Tài trợ khoản phải thu",
+      "PURCHASE_ORDER_FINANCING": "Tài trợ theo đơn đặt hàng"
+    },
+    "productBodies": {
+      "IMPORT_FINANCING": "Tài trợ chi phí hàng giao đến nơi của đơn hàng; hoàn trả sau khi hàng về và bán ra.",
+      "BNPL": "Chia đơn hàng thành các kỳ trả góp trong 60–120 ngày với đối tác fintech.",
+      "PURCHASE_FINANCING": "Hạn mức tín dụng giải ngân theo từng đơn hàng, đảm bảo bằng hàng hoá và chứng từ Bảo đảm giao dịch.",
+      "WORKING_CAPITAL": "Hạn mức quay vòng được xác định dựa trên lịch sử giao dịch của bạn trên CANG.",
+      "PRODUCTION_FINANCING": "Ứng trước tới 70% giá trị PO đã chấp nhận để mua nguyên liệu và trả lương.",
+      "PURCHASE_ORDER_FINANCING": "Bên cho vay thanh toán trực tiếp cho nhà cung cấp nguyên liệu của bạn dựa trên PO của người mua.",
+      "INVOICE_FACTORING": "Bán hoá đơn xuất khẩu khi giao hàng và nhận tiền trong 48 giờ, miễn truy đòi.",
+      "RECEIVABLES_FINANCING": "Vay dựa trên các khoản phải thu xuất khẩu từ người mua đã xác minh.",
+      "INVOICE_FINANCING": "Ứng trước ngắn hạn dựa trên hoá đơn đã phát hành cho đơn hàng hoàn tất."
+    },
+    "providerTypes": {
+      "BANK": "Ngân hàng",
+      "NON_BANK_LENDER": "Tổ chức cho vay phi ngân hàng",
+      "FINTECH": "Fintech",
+      "FACTORING_COMPANY": "Công ty bao thanh toán",
+      "EXPORT_CREDIT_AGENCY": "Tổ chức tín dụng xuất khẩu"
+    },
+    "providersTitle": "Đối tác cho vay",
+    "regulator": "Cơ quan quản lý",
+    "amountRange": "Quy mô khoản vay",
+    "tenor": "Kỳ hạn",
+    "tenorDays": "{min}–{max} ngày",
+    "indicativeRate": "Lãi suất tham khảo",
+    "howTitle": "Quy trình nộp hồ sơ",
+    "how": {
+      "s1": "Nộp hồ sơ từ đơn hàng hoặc bảng điều khiển — CANG điền sẵn dữ liệu doanh nghiệp, đơn hàng và giao dịch.",
+      "s2": "Hồ sơ được chuyển tới bên cho vay có tiêu chí phù hợp. Quyết định thường trong 3 ngày làm việc.",
+      "s3": "Chấp nhận đề nghị; khoản giải ngân đi vào lịch thanh toán của đơn hàng và việc hoàn trả được theo dõi trong bảng điều khiển."
+    },
+    "eligibility": "Điều kiện",
+    "eligibilityBody": "Doanh nghiệp đã xác minh với ít nhất một đơn hàng hoàn tất trên CANG, hoặc có đơn đặt hàng đã ký từ đối tác đã xác minh. Bên cho vay tự thực hiện thẩm định tín dụng và KYC.",
+    "disclaimer": "CANG không phải là tổ chức cho vay và không cung cấp tín dụng, bảo lãnh hay tư vấn tài chính. Các sản phẩm tài chính do các tổ chức độc lập, được cấp phép cung cấp theo điều khoản riêng; việc phê duyệt và lãi suất do họ quyết định. Lãi suất hiển thị chỉ mang tính tham khảo.",
+    "cta": "Kiểm tra điều kiện của bạn",
+    "ctaBody": "Đăng nhập và mở mục Tài chính trong bảng điều khiển để xem các sản phẩm dành cho doanh nghiệp của bạn."
+  },
+  "inspection": {
+    "title": "Kiểm định chất lượng",
+    "eyebrow": "Kiểm soát chất lượng",
+    "metaDescription": "Đặt kiểm định nhà máy, kiểm tra trước sản xuất, trong sản xuất, trước giao hàng và giám sát đóng container tại Việt Nam qua các công ty kiểm định đối tác của CANG. Lấy mẫu AQL, báo cáo trong 24 giờ.",
+    "subtitle": "Kiểm định viên độc lập trên khắp Việt Nam, đặt ngay từ đơn hàng. Báo cáo kèm hình ảnh và kết quả AQL có trong bảng điều khiển trong vòng 24 giờ.",
+    "typesTitle": "Năm loại kiểm định",
+    "types": {
+      "FACTORY_AUDIT": "Kiểm định nhà máy",
+      "PRE_PRODUCTION": "Kiểm tra trước sản xuất",
+      "DURING_PRODUCTION": "Kiểm tra trong sản xuất",
+      "PRE_SHIPMENT": "Kiểm tra trước giao hàng",
+      "CONTAINER_LOADING": "Giám sát đóng container"
+    },
+    "typeBodies": {
+      "FACTORY_AUDIT": "Xác minh tại chỗ về tư cách pháp lý, năng lực, thiết bị, hệ thống chất lượng và tuân thủ xã hội trước khi cam kết với nhà cung cấp.",
+      "PRE_PRODUCTION": "Kiểm tra nguyên liệu, linh kiện và mẫu đã duyệt so với quy cách của bạn trước khi sản xuất hàng loạt.",
+      "DURING_PRODUCTION": "Kiểm tra khi hoàn thành 20–60% để phát hiện sớm lỗi và xác nhận tiến độ.",
+      "PRE_SHIPMENT": "Lấy mẫu AQL trên thành phẩm đã đóng gói về tay nghề, chức năng, nhãn mác và bao bì.",
+      "CONTAINER_LOADING": "Giám sát số lượng, tình trạng thùng carton và niêm phong container trong ngày đóng hàng."
+    },
+    "when": "Thời điểm",
+    "whenValues": {
+      "FACTORY_AUDIT": "Trước khi đặt hàng",
+      "PRE_PRODUCTION": "Trước sản xuất",
+      "DURING_PRODUCTION": "Giữa sản xuất",
+      "PRE_SHIPMENT": "Trước giao hàng",
+      "CONTAINER_LOADING": "Ngày đóng hàng"
+    },
+    "providersTitle": "Công ty kiểm định đối tác",
+    "howTitle": "Cách thức hoạt động",
+    "how": {
+      "s1": "Chọn loại kiểm định và ngày từ trang đơn hàng; nhà máy được thông báo tự động.",
+      "s2": "Đối tác cử kiểm định viên địa phương; kết quả được ghi nhận theo quy cách và mức AQL của bạn.",
+      "s3": "Báo cáo được tải lên đơn hàng. Nếu gắn với Bảo đảm giao dịch, khoản thanh toán cuối chờ báo cáo đạt."
+    },
+    "pricing": "Chi phí",
+    "pricingBody": "Kiểm định được đối tác báo giá theo ngày công (thường 250–350 USD tại Việt Nam, đã gồm đi lại). Kiểm định nhà máy báo giá theo phạm vi.",
+    "disclaimer": "Kiểm định do các công ty kiểm định độc lập, được công nhận thực hiện. Báo cáo phản ánh kết quả của kiểm định viên trong ngày; CANG không chứng nhận sản phẩm.",
+    "cta": "Đặt kiểm định",
+    "ctaBody": "Kiểm định được đặt từ đơn hàng. Hãy bắt đầu bằng một RFQ hoặc xem các nhà sản xuất đã xác minh."
+  },
+  "pricing": {
+    "title": "Gói dịch vụ & giá dành cho nhà cung cấp",
+    "eyebrow": "Dành cho nhà cung cấp",
+    "metaDescription": "Các gói nhà cung cấp trên CANG: niêm yết sản phẩm miễn phí, nâng cấp để có RFQ ưu tiên, xác minh, phân tích và khách hàng tiềm năng. Người mua luôn sử dụng CANG miễn phí.",
+    "subtitle": "Bắt đầu miễn phí. Nâng cấp khi bạn muốn hiển thị nhiều hơn, xác minh và khách hàng tiềm năng. Người mua không bao giờ trả phí để tìm nguồn hàng trên CANG.",
+    "monthly": "Hằng tháng",
+    "yearly": "Hằng năm",
+    "yearlySave": "Tiết kiệm {percent}%",
+    "perMonth": "/ tháng",
+    "perYear": "/ năm",
+    "billedYearly": "{amount} thanh toán theo năm",
+    "free": "Miễn phí",
+    "custom": "Theo thoả thuận",
+    "cta": "Chọn gói",
+    "ctaEnterprise": "Liên hệ kinh doanh",
+    "ctaFree": "Bắt đầu miễn phí",
+    "popular": "Phổ biến nhất",
+    "limits": {
+      "products": "{n} sản phẩm",
+      "seats": "{n} tài khoản thành viên",
+      "rfqResponses": "{n} phản hồi RFQ / tháng",
+      "unlimited": "Không giới hạn"
+    },
+    "commissionTitle": "Hoa hồng giao dịch",
+    "commissionBody": "Hoa hồng theo kết quả 2–5% (tuỳ danh mục) áp dụng cho đơn hàng hoàn tất với Bảo đảm giao dịch và được xuất hoá đơn cho nhà cung cấp sau khi giải ngân. Không thu hoa hồng với đơn hàng bạn thanh toán ngoài nền tảng.",
+    "buyersTitle": "Dành cho người mua: luôn miễn phí",
+    "buyersBody": "Đăng RFQ, so sánh báo giá, nhắn tin với nhà cung cấp và sử dụng Bảo đảm giao dịch hoàn toàn miễn phí. Các dịch vụ tuỳ chọn (kiểm định, vận chuyển, tài chính) do đối tác báo giá theo từng đơn hàng.",
+    "faq": {
+      "q1": "Tôi có thể đổi gói sau này không?",
+      "a1": "Có. Nâng cấp có hiệu lực ngay với phí tính theo tỷ lệ; hạ gói có hiệu lực vào cuối kỳ thanh toán.",
+      "q2": "Xác minh bao gồm những gì?",
+      "a2": "Gói Pro bao gồm xác minh doanh nghiệp (đăng ký kinh doanh, mã số thuế, giấy tờ sở hữu). Gói Nhà sản xuất đã xác minh bổ sung kiểm định nhà máy tại chỗ và huy hiệu Nhà máy đã kiểm định.",
+      "q3": "Thanh toán bằng cách nào?",
+      "a3": "Chuyển khoản bằng VND hoặc USD, hoặc thẻ qua đối tác thanh toán. Hoá đơn VAT được phát hành tự động.",
+      "q4": "Có thời hạn hợp đồng không?",
+      "a4": "Gói tháng gia hạn hằng tháng và có thể huỷ bất cứ lúc nào. Gói năm thanh toán một lần cho 12 tháng với mức ưu đãi.",
+      "q5": "Người mua có biết tôi dùng gói nào không?",
+      "a5": "Không. Người mua thấy huy hiệu, trạng thái xác minh, đánh giá và tỷ lệ phản hồi của bạn — không thấy gói dịch vụ."
+    },
+    "cta2": "Tạo tài khoản nhà cung cấp",
+    "cta2Body": "Niêm yết sản phẩm đầu tiên trong chưa đầy 30 phút. Đội ngũ onboarding tại TP. Hồ Chí Minh hỗ trợ bằng tiếng Việt hoặc tiếng Anh.",
+    "planTag": {
+      "FREE": "",
+      "PRO": "",
+      "PREMIUM": "Phổ biến nhất",
+      "ENTERPRISE": ""
+    }
+  }
+}

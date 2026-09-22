@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "title": "Source from verified Vietnamese manufacturers",
+    "description": "CANG is Vietnam's B2B industrial marketplace: verified factories, tiered pricing, RFQs answered in 48 hours, Trade Assurance payments, inspection, logistics and financing for global buyers."
+  },
+  "hero": {
+    "eyebrow": "Source from Vietnam",
+    "title": "Source directly from verified Vietnamese manufacturers",
+    "subtitle": "Compare factory-direct quotations, pay through a licensed partner bank and track every container — in English and Vietnamese.",
+    "tryLabel": "Try",
+    "chips": {
+      "garments": "Garments",
+      "furniture": "Furniture",
+      "electronics": "Electronics",
+      "machinery": "Machinery",
+      "packaging": "Packaging",
+      "footwear": "Footwear"
+    },
+    "postRfq": "Post an RFQ",
+    "browseManufacturers": "Browse manufacturers",
+    "howItWorks": "How CANG works"
+  },
+  "stats": {
+    "verifiedManufacturers": "Verified manufacturers",
+    "products": "Factory-direct products",
+    "clusters": "Industrial clusters",
+    "countries": "Countries served"
+  },
+  "sections": {
+    "viewAll": "View all",
+    "allCategories": "All categories",
+    "allManufacturers": "All manufacturers",
+    "allProducts": "All products",
+    "allGuides": "All guides",
+    "productsCount": "{count, plural, one {# product} other {# products}}",
+    "suppliersCount": "{count, plural, one {# supplier} other {# suppliers}}",
+    "verifiedCount": "{count} verified",
+    "madeInVietnamSubtitle": "Browse manufacturers by industry",
+    "trendingSubtitle": "Most viewed by buyers this month",
+    "newSuppliersSubtitle": "Recently onboarded factories",
+    "empty": "Nothing to show yet."
+  },
+  "postRfq": {
+    "eyebrow": "Request for quotation",
+    "subtitle": "Describe your product once. We match it to factories with the right capacity and certifications, and quotations arrive in a structured comparison view.",
+    "step1Title": "Describe what you need",
+    "step1Body": "Specification, quantity, target price, destination and deadline.",
+    "step2Title": "Get matched to verified factories",
+    "step2Body": "Automatic matching by category, industry and certification. Invite specific suppliers too.",
+    "step3Title": "Compare and order safely",
+    "step3Body": "Side-by-side quotations, samples, then Trade Assurance payment through a licensed partner bank.",
+    "cta": "Post your RFQ — it's free",
+    "browse": "Browse open RFQs",
+    "openRfqs": "{count, plural, one {# open RFQ} other {# open RFQs}} right now"
+  },
+  "whyVietnam": {
+    "subtitle": "The second-largest apparel and footwear exporter in the world, and the fastest-growing electronics and furniture base in Southeast Asia.",
+    "fta": {
+      "value": "16",
+      "label": "Free-trade agreements",
+      "body": "EVFTA, CPTPP, UKVFTA and RCEP remove or reduce duties in the EU, UK, Japan, Canada, Australia and more."
+    },
+    "cost": {
+      "value": "30–50%",
+      "label": "Lower labour cost than China",
+      "body": "Competitive wages with rapidly improving productivity and automation in export zones."
+    },
+    "workforce": {
+      "value": "56M",
+      "label": "Working-age workforce",
+      "body": "Young, literate and experienced in export manufacturing; median age of 33."
+    },
+    "sectors": {
+      "value": "$400B+",
+      "label": "Annual exports",
+      "body": "Electronics, apparel, footwear, furniture, machinery, seafood, coffee and packaging lead the way."
+    },
+    "cta": "Why source from Vietnam"
+  },
+  "tradeAssurance": {
+    "eyebrow": "Buyer protection",
+    "body": "Deposits and balances are held in a segregated account at a licensed Vietnamese partner bank and released only when delivery milestones are confirmed. CANG never holds client money.",
+    "point1": "Funds held by a licensed partner bank, not by CANG",
+    "point2": "Release on shipment documents or delivery confirmation",
+    "point3": "Dispute window with CANG mediation",
+    "point4": "Optional third-party inspection before release",
+    "cta": "How Trade Assurance works"
+  },
+  "services": {
+    "subtitle": "Everything after the quotation, handled by licensed partners inside your order.",
+    "logistics": {
+      "title": "Logistics",
+      "body": "Sea, air and rail freight quotes from partner forwarders, customs brokerage and insurance, tracked milestone by milestone."
+    },
+    "inspection": {
+      "title": "Quality inspection",
+      "body": "Factory audits and pre-shipment inspections with AQL sampling, reports uploaded to your order within 24 hours."
+    },
+    "financing": {
+      "title": "Trade financing",
+      "body": "Working-capital and production financing for factories, import financing for buyers — from regulated lenders."
+    },
+    "learnMore": "Learn more"
+  },
+  "guides": {
+    "subtitle": "Practical guides for first-time importers and Vietnamese factories going global.",
+    "readingTime": "{minutes} min read",
+    "read": "Read guide"
+  },
+  "banner": {
+    "learnMore": "Learn more",
+    "hero": {
+      "title": "Source directly from verified Vietnamese manufacturers",
+      "subtitle": "Compare quotations, pay through a licensed partner bank and track every container — in English and Vietnamese.",
+      "cta": "Post an RFQ"
+    },
+    "secondary": {
+      "title": "Trade Assurance on every order",
+      "subtitle": "Deposits and balances are held by a licensed Vietnamese bank and released on delivery milestones.",
+      "cta": "How it works"
+    }
+  }
+}

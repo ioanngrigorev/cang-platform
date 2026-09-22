@@ -1,0 +1,73 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/manrope";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    @apply antialiased scroll-smooth;
+  }
+  body {
+    @apply bg-white text-steel-900 font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-ink-900;
+  }
+  ::selection {
+    @apply bg-brass-200 text-ink-900;
+  }
+  input, textarea, select {
+    @apply text-steel-900;
+  }
+}
+
+@layer components {
+  .prose-cang {
+    @apply text-steel-700 leading-relaxed;
+  }
+  .prose-cang h2 {
+    @apply text-2xl font-semibold mt-8 mb-3;
+  }
+  .prose-cang h3 {
+    @apply text-xl font-semibold mt-6 mb-2;
+  }
+  .prose-cang p {
+    @apply my-3;
+  }
+  .prose-cang ul {
+    @apply list-disc pl-6 my-3 space-y-1;
+  }
+  .prose-cang ol {
+    @apply list-decimal pl-6 my-3 space-y-1;
+  }
+  .prose-cang a {
+    @apply text-ink-600 underline underline-offset-2 hover:text-ink-900;
+  }
+  .prose-cang table {
+    @apply w-full text-sm my-4 border-collapse;
+  }
+  .prose-cang th, .prose-cang td {
+    @apply border border-steel-200 px-3 py-2 text-left align-top;
+  }
+  .prose-cang th {
+    @apply bg-steel-50 font-semibold;
+  }
+  .prose-cang blockquote {
+    @apply border-l-4 border-brass-400 pl-4 italic text-steel-600 my-4;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
