@@ -77,10 +77,10 @@ docker compose up -d
 
 # wait for health, then seed reference data
 for i in $(seq 1 100); do
-  docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1 && break
+  docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1 </dev/null && break
   sleep 5
 done
-docker compose exec -T app sh -lc 'node_modules/.bin/tsx src/db/seed/index.ts'
+docker compose exec -T app sh -lc 'node_modules/.bin/tsx src/db/seed/index.ts' </dev/null
 
 # nightly backup
 chmod +x /opt/cang/deploy/backup.sh 2>/dev/null || true
