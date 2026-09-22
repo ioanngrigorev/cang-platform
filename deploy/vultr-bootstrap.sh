@@ -90,9 +90,3 @@ echo "=== CANG bootstrap finished $(date -u) ==="
 grep '^SEED_ADMIN_PASSWORD=' /opt/cang/.env > /root/ADMIN-LOGIN.txt
 echo "admin@cang.vn" >> /root/ADMIN-LOGIN.txt
 docker compose ps
-
-
-# release updater: rebuilds only when deploy/RELEASE changes (see deploy/update.sh)
-chmod +x /opt/cang/deploy/update.sh
-cp -f /opt/cang/deploy/RELEASE /opt/cang/.release
-( crontab -l 2>/dev/null | grep -v 'cang update'; echo "*/5 * * * * /opt/cang/deploy/update.sh >> /var/log/cang-update.log 2>&1 # cang update" ) | crontab -
