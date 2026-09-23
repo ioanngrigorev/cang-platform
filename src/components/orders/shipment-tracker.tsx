@@ -53,7 +53,7 @@ export function ShipmentStepper({
             <li key={m} className="flex min-w-[76px] flex-1 flex-col items-center text-center">
               <div className="flex w-full items-center">
                 <span className={cn("h-0.5 flex-1", i === 0 ? "bg-transparent" : done ? "bg-success-500" : "bg-steel-200")} />
-                <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold", done ? "bg-success-500 text-white" : "bg-steel-200 text-steel-500")}>
+                <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold", done ? "bg-brand-500 text-on-brand" : "bg-steel-200 text-steel-500")}>
                   {done ? <Check className="size-3.5" /> : i + 1}
                 </span>
                 <span className={cn("h-0.5 flex-1", i === SHIPMENT_MILESTONES.length - 1 ? "bg-transparent" : i < lastReachedIndex ? "bg-success-500" : "bg-steel-200")} />
@@ -78,7 +78,7 @@ export function ShipmentStepper({
         return (
           <li key={m} className="relative flex gap-3 pb-5 last:pb-0">
             {!isLast ? <span className={cn("absolute left-[11px] top-6 h-full w-px", i < lastReachedIndex ? "bg-success-400" : "bg-steel-200")} aria-hidden /> : null}
-            <span className={cn("relative z-10 mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold", done ? "bg-success-500 text-white" : "bg-steel-200 text-steel-500")}>
+            <span className={cn("relative z-10 mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold", done ? "bg-brand-500 text-on-brand" : "bg-steel-200 text-steel-500")}>
               {done ? <Check className="size-3.5" /> : i + 1}
             </span>
             <div className="min-w-0 flex-1">

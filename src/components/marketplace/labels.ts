@@ -17,6 +17,8 @@ export function productCardLabels(t: Translator) {
     oem: t("card.oem"),
     odm: t("card.odm"),
     perUnit: t.raw("card.perUnit"),
+    fromAtQty: t.raw("card.fromAtQty"),
+    topSupplier: t("card.topSupplier"),
   };
 }
 

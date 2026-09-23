@@ -467,6 +467,8 @@
     "responseRate": "Response",
     "exportMarkets": "Exports to",
     "view": "View profile",
-    "verified": "Verified"
+    "verified": "Verified",
+    "fromAtQty": "best price from {qty}",
+    "topSupplier": "Top supplier"
   }
 }

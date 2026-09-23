@@ -94,7 +94,7 @@ export default async function RfqMarketplacePage({ params, searchParams }: Props
           </div>
         </div>
         <div className="flex gap-3 rounded-lg border border-steel-200 bg-steel-50/60 p-4">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-brass-500 text-ink-950">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-brand-500 text-on-brand">
             <Sparkles className="size-4" />
           </span>
           <div>

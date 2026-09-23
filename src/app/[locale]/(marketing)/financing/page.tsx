@@ -80,7 +80,7 @@ export default async function FinancingPage({ params }: Props) {
           </div>
           <div>
             <div className="mb-5 flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-md bg-brass-500 text-ink-950">
+              <span className="flex size-9 items-center justify-center rounded-md bg-brand-500 text-on-brand">
                 <Building2 className="size-4" />
               </span>
               <div>

@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { VerifiedMark } from "@/components/ui/badge";
 import { SmartImage } from "@/components/ui/smart-image";
@@ -15,6 +15,7 @@ export type ProductCardData = {
   basePrice?: number | null;
   minTierPrice?: number | null;
   maxTierPrice?: number | null;
+  minTierQty?: number | null;
   moq: number;
   unit: string;
   leadTimeDays?: number | null;
@@ -25,6 +26,8 @@ export type ProductCardData = {
     slug: string;
     name: string;
     verificationStatus: string;
+    ratingAvg?: number;
+    ratingCount?: number;
     provinceName?: string | null;
     countryCode?: string;
     badgeCodes?: string[];
@@ -51,7 +54,7 @@ export function ProductCard({
 }: {
   product: ProductCardData;
   locale: string;
-  labels: { moq: string; leadTime: string; days: string; contact: string; negotiable: string; oem: string; odm: string; perUnit: string };
+  labels: { moq: string; leadTime: string; days: string; contact: string; negotiable: string; oem: string; odm: string; perUnit: string; fromAtQty: string; topSupplier: string };
   className?: string;
   compact?: boolean;
 }) {
@@ -70,6 +73,11 @@ export function ProductCard({
           {priceLabel(product, locale, labels)}
           {product.priceType !== "CONTACT" && (product.basePrice != null || product.minTierPrice != null) ? <span className="ml-1 text-xs font-normal text-steel-500">{labels.perUnit.replace("{unit}", product.unit)}</span> : null}
         </p>
+        {product.minTierPrice != null && product.minTierQty != null && product.minTierPrice !== (product.maxTierPrice ?? product.basePrice) ? (
+          <p className="mt-0.5 text-xs text-brand-700">
+            {labels.fromAtQty.replace("{qty}", `${formatNumber(product.minTierQty, locale)} ${product.unit}`)}
+          </p>
+        ) : null}
         <p className="mt-1 text-xs text-steel-500">
           {labels.moq}: <span className="font-medium text-steel-700">{formatNumber(product.moq, locale)} {product.unit}</span>
           {!compact && product.leadTimeDays ? (
@@ -89,10 +97,18 @@ export function ProductCard({
           <Link href={`/supplier/${product.company.slug}`} className="flex items-center gap-1.5 text-xs text-steel-600 hover:text-ink-900">
             <span className="truncate font-medium">{product.company.name}</span>
             <VerifiedMark status={product.company.verificationStatus} className="size-3.5" />
+            {product.company.ratingCount ? (
+              <span className="ml-auto flex shrink-0 items-center gap-0.5 font-medium tabular-nums text-ink-900">
+                <Star className="size-3 fill-brand-500 text-brand-500" />
+                {(product.company.ratingAvg ?? 0).toFixed(1)}
+                <span className="font-normal text-steel-500">({formatNumber(product.company.ratingCount, locale)})</span>
+              </span>
+            ) : null}
           </Link>
           {product.company.provinceName ? (
             <p className="mt-0.5 flex items-center gap-1 text-[11px] text-steel-500">
               <MapPin className="size-3" /> {product.company.provinceName}, {product.company.countryCode === "VN" ? "Vietnam" : product.company.countryCode}
+              {product.company.badgeCodes?.includes("TOP_SUPPLIER") ? <span className="font-semibold text-brand-700">· {labels.topSupplier}</span> : null}
             </p>
           ) : null}
 

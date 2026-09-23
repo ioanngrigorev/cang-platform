@@ -65,7 +65,7 @@ export function SectionTitle({
 export function Step({ index, title, body, dark }: { index: number; title: React.ReactNode; body?: React.ReactNode; dark?: boolean }) {
   return (
     <div className="flex gap-4">
-      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full font-display text-base font-bold", dark ? "bg-brass-500 text-ink-950" : "bg-ink-900 text-white")}>{index}</span>
+      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full font-display text-base font-bold", dark ? "bg-brand-500 text-on-brand" : "bg-ink-900 text-white")}>{index}</span>
       <div>
         <h3 className={cn("text-base font-semibold", dark && "text-white")}>{title}</h3>
         {body ? <p className={cn("mt-1 text-sm", dark ? "text-steel-300" : "text-steel-600")}>{body}</p> : null}

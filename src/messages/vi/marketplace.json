@@ -467,6 +467,8 @@
     "responseRate": "Phản hồi",
     "exportMarkets": "Xuất khẩu tới",
     "view": "Xem hồ sơ",
-    "verified": "Đã xác minh"
+    "verified": "Đã xác minh",
+    "fromAtQty": "giá tốt nhất từ {qty}",
+    "topSupplier": "Nhà cung cấp hàng đầu"
   }
 }

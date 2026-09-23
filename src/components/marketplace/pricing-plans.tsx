@@ -62,7 +62,7 @@ export function PricingPlans({ plans, locale, labels }: { plans: PricingPlan[]; 
               className={cn("rounded-full px-4 py-1.5 font-medium transition-colors", cycle === c ? "bg-ink-900 text-white" : "text-steel-600 hover:text-ink-900")}
             >
               {c === "monthly" ? labels.monthly : labels.yearly}
-              {c === "yearly" && savings > 0 ? <span className={cn("ml-1.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold", cycle === c ? "bg-brass-400 text-ink-950" : "bg-brass-100 text-brass-800")}>{fill(labels.yearlySave, { percent: String(savings) })}</span> : null}
+              {c === "yearly" && savings > 0 ? <span className={cn("ml-1.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold", cycle === c ? "bg-brand-500 text-on-brand" : "bg-brass-100 text-brass-800")}>{fill(labels.yearlySave, { percent: String(savings) })}</span> : null}
             </button>
           ))}
         </div>
@@ -73,7 +73,7 @@ export function PricingPlans({ plans, locale, labels }: { plans: PricingPlan[]; 
           const monthlyEquivalent = cycle === "yearly" && p.priceYearly > 0 ? p.priceYearly / 12 : p.priceMonthly;
           return (
             <div key={p.code} className={cn("relative flex flex-col rounded-lg border bg-white p-6 shadow-card", p.highlighted ? "border-ink-900 ring-1 ring-ink-900" : "border-steel-200")}>
-              {p.highlighted ? <span className="absolute -top-3 left-6 rounded-full bg-brass-400 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-ink-950">{labels.popular}</span> : null}
+              {p.highlighted ? <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-on-brand">{labels.popular}</span> : null}
               <h3 className="text-lg font-semibold">{p.name}</h3>
               {p.description ? <p className="mt-1 min-h-10 text-sm text-steel-600">{p.description}</p> : null}
               <div className="mt-5">

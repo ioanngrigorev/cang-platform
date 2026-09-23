@@ -75,5 +75,8 @@
   [data-theme="lime"] .bg-ink-950 .text-steel-400,
   [data-theme="lime"] .bg-ink-900 .text-steel-400 { color: rgb(var(--steel-600)); }
   [data-theme="lime"] .text-white .text-brass-200,
-  [data-theme="lime"] .bg-ink-950 .text-brass-200 { color: rgb(var(--brand-500)); }
+  [data-theme="lime"] .bg-ink-950 .text-brass-200,
+  [data-theme="lime"] .text-white .text-brass-300,
+  [data-theme="lime"] .bg-ink-950 .text-brass-300,
+  [data-theme="lime"] .bg-ink-900 .text-brass-300 { color: rgb(var(--brand-500)); }
 }

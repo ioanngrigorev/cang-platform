@@ -56,6 +56,8 @@ export type ProductHit = {
   basePrice: number | null;
   minTierPrice: number | null;
   maxTierPrice: number | null;
+  /** Quantity at which the cheapest tier kicks in — the B2B equivalent of a discount. */
+  minTierQty: number | null;
   moq: number;
   unit: string;
   leadTimeDays: number | null;
@@ -75,6 +77,7 @@ export type ProductHit = {
     logoUrl: string | null;
     verificationStatus: string;
     ratingAvg: number;
+    ratingCount: number;
     provinceName: string | null;
     provinceSlug: string | null;
     countryCode: string;

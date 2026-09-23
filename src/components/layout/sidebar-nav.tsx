@@ -52,7 +52,7 @@ export function SidebarNav({ sections, header, company }: { sections: NavSection
                 >
                   <Icon name={it.icon} className={cn("size-4 shrink-0", active ? "text-brass-400" : "text-steel-500")} />
                   <span className="truncate">{it.label}</span>
-                  {it.badge ? <span className="ml-auto rounded-full bg-brass-500 px-1.5 text-[10px] font-bold text-ink-950">{it.badge}</span> : null}
+                  {it.badge ? <span className="ml-auto rounded-full bg-brand-500 px-1.5 text-[10px] font-bold text-on-brand">{it.badge}</span> : null}
                 </Link>
               );
             })}

@@ -93,7 +93,9 @@ export class PostgresSearchProvider implements SearchProvider {
       JOIN product_categories cat ON cat.id = p.category_id
       LEFT JOIN provinces prov ON prov.id = c.province_id
       LEFT JOIN LATERAL (
-        SELECT MIN(price) AS min_price, MAX(price) AS max_price FROM product_price_tiers t WHERE t.product_id = p.id
+        SELECT MIN(price) AS min_price, MAX(price) AS max_price,
+               (SELECT t2.min_qty FROM product_price_tiers t2 WHERE t2.product_id = p.id ORDER BY t2.price ASC, t2.min_qty ASC LIMIT 1) AS min_price_qty
+        FROM product_price_tiers t WHERE t.product_id = p.id
       ) tiers ON TRUE
     `;
 
@@ -103,12 +105,12 @@ export class PostgresSearchProvider implements SearchProvider {
     const rows = await db.execute<Record<string, unknown>>(sql`
       SELECT
         p.id, p.slug, p.title, p.title_vi, p.short_description, p.price_type, p.currency,
-        p.base_price::float AS base_price, tiers.min_price::float AS min_tier_price, tiers.max_price::float AS max_tier_price,
+        p.base_price::float AS base_price, tiers.min_price::float AS min_tier_price, tiers.max_price::float AS max_tier_price, tiers.min_price_qty::int AS min_tier_qty,
         p.moq, p.unit, p.lead_time_days, p.oem_available, p.odm_available, p.customizable, p.has_sample, p.is_featured,
         (SELECT url FROM product_images i WHERE i.product_id = p.id ORDER BY i.is_primary DESC, i.sort_order ASC LIMIT 1) AS primary_image_url,
         cat.id AS category_id, cat.name AS category_name, cat.slug AS category_slug,
         c.id AS company_id, c.slug AS company_slug, c.name AS company_name, c.logo_url AS company_logo_url,
-        c.verification_status, c.rating_avg::float AS rating_avg, c.country_code,
+        c.verification_status, c.rating_avg::float AS rating_avg, c.rating_count::int AS rating_count, c.country_code,
         prov.name AS province_name, prov.slug AS province_slug,
         COALESCE((SELECT array_agg(b.code) FROM company_badges cb JOIN badges b ON b.id = cb.badge_id WHERE cb.company_id = c.id AND (cb.expires_at IS NULL OR cb.expires_at > now())), '{}') AS badge_codes,
         ${score}::float AS rank
@@ -129,6 +131,7 @@ export class PostgresSearchProvider implements SearchProvider {
       basePrice: (r.base_price as number | null) ?? null,
       minTierPrice: (r.min_tier_price as number | null) ?? null,
       maxTierPrice: (r.max_tier_price as number | null) ?? null,
+      minTierQty: (r.min_tier_qty as number | null) ?? null,
       moq: r.moq as number,
       unit: r.unit as string,
       leadTimeDays: (r.lead_time_days as number | null) ?? null,
@@ -148,6 +151,7 @@ export class PostgresSearchProvider implements SearchProvider {
         logoUrl: (r.company_logo_url as string | null) ?? null,
         verificationStatus: r.verification_status as string,
         ratingAvg: Number(r.rating_avg ?? 0),
+        ratingCount: Number(r.rating_count ?? 0),
         provinceName: (r.province_name as string | null) ?? null,
         provinceSlug: (r.province_slug as string | null) ?? null,
         countryCode: r.country_code as string,

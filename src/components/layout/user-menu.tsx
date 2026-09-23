@@ -27,7 +27,7 @@ export function UserMenu({ user, memberships, activeCompanyId, unread, dark }: U
     <div className="flex items-center gap-2">
       <Link href={notificationsHref} className={cn("relative rounded-md p-2", dark ? "text-white/80 hover:bg-white/10" : "text-steel-600 hover:bg-steel-100")} aria-label={tc("labels.notifications")}>
         <Bell className="size-5" />
-        {unread > 0 ? <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brass-500 px-1 text-[10px] font-bold text-ink-950">{unread > 99 ? "99+" : unread}</span> : null}
+        {unread > 0 ? <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-bold text-on-brand">{unread > 99 ? "99+" : unread}</span> : null}
       </Link>
       <Dropdown
         trigger={
