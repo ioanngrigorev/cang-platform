@@ -25,7 +25,7 @@ export function FileUpload({
   onChange,
 }: {
   name: string;
-  scope: "rfq" | "order" | "verification" | "dispute" | "company" | "financing" | "shipment" | "quotation" | "avatar";
+  scope: "rfq" | "order" | "verification" | "dispute" | "company" | "financing" | "shipment" | "quotation" | "avatar" | "product" | "message" | "cms";
   label?: React.ReactNode;
   hint?: React.ReactNode;
   accept?: string;

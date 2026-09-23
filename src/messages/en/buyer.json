@@ -264,6 +264,7 @@
     "roleHints": {
       "ADMIN": "Everything except billing.",
       "MANAGER": "RFQs, orders, logistics and disputes.",
+      "SALES": "Products, quotations and messaging.",
       "PURCHASING": "Create RFQs and manage orders.",
       "FINANCE": "Payments, invoices and financing.",
       "STAFF": "Read access plus messaging.",

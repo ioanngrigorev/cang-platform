@@ -14,6 +14,10 @@ function revalidate() {
   revalidatePath("/[locale]/buyer/company", "page");
   revalidatePath("/[locale]/buyer/company/verification", "page");
   revalidatePath("/[locale]/buyer", "page");
+  // The KYB form is shared with the supplier dashboard.
+  revalidatePath("/[locale]/seller/company", "page");
+  revalidatePath("/[locale]/seller/company/verification", "page");
+  revalidatePath("/[locale]/seller", "page");
 }
 
 /** Update the public company record and the buyer sourcing profile in one submit. */

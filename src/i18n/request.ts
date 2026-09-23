@@ -16,6 +16,7 @@ const namespaces = [
   "dashboard",
   "buyer",
   "seller",
+  "sales",
   "admin",
   "messaging",
   "orders",

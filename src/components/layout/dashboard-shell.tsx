@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import * as React from "react";
 import { Link } from "@/i18n/navigation";
 import type { AuthContext } from "@/modules/auth/current-user";
+import { unreadConversationCount } from "@/modules/messaging/queries";
 import { unreadCount } from "@/modules/notifications/service";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Logo } from "./logo";
@@ -75,8 +76,17 @@ export function navFor(role: DashboardRole, t: (k: string) => string): NavSectio
 export async function DashboardShell({ role, auth, children, title }: { role: DashboardRole; auth: AuthContext; children: React.ReactNode; title?: string }) {
   const t = await getTranslations("nav");
   const sections = navFor(role, t);
-  const unread = await unreadCount(auth.user.id);
   const company = auth.activeMembership?.company ?? null;
+  const [unread, unreadThreads] = await Promise.all([
+    unreadCount(auth.user.id),
+    role !== "admin" && company ? unreadConversationCount(company.id, auth.user.id).catch(() => 0) : Promise.resolve(0),
+  ]);
+  for (const section of sections) {
+    for (const item of section.items) {
+      if (item.href.endsWith("/messages") && unreadThreads > 0) item.badge = unreadThreads;
+      if (item.href.endsWith("/notifications") && unread > 0) item.badge = unread;
+    }
+  }
   const roleLabel = { buyer: t("buyerDashboard"), seller: t("sellerDashboard"), admin: t("adminConsole") }[role];
 
   return (

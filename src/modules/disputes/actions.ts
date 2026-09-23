@@ -14,6 +14,11 @@ function revalidate(disputeId?: string, orderId?: string) {
   revalidatePath("/[locale]/buyer/orders", "page");
   if (disputeId) revalidatePath(`/[locale]/buyer/disputes/${disputeId}`, "page");
   if (orderId) revalidatePath(`/[locale]/buyer/orders/${orderId}`, "page");
+  // The supplier dashboard renders the same dispute thread.
+  revalidatePath("/[locale]/seller/disputes", "page");
+  revalidatePath("/[locale]/seller/orders", "page");
+  if (disputeId) revalidatePath(`/[locale]/seller/disputes/${disputeId}`, "page");
+  if (orderId) revalidatePath(`/[locale]/seller/orders/${orderId}`, "page");
 }
 
 export async function openDisputeAction(_prev: ActionResult<{ id: string }> | null, formData: FormData): Promise<ActionResult<{ id: string }>> {

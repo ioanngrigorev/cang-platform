@@ -2,12 +2,13 @@
 
 import * as React from "react";
 import { isPlaceholderSrc, placeholderArt } from "@/lib/placeholder-art";
+import { placeholderIcon } from "@/lib/placeholder-icon";
 import { cn } from "@/lib/utils";
 
 /**
  * Plain <img> that falls back to generated artwork rather than a broken-image icon, so a missing
- * or dead image URL still renders something deliberate. Use `fill` for aspect-ratio boxes (parent
- * must be relative).
+ * or dead image URL still renders something deliberate: a tinted wash plus a pictogram chosen
+ * from the subject's own words. Use `fill` for aspect-ratio boxes (parent must be relative).
  */
 export function SmartImage({
   src,
@@ -23,13 +24,16 @@ export function SmartImage({
   React.useEffect(() => setFailed(unusable), [unusable, src]);
 
   if (failed) {
+    const Icon = placeholderIcon(subject);
     return (
       <div
         role="img"
         aria-label={alt ?? undefined}
-        className={cn("overflow-hidden bg-surface", fill && "absolute inset-0 h-full w-full", className)}
-        dangerouslySetInnerHTML={{ __html: placeholderArt(subject) }}
-      />
+        className={cn("relative overflow-hidden bg-surface", fill && "absolute inset-0 h-full w-full", className)}
+      >
+        <div className="absolute inset-0" dangerouslySetInnerHTML={{ __html: placeholderArt(subject) }} />
+        <Icon className="absolute left-1/2 top-1/2 size-[28%] -translate-x-1/2 -translate-y-1/2 text-brand-500/55" strokeWidth={1.25} />
+      </div>
     );
   }
   return (

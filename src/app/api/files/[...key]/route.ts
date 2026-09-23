@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/db";
-import { disputes, documents, orders, quotations, rfqs, shipments } from "@/db/schema";
+import { disputes, documents, messages, orders, quotations, rfqs, shipments } from "@/db/schema";
 import { getAuth } from "@/modules/auth/current-user";
 import { isStaff } from "@/modules/auth/rbac";
 import { storage } from "@/modules/storage";
@@ -12,7 +12,7 @@ type Doc = typeof documents.$inferSelect;
  * Can `companyIds` (the viewer's companies) see this document?
  *  PUBLIC        → everyone
  *  COMPANY/PRIVATE → owner company members (PRIVATE additionally the uploader only)
- *  COUNTERPARTY  → owner company + the other party of the linked order / RFQ / quotation / dispute / shipment
+ *  COUNTERPARTY  → owner company + the other party of the linked order / RFQ / quotation / dispute / shipment / conversation (message)
  *  ADMIN         → platform staff only
  */
 async function canView(doc: Doc, viewer: { userId: string; companyIds: string[]; staff: boolean }): Promise<boolean> {
@@ -46,6 +46,14 @@ async function canView(doc: Doc, viewer: { userId: string; companyIds: string[];
   if (doc.shipmentId) {
     const s = await db.query.shipments.findFirst({ where: eq(shipments.id, doc.shipmentId), columns: {}, with: { order: { columns: { buyerCompanyId: true, supplierCompanyId: true } } } });
     if (s?.order) parties.add(s.order.buyerCompanyId).add(s.order.supplierCompanyId);
+  }
+  if (doc.messageId) {
+    // A chat attachment is visible to both companies of the conversation it was posted in.
+    const m = await db.query.messages.findFirst({ where: eq(messages.id, doc.messageId), columns: {}, with: { conversation: { columns: { buyerCompanyId: true, supplierCompanyId: true } } } });
+    if (m?.conversation) {
+      if (m.conversation.buyerCompanyId) parties.add(m.conversation.buyerCompanyId);
+      if (m.conversation.supplierCompanyId) parties.add(m.conversation.supplierCompanyId);
+    }
   }
   return viewer.companyIds.some((id) => parties.has(id));
 }

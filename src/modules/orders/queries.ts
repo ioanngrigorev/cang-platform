@@ -120,3 +120,83 @@ export async function awaitingPaymentTotal(companyId: string) {
 export async function inspectionsForOrder(companyId: string, orderId: string) {
   return db.query.inspectionOrders.findMany({ where: and(eq(inspectionOrders.orderId, orderId), eq(inspectionOrders.requesterCompanyId, companyId)), with: { provider: true } });
 }
+
+// ---------------------------------------------------------------------------------------------
+// Supplier side (scoped by supplierCompanyId) — mirrors the buyer queries above.
+// ---------------------------------------------------------------------------------------------
+
+export async function listSellerOrders(companyId: string, opts: { tab?: OrderListTab; page?: number; pageSize?: number } = {}) {
+  const page = Math.max(1, opts.page ?? 1);
+  const pageSize = opts.pageSize ?? 20;
+  const tab = opts.tab ?? "all";
+  const where = and(eq(orders.supplierCompanyId, companyId), isNull(orders.deletedAt), tab === "all" ? undefined : inArray(orders.statusCode, ORDER_TAB_STATUSES[tab]));
+  const [rows, [{ total }]] = await Promise.all([
+    db.query.orders.findMany({
+      where,
+      with: {
+        buyerCompany: { columns: { id: true, name: true, slug: true, logoUrl: true, countryCode: true, verificationStatus: true } },
+        status: true,
+        payments: { columns: { id: true, kind: true, status: true, escrowStatus: true, amount: true, currency: true, dueAt: true, milestoneLabel: true } },
+        shipments: { columns: { id: true, shipmentNumber: true, status: true, eta: true } },
+      },
+      orderBy: [desc(orders.createdAt)],
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    }),
+    db.select({ total: count() }).from(orders).where(where),
+  ]);
+  return { rows, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) };
+}
+
+export async function sellerOrderTabCounts(companyId: string) {
+  const rows = await db
+    .select({ status: orders.statusCode, n: count() })
+    .from(orders)
+    .where(and(eq(orders.supplierCompanyId, companyId), isNull(orders.deletedAt)))
+    .groupBy(orders.statusCode);
+  const by = (codes: string[]) => rows.filter((r) => codes.includes(r.status)).reduce((s, r) => s + r.n, 0);
+  return {
+    all: rows.reduce((s, r) => s + r.n, 0),
+    active: by(ORDER_TAB_STATUSES.active),
+    completed: by(ORDER_TAB_STATUSES.completed),
+    cancelled: by(ORDER_TAB_STATUSES.cancelled),
+    disputed: by(ORDER_TAB_STATUSES.disputed),
+  };
+}
+
+/** Rich order detail for the supplier (scoped): events visible to the supplier, documents it may open. */
+export async function getSellerOrder(companyId: string, orderId: string) {
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, orderId), eq(orders.supplierCompanyId, companyId), isNull(orders.deletedAt)),
+    with: {
+      buyerCompany: { with: { country: { columns: { code: true, name: true, nameVi: true } } } },
+      status: true,
+      rfq: { columns: { id: true, rfqNumber: true, title: true } },
+      quotation: { columns: { id: true, quotationNumber: true, revisionNumber: true } },
+      items: { orderBy: (t, { asc: a }) => [a(t.sortOrder)] },
+      events: { where: (t, { eq: e }) => e(t.isVisibleToSupplier, true), with: { actor: { columns: { id: true, name: true } } }, orderBy: (t, { asc: a }) => [a(t.createdAt)] },
+      payments: { with: { provider: { columns: { id: true, name: true, code: true } } }, orderBy: (t, { asc: a }) => [a(t.dueAt), a(t.createdAt)] },
+      invoices: { orderBy: (t, { desc: d }) => [d(t.createdAt)] },
+      shipments: { with: { events: { orderBy: (t, { asc: a }) => [a(t.occurredAt)] }, provider: { columns: { id: true, name: true } } }, orderBy: (t, { desc: d }) => [d(t.createdAt)] },
+      documents: { where: (t, { isNull: n }) => n(t.deletedAt), orderBy: (t, { desc: d }) => [d(t.createdAt)] },
+      inspections: { with: { provider: { columns: { id: true, name: true } } }, orderBy: (t, { desc: d }) => [d(t.createdAt)] },
+      disputes: { orderBy: (t, { desc: d }) => [d(t.createdAt)] },
+      reviews: { where: (t, { eq: e }) => e(t.targetCompanyId, companyId), columns: { id: true, status: true, ratingOverall: true, reply: true } },
+      financingApplications: { where: (t, { eq: e }) => e(t.companyId, companyId), columns: { id: true, applicationNumber: true, status: true, amount: true, currency: true } },
+    },
+  });
+  if (!order) return null;
+  const visibleDocs = order.documents.filter((d) => d.ownerCompanyId === companyId || d.visibility === "COUNTERPARTY" || d.visibility === "PUBLIC");
+  return { ...order, documents: visibleDocs };
+}
+
+/** Compact option rows for pickers (shipment creation, financing), optionally limited to some statuses. */
+export async function sellerOrderOptions(companyId: string, statuses?: string[]) {
+  return db
+    .select({ id: orders.id, orderNumber: orders.orderNumber, total: orders.total, currency: orders.currency, statusCode: orders.statusCode, buyerName: companies.name, buyerCompanyId: orders.buyerCompanyId })
+    .from(orders)
+    .innerJoin(companies, eq(companies.id, orders.buyerCompanyId))
+    .where(and(eq(orders.supplierCompanyId, companyId), isNull(orders.deletedAt), statuses?.length ? inArray(orders.statusCode, statuses) : undefined))
+    .orderBy(desc(orders.createdAt))
+    .limit(100);
+}

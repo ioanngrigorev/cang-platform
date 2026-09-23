@@ -222,3 +222,12 @@ export function parseDepositPercent(terms: string | null | undefined): number | 
 function addDays(d: Date, days: number) {
   return new Date(d.getTime() + days * 86400000);
 }
+
+/**
+ * Transitions a supplier may trigger from `statusCode`: the configurable `allowedTransitions` of that
+ * status (defaults to the seeded lifecycle) filtered by TRANSITION_ACTORS. Buyer-only steps never appear.
+ */
+export function supplierNextStatuses(statusCode: string, allowedTransitions?: string[]): string[] {
+  const allowed = allowedTransitions ?? DEFAULT_ORDER_STATUSES.find((s) => s.code === statusCode)?.allowedTransitions ?? [];
+  return allowed.filter((code) => (TRANSITION_ACTORS[code] ?? []).includes("SUPPLIER"));
+}

@@ -264,6 +264,7 @@
     "roleHints": {
       "ADMIN": "Toàn quyền trừ thanh toán dịch vụ.",
       "MANAGER": "RFQ, đơn hàng, vận chuyển và tranh chấp.",
+      "SALES": "Sản phẩm, báo giá và tin nhắn.",
       "PURCHASING": "Tạo RFQ và quản lý đơn hàng.",
       "FINANCE": "Thanh toán, hoá đơn và tài trợ vốn.",
       "STAFF": "Quyền xem kèm nhắn tin.",
