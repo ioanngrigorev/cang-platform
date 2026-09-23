@@ -1,73 +1,79 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/manrope";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
-  :root {
-    color-scheme: light;
-  }
-  html {
-    @apply antialiased scroll-smooth;
-  }
-  body {
-    @apply bg-paper text-ink-900 font-sans;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    }
-    h1, h2, h3, h4 {
-      @apply font-display tracking-tight text-ink-900;
-    }
-    ::selection {
-      @apply bg-brass-200 text-ink-900;
-    }
-    input, textarea, select {
-      @apply text-steel-900;
-    }
-  }
-  @layer components {
-    .prose-cang {
-      @apply text-steel-700 leading-relaxed;
-    }
-    .prose-cang h2 {
-      @apply text-2xl font-semibold mt-8 mb-3;
-    }
-    .prose-cang h3 {
-      @apply text-xl font-semibold mt-6 mb-2;
-    }
-    .prose-cang p {
-      @apply my-3;
-    }
-    .prose-cang ul {
-      @apply list-disc pl-6 my-3 space-y-1;
-    }
-    .prose-cang ol {
-      @apply list-decimal pl-6 my-3 space-y-1;
-    }
-    .prose-cang a {
-      @apply text-ink-600 underline underline-offset-2 hover:text-ink-900;
-    }
-    .prose-cang table {
-      @apply w-full text-sm my-4 border-collapse;
-    }
-    .prose-cang th, .prose-cang td {
-      @apply border border-steel-200 px-3 py-2 text-left align-top;
-    }
-    .prose-cang th {
-      @apply bg-steel-50 font-semibold;
-    }
-    .prose-cang blockquote {
-      @apply border-l-4 border-brass-400 pl-4 italic text-steel-600 my-4;
-    }
-  }
-  @layer utilities {
-    .scrollbar-thin {
-      scrollbar-width: thin;
-    }
-    .text-balance {
-      text-wrap: balance;
-    }
-  }
-  /* Palette variables. Tailwind colours resolve through these, so changing a palette is a set of numbers, not a rebuild. */
-@layer base{:root, [data-palette="market"]{--ink-50: 250 246 241; --ink-100: 242 235 226; --ink-200: 227 215 201; --ink-300: 203 185 165; --ink-400: 168 145 123; --ink-500: 134 112 92; --ink-600: 107 87 72; --ink-700: 85 69 58; --ink-800: 61 50 41; --ink-900: 42 33 28; --ink-950: 26 20 17; --brass-50: 255 251 230; --brass-100: 255 243 184; --brass-200: 255 231 112; --brass-300: 255 219 51; --brass-400: 255 205 0; --brass-500: 232 180 0; --brass-600: 196 146 0; --brass-700: 156 114 0; --brass-800: 125 91 6; --brass-900: 104 75 11; --steel-50: 250 247 242; --steel-100: 242 237 229; --steel-200: 231 222 210; --steel-300: 212 200 184; --steel-400: 179 165 150; --steel-500: 138 122 112; --steel-600: 111 97 89; --steel-700: 88 76 70; --steel-800: 67 58 53; --steel-900: 47 41 38; --lac-50: 254 242 241; --lac-100: 252 222 219; --lac-200: 248 186 181; --lac-300: 240 141 133; --lac-400: 229 90 80; --lac-500: 218 37 29; --lac-600: 189 26 22; --lac-700: 156 23 20; --lac-800: 129 24 21; --lac-900: 108 24 21; --paper: 255 251 245;}}
-  @layer base{:root{--jade-50: 231 247 240; --jade-100: 196 239 221; --jade-200: 142 224 191; --jade-300: 82 204 157; --jade-400: 34 179 129; --jade-500: 15 157 107; --jade-600: 11 127 86; --jade-700: 9 102 70; --jade-800: 10 83 58; --jade-900: 9 69 48; --lotus-50: 253 241 244; --lotus-100: 251 221 228; --lotus-200: 247 188 203; --lotus-300: 241 148 170; --lotus-400: 232 106 138; --lotus-500: 217 74 112; --lotus-600: 191 51 89; --lotus-700: 158 39 73; --lotus-800: 131 35 63; --lotus-900: 111 33 56;}}
-  
+  :root { color-scheme: light; }
+  [data-theme="lime"] { color-scheme: dark; }
+  html { @apply antialiased scroll-smooth; }
+  body { @apply bg-paper text-ink-900 font-sans; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight text-ink-900; }
+  ::selection { @apply bg-brand-200 text-ink-900; }
+  input, textarea, select { @apply text-ink-900; }
+}
+
+@layer components {
+  .prose-cang { @apply text-steel-600 leading-relaxed; }
+  .prose-cang h2 { @apply text-2xl font-semibold mt-8 mb-3; }
+  .prose-cang h3 { @apply text-xl font-semibold mt-6 mb-2; }
+  .prose-cang p { @apply my-3; }
+  .prose-cang ul { @apply list-disc pl-6 my-3 space-y-1; }
+  .prose-cang ol { @apply list-decimal pl-6 my-3 space-y-1; }
+  .prose-cang a { @apply text-brand-700 underline underline-offset-2 hover:text-brand-600; }
+  .prose-cang table { @apply w-full text-sm my-4 border-collapse; }
+  .prose-cang th, .prose-cang td { @apply border border-steel-200 px-3 py-2 text-left align-top; }
+  .prose-cang th { @apply bg-steel-50 font-semibold; }
+  .prose-cang blockquote { @apply border-l-4 border-brand-400 pl-4 italic text-steel-600 my-4; }
+}
+
+@layer utilities {
+  .scrollbar-thin { scrollbar-width: thin; }
+  .text-balance { text-wrap: balance; }
+}
+
+/* Theme tokens. Every colour in tailwind.config.ts resolves through these, so switching the
+   data-theme attribute on <html> repaints the whole site with no per-component work. */
+:root, [data-theme="jade"]{--ink-50: 244 247 246; --ink-100: 231 237 235; --ink-200: 205 217 213; --ink-300: 168 188 182; --ink-400: 122 148 140; --ink-500: 87 115 106; --ink-600: 66 91 84; --ink-700: 53 73 67; --ink-800: 34 50 46; --ink-900: 12 21 18; --ink-950: 6 11 9; --steel-50: 247 249 248; --steel-100: 239 242 241; --steel-200: 228 233 231; --steel-300: 203 211 208; --steel-400: 163 175 171; --steel-500: 123 135 131; --steel-600: 95 107 103; --steel-700: 74 84 80; --steel-800: 52 60 57; --steel-900: 34 40 38; --brand-50: 230 246 241; --brand-100: 194 235 223; --brand-200: 141 219 198; --brand-300: 82 199 168; --brand-400: 29 178 142; --brand-500: 0 161 129; --brand-600: 0 134 107; --brand-700: 0 117 94; --brand-800: 6 91 74; --brand-900: 7 72 60; --paper: 255 255 255; --surface: 255 255 255; --inverse: 12 21 18; --on-brand: 255 255 255; --hairline: 228 233 231; --warning-50: 255 248 235; --warning-100: 253 237 200; --warning-500: 224 140 0; --warning-600: 184 114 0; --warning-700: 143 89 0; --danger-50: 254 242 242; --danger-100: 253 225 224; --danger-500: 220 47 40; --danger-600: 185 38 32; --danger-700: 148 30 26; --info-50: 239 246 255; --info-100: 219 234 254; --info-500: 43 127 255; --info-600: 29 102 219; --info-700: 23 80 174; --brass-50: var(--brand-50); --brass-100: var(--brand-100); --brass-200: var(--brand-200); --brass-300: var(--brand-300); --brass-400: var(--brand-400); --brass-500: var(--brand-500); --brass-600: var(--brand-600); --brass-700: var(--brand-700); --brass-800: var(--brand-800); --brass-900: var(--brand-900); --lac-50: var(--brand-50); --lac-100: var(--brand-100); --lac-200: var(--brand-200); --lac-300: var(--brand-300); --lac-400: var(--brand-400); --lac-500: var(--brand-500); --lac-600: var(--brand-600); --lac-700: var(--brand-700); --lac-800: var(--brand-800); --lac-900: var(--brand-900); --jade-50: var(--brand-50); --jade-100: var(--brand-100); --jade-200: var(--brand-200); --jade-300: var(--brand-300); --jade-400: var(--brand-400); --jade-500: var(--brand-500); --jade-600: var(--brand-600); --jade-700: var(--brand-700); --jade-800: var(--brand-800); --jade-900: var(--brand-900); --lotus-50: var(--brand-50); --lotus-100: var(--brand-100); --lotus-200: var(--brand-200); --lotus-300: var(--brand-300); --lotus-400: var(--brand-400); --lotus-500: var(--brand-500); --lotus-600: var(--brand-600); --lotus-700: var(--brand-700); --lotus-800: var(--brand-800); --lotus-900: var(--brand-900);}
+
+[data-theme="lime"]{--ink-50: 20 24 21; --ink-100: 26 31 27; --ink-200: 34 40 37; --ink-300: 46 54 50; --ink-400: 71 80 73; --ink-500: 108 117 112; --ink-600: 142 152 146; --ink-700: 179 189 183; --ink-800: 214 222 217; --ink-900: 241 244 239; --ink-950: 255 255 255; --steel-50: 20 24 21; --steel-100: 27 32 28; --steel-200: 36 42 38; --steel-300: 50 58 53; --steel-400: 76 85 79; --steel-500: 121 131 124; --steel-600: 149 160 154; --steel-700: 180 190 184; --steel-800: 210 218 213; --steel-900: 237 241 238; --brand-50: 30 39 20; --brand-100: 44 58 27; --brand-200: 69 92 38; --brand-300: 107 140 51; --brand-400: 155 198 63; --brand-500: 198 242 78; --brand-600: 211 245 113; --brand-700: 223 248 148; --brand-800: 234 251 184; --brand-900: 243 253 218; --paper: 13 16 14; --surface: 20 24 21; --inverse: 7 9 8; --on-brand: 17 21 15; --hairline: 36 42 38; --warning-50: 42 32 8; --warning-100: 58 44 11; --warning-500: 232 163 58; --warning-600: 240 184 94; --warning-700: 246 206 139; --danger-50: 43 18 17; --danger-100: 61 25 22; --danger-500: 240 88 79; --danger-600: 244 124 116; --danger-700: 248 162 156; --info-50: 14 27 46; --info-100: 20 38 63; --info-500: 77 150 255; --info-600: 118 174 255; --info-700: 160 199 255; --brass-50: var(--brand-50); --brass-100: var(--brand-100); --brass-200: var(--brand-200); --brass-300: var(--brand-300); --brass-400: var(--brand-400); --brass-500: var(--brand-500); --brass-600: var(--brand-600); --brass-700: var(--brand-700); --brass-800: var(--brand-800); --brass-900: var(--brand-900); --lac-50: var(--brand-50); --lac-100: var(--brand-100); --lac-200: var(--brand-200); --lac-300: var(--brand-300); --lac-400: var(--brand-400); --lac-500: var(--brand-500); --lac-600: var(--brand-600); --lac-700: var(--brand-700); --lac-800: var(--brand-800); --lac-900: var(--brand-900); --jade-50: var(--brand-50); --jade-100: var(--brand-100); --jade-200: var(--brand-200); --jade-300: var(--brand-300); --jade-400: var(--brand-400); --jade-500: var(--brand-500); --jade-600: var(--brand-600); --jade-700: var(--brand-700); --jade-800: var(--brand-800); --jade-900: var(--brand-900); --lotus-50: var(--brand-50); --lotus-100: var(--brand-100); --lotus-200: var(--brand-200); --lotus-300: var(--brand-300); --lotus-400: var(--brand-400); --lotus-500: var(--brand-500); --lotus-600: var(--brand-600); --lotus-700: var(--brand-700); --lotus-800: var(--brand-800); --lotus-900: var(--brand-900);}
+
+/* In the dark theme the ink and steel ramps run the other way, which is what keeps
+   `text-ink-900` and `bg-steel-50` correct. The handful of places that use ink as a DARK
+   surface rather than as text would flip the wrong way, so they are pinned here instead. */
+@layer utilities {
+  [data-theme="lime"] .bg-white { background-color: rgb(var(--surface)); }
+  [data-theme="lime"] .bg-white\/80 { background-color: rgb(var(--surface) / 0.8); }
+  [data-theme="lime"] .bg-white\/90 { background-color: rgb(var(--surface) / 0.9); }
+  [data-theme="lime"] .bg-white\/95 { background-color: rgb(var(--surface) / 0.95); }
+  [data-theme="lime"] .bg-ink-800,
+  [data-theme="lime"] .bg-ink-900,
+  [data-theme="lime"] .bg-ink-950 { background-color: rgb(var(--inverse)); }
+  [data-theme="lime"] .bg-ink-950\/50 { background-color: rgb(var(--inverse) / 0.5); }
+  [data-theme="lime"] .bg-ink-950\/60 { background-color: rgb(var(--inverse) / 0.6); }
+  [data-theme="lime"] .bg-ink-950\/70 { background-color: rgb(var(--inverse) / 0.7); }
+  [data-theme="lime"] .from-ink-900,
+  [data-theme="lime"] .from-ink-950 { --tw-gradient-from: rgb(var(--inverse)) var(--tw-gradient-from-position); }
+  [data-theme="lime"] .from-ink-950\/80 { --tw-gradient-from: rgb(var(--inverse) / 0.8) var(--tw-gradient-from-position); }
+  [data-theme="lime"] .via-ink-950\/20 { --tw-gradient-stops: var(--tw-gradient-from), rgb(var(--inverse) / 0.2) var(--tw-gradient-via-position), var(--tw-gradient-to); }
+  [data-theme="lime"] .via-ink-950\/80 { --tw-gradient-stops: var(--tw-gradient-from), rgb(var(--inverse) / 0.8) var(--tw-gradient-via-position), var(--tw-gradient-to); }
+  [data-theme="lime"] .to-ink-950\/50 { --tw-gradient-to: rgb(var(--inverse) / 0.5) var(--tw-gradient-to-position); }
+  [data-theme="lime"] .border-ink-800,
+  [data-theme="lime"] .border-ink-900 { border-color: rgb(var(--hairline)); }
+
+  /* Inside an always-dark surface the light steel shades must stay light, which the mirrored
+     ramp would otherwise undo. A section that sets `text-white` is the reliable marker. */
+  [data-theme="lime"] .text-white .text-steel-200,
+  [data-theme="lime"] .bg-ink-950 .text-steel-200,
+  [data-theme="lime"] .bg-ink-900 .text-steel-200 { color: rgb(var(--steel-800)); }
+  [data-theme="lime"] .text-white .text-steel-300,
+  [data-theme="lime"] .bg-ink-950 .text-steel-300,
+  [data-theme="lime"] .bg-ink-900 .text-steel-300 { color: rgb(var(--steel-700)); }
+  [data-theme="lime"] .text-white .text-steel-400,
+  [data-theme="lime"] .bg-ink-950 .text-steel-400,
+  [data-theme="lime"] .bg-ink-900 .text-steel-400 { color: rgb(var(--steel-600)); }
+  [data-theme="lime"] .text-white .text-brass-200,
+  [data-theme="lime"] .bg-ink-950 .text-brass-200 { color: rgb(var(--brand-500)); }
+}

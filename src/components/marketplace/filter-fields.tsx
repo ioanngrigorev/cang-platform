@@ -78,8 +78,8 @@ export function ChipLink({ href, active, children, count, className }: { href: s
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-        active ? "border-ink-900 bg-ink-900 text-white" : "border-steel-300 bg-white text-ink-800 hover:border-steel-400 hover:bg-steel-50",
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+        active ? "bg-brand-500/15 text-brand-700" : "text-steel-600 hover:bg-steel-100 hover:text-ink-900",
         className,
       )}
     >

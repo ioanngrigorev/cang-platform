@@ -7,7 +7,7 @@ export const badgeVariants = cva("inline-flex items-center gap-1 rounded-full bo
   variants: {
     variant: {
       neutral: "border-steel-200 bg-steel-50 text-steel-700",
-      ink: "border-ink-800 bg-ink-900 text-white",
+      ink: "border-hairline bg-surface/70 text-ink-700 backdrop-blur-sm",
       brass: "border-brass-300 bg-brass-50 text-brass-800",
       success: "border-success-100 bg-success-50 text-success-700",
       warning: "border-warning-100 bg-warning-50 text-warning-700",

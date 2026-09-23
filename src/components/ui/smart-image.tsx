@@ -18,14 +18,24 @@ export function SmartImage({
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackLabel?: string; fill?: boolean }) {
   const subject = fallbackLabel ?? (typeof alt === "string" ? alt : "");
-  const art = React.useMemo(() => placeholderArt(subject), [subject]);
   const unusable = typeof src !== "string" || isPlaceholderSrc(src);
   const [failed, setFailed] = React.useState(unusable);
   React.useEffect(() => setFailed(unusable), [unusable, src]);
+
+  if (failed) {
+    return (
+      <div
+        role="img"
+        aria-label={alt ?? undefined}
+        className={cn("overflow-hidden bg-surface", fill && "absolute inset-0 h-full w-full", className)}
+        dangerouslySetInnerHTML={{ __html: placeholderArt(subject) }}
+      />
+    );
+  }
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={failed ? art : src}
+      src={src}
       alt={alt ?? ""}
       loading="lazy"
       decoding="async"

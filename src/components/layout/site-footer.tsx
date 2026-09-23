@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./locale-switcher";
+import { cookies } from "next/headers";
+import { ThemeSwitcher } from "./theme-switcher";
 import { Logo } from "./logo";
 
 export async function SiteFooter() {
@@ -54,6 +56,9 @@ export async function SiteFooter() {
           <p className="mt-3 max-w-sm text-sm text-steel-400">{t("disclaimer")}</p>
           <div className="mt-4">
             <LocaleSwitcher dark />
+          </div>
+          <div className="mt-4">
+            <ThemeSwitcher />
           </div>
         </div>
         {cols.map((c) => (

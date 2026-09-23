@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { HolidayBanner } from "@/components/layout/holiday-banner";
+import { activeHoliday } from "@/lib/holidays";
+import { THEME_COOKIE, resolveTheme } from "@/lib/theme";
 import { ToastProvider } from "@/components/ui/toast";
 import { routing } from "@/i18n/routing";
 import { siteUrl } from "@/lib/seo";
@@ -30,10 +34,14 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const messages = await getMessages();
+  // Theme is a cookie so the first server render already carries it and nothing flashes.
+  const theme = resolveTheme((await cookies()).get(THEME_COOKIE)?.value);
+  const holiday = activeHoliday();
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} data-theme={theme} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
         <NextIntlClientProvider messages={messages}>
+          {holiday ? <HolidayBanner holiday={holiday} locale={locale} /> : null}
           <ToastProvider>{children}</ToastProvider>
         </NextIntlClientProvider>
       </body>

@@ -70,7 +70,7 @@ export async function ProductFilters({ sp, path, options, hidden }: { sp: Search
     <div className="space-y-4">
       <ActiveFilters chips={chips} clearHref={path} title={t("listing.activeFilters")} clearLabel={t("listing.clearAll")} removeLabel={(label) => t("listing.remove", { label })} />
       <FilterDrawer label={t("listing.showFilters")} closeLabel={t("listing.hideFilters")} count={chips.length}>
-        <FilterForm action={`/${locale}${path}`} className="rounded-lg border border-steel-200 bg-white p-4 shadow-card">
+        <FilterForm action={`/${locale}${path}`} className="rounded-xl bg-surface p-1 pr-4">
           {sortValue !== "relevance" ? <input type="hidden" name="sort" value={sortValue} /> : null}
           {Object.entries(hidden ?? {}).map(([k, v]) => (
             <input key={k} type="hidden" name={k} value={v} />

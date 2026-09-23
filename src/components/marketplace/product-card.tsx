@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Badge, TrustBadges, VerifiedMark } from "@/components/ui/badge";
+import { VerifiedMark } from "@/components/ui/badge";
 import { SmartImage } from "@/components/ui/smart-image";
 import { cn, formatMoney, formatNumber, localized } from "@/lib/utils";
 
@@ -57,30 +57,12 @@ export function ProductCard({
 }) {
   const title = localized(product as unknown as Record<string, unknown>, "title", locale);
   return (
-    <article className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
+    <article className={cn("group flex flex-col overflow-hidden rounded-xl bg-surface transition-shadow hover:shadow-card-hover", className)}>
       <Link href={`/product/${product.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-steel-50">
         <SmartImage src={product.primaryImageUrl ?? undefined} alt={title} fill fallbackLabel={title} className="transition-transform duration-300 group-hover:scale-[1.03]" />
-        {product.isFeatured ? (
-          <Badge variant="brass" size="sm" className="absolute left-2 top-2 shadow-sm">
-            Featured
-          </Badge>
-        ) : null}
-        {product.oemAvailable || product.odmAvailable ? (
-          <div className="absolute right-2 top-2 flex gap-1">
-            {product.oemAvailable ? (
-              <Badge variant="ink" size="sm">
-                {labels.oem}
-              </Badge>
-            ) : null}
-            {product.odmAvailable ? (
-              <Badge variant="ink" size="sm">
-                {labels.odm}
-              </Badge>
-            ) : null}
-          </div>
-        ) : null}
+        {product.isFeatured ? <span className="absolute left-2.5 top-2.5 size-1.5 rounded-full bg-brand-500" aria-label="Featured" /> : null}
       </Link>
-      <div className="flex flex-1 flex-col p-3.5">
+      <div className="flex flex-1 flex-col px-1 pb-1 pt-3">
         <Link href={`/product/${product.slug}`} className="line-clamp-2 text-sm font-medium text-ink-900 hover:underline">
           {title}
         </Link>
@@ -96,6 +78,12 @@ export function ProductCard({
               {labels.leadTime}: <span className="font-medium text-steel-700">{labels.days.replace("{count}", String(product.leadTimeDays))}</span>
             </>
           ) : null}
+          {product.oemAvailable || product.odmAvailable ? (
+            <>
+              {" · "}
+              <span className="font-medium text-steel-700">{[product.oemAvailable ? labels.oem : null, product.odmAvailable ? labels.odm : null].filter(Boolean).join(" / ")}</span>
+            </>
+          ) : null}
         </p>
         <div className="mt-auto pt-3">
           <Link href={`/supplier/${product.company.slug}`} className="flex items-center gap-1.5 text-xs text-steel-600 hover:text-ink-900">
@@ -107,7 +95,7 @@ export function ProductCard({
               <MapPin className="size-3" /> {product.company.provinceName}, {product.company.countryCode === "VN" ? "Vietnam" : product.company.countryCode}
             </p>
           ) : null}
-          {!compact && product.company.badgeCodes?.length ? <TrustBadges codes={product.company.badgeCodes} size="sm" max={2} className="mt-2" /> : null}
+
         </div>
       </div>
     </article>

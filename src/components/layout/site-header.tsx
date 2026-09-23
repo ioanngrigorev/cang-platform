@@ -8,6 +8,7 @@ import { LocaleSwitcher } from "./locale-switcher";
 import { Logo } from "./logo";
 import { MobileNav } from "./mobile-nav";
 import { SearchBar } from "./search-bar";
+import { ThemeSwitcher } from "./theme-switcher";
 import { UserMenu } from "./user-menu";
 
 export const NAV_LINKS = [
@@ -41,6 +42,7 @@ export async function SiteHeader({ showSearch = true }: { showSearch?: boolean }
           <div className="flex-1" />
         )}
         <div className="ml-auto flex items-center gap-2">
+          <ThemeSwitcher className="hidden sm:inline-flex" />
           <LocaleSwitcher className="hidden sm:inline-flex" />
           {auth ? (
             <UserMenu
