@@ -1,12 +1,13 @@
 "use client";
 
-import { ImageOff } from "lucide-react";
 import * as React from "react";
+import { isPlaceholderSrc, placeholderArt } from "@/lib/placeholder-art";
 import { cn } from "@/lib/utils";
 
 /**
- * Plain <img> with graceful fallback (external seed images may be unavailable offline; uploads are served locally).
- * Use `fill` for aspect-ratio boxes (parent must be relative).
+ * Plain <img> that falls back to generated artwork rather than a broken-image icon, so a missing
+ * or dead image URL still renders something deliberate. Use `fill` for aspect-ratio boxes (parent
+ * must be relative).
  */
 export function SmartImage({
   src,
@@ -16,22 +17,15 @@ export function SmartImage({
   fill,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackLabel?: string; fill?: boolean }) {
-  const [failed, setFailed] = React.useState(!src);
-  React.useEffect(() => setFailed(!src), [src]);
-  if (failed) {
-    return (
-      <div className={cn("flex items-center justify-center bg-gradient-to-br from-ink-50 to-steel-100 text-steel-400", fill && "absolute inset-0", className)} aria-label={alt}>
-        <div className="flex flex-col items-center gap-1 p-2 text-center">
-          <ImageOff className="size-6" />
-          {fallbackLabel ? <span className="line-clamp-2 text-[11px] font-medium text-steel-500">{fallbackLabel}</span> : null}
-        </div>
-      </div>
-    );
-  }
+  const subject = fallbackLabel ?? (typeof alt === "string" ? alt : "");
+  const art = React.useMemo(() => placeholderArt(subject), [subject]);
+  const unusable = typeof src !== "string" || isPlaceholderSrc(src);
+  const [failed, setFailed] = React.useState(unusable);
+  React.useEffect(() => setFailed(unusable), [unusable, src]);
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={src}
+      src={failed ? art : src}
       alt={alt ?? ""}
       loading="lazy"
       decoding="async"
