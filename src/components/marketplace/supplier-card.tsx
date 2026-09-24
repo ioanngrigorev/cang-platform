@@ -57,7 +57,7 @@ export function SupplierCard({
   return (
     <article className={cn("group overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", variant === "row" && "sm:flex", className)}>
       <Link href={`/supplier/${supplier.slug}`} className={cn("relative block bg-steel-100", variant === "row" ? "aspect-[16/9] sm:aspect-auto sm:w-56 sm:shrink-0" : "aspect-[16/7]")}>
-        <SmartImage src={supplier.coverUrl ?? undefined} alt={name} fill fallbackLabel={name} />
+        <SmartImage src={supplier.coverUrl ?? undefined} alt={name} fill photo={supplier.tagline ?? false} fallbackLabel={name} />
         {supplier.isFeatured ? (
           <Badge variant="brass" size="sm" className="absolute left-2 top-2">
             Featured

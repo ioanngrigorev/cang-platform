@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, Card, CardContent, CardHeader, DataList, EmptyState, StatCard } from "@/components/ui/card";
 import { Avatar, Breadcrumbs, JsonLd, LinkTabs, Pagination, RatingStars, SectionHeading } from "@/components/ui/misc";
 import { SmartImage } from "@/components/ui/smart-image";
+import { isPlaceholderSrc } from "@/lib/placeholder-art";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Link } from "@/i18n/navigation";
 import { breadcrumbJsonLd, supplierJsonLd } from "@/lib/seo";
@@ -92,7 +93,9 @@ export default async function SupplierPage({ params, searchParams }: Props) {
     { label: name },
   ];
   const notProvided = t("supplier.notProvided");
-  const photos = supplier.media.filter((m) => m.kind !== "VIDEO");
+  // Seeded factory photos pointed at a dead image host. A stock picture would pass for this
+  // supplier's own plant, so dead links are dropped and the tab says no photos yet.
+  const photos = supplier.media.filter((m) => m.kind !== "VIDEO" && !isPlaceholderSrc(m.url));
   const videos = [...supplier.media.filter((m) => m.kind === "VIDEO").map((m) => m.url), ...(mp?.videoUrls ?? [])];
 
   return (
@@ -120,16 +123,16 @@ export default async function SupplierPage({ params, searchParams }: Props) {
       <div className="relative h-40 overflow-hidden bg-ink-900 sm:h-56 lg:h-64">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" aria-hidden />
         <div className="absolute inset-0 opacity-70">
-          <BannerImage src={supplier.coverUrl} alt="" />
+          <BannerImage src={supplier.coverUrl} alt="" photo={supplier.tagline} />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/20 to-transparent" aria-hidden />
       </div>
 
       {/* Identity */}
       <div className="container">
-        <div className="-mt-10 flex flex-col gap-4 sm:-mt-12 sm:flex-row sm:items-end">
+        <div className="relative z-10 -mt-10 flex flex-col gap-4 sm:-mt-12 sm:flex-row sm:items-end">
           <Avatar name={supplier.name} src={supplier.logoUrl} size={96} square className="border-4 border-white bg-white shadow-card" />
-          <div className="min-w-0 flex-1 pb-1">
+          <div className="min-w-0 flex-1 pb-1 sm:pt-12">
             <Breadcrumbs items={crumbs} className="mb-2 hidden sm:block" />
             <h1 className="flex flex-wrap items-center gap-2 text-2xl font-semibold sm:text-3xl">
               {name}

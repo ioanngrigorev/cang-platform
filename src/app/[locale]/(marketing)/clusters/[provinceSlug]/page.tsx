@@ -111,7 +111,7 @@ export default async function ClusterPage({ params }: Props) {
       <header className="relative isolate overflow-hidden bg-ink-950 text-white">
         <div className="absolute inset-0 opacity-40" aria-hidden>
           {/* Decorative: empty alt so a failed load leaves no stray text over the hero. */}
-          <BannerImage src={province.heroImageUrl} alt="" />
+          <BannerImage src={province.heroImageUrl} alt="" photo={province.majorIndustries?.[0] ?? null} />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/80 to-ink-950/50" aria-hidden />
         <div className="container relative py-10 sm:py-14">
@@ -213,6 +213,7 @@ export default async function ClusterPage({ params }: Props) {
                   region={t(`clusters.${regionKey(c.region)}`)}
                   headline={localized(c as unknown as Record<string, unknown>, "clusterHeadline", locale) || null}
                   imageUrl={c.heroImageUrl}
+                photoSubject={c.majorIndustries[0]}
                   supplierLabel={t("clusters.suppliersIn", { count: c.supplierCount })}
                   verifiedLabel={c.verifiedCount ? t("clusters.verifiedIn", { count: c.verifiedCount }) : undefined}
                   industries={c.majorIndustries.map((s) => industryName.get(s) ?? s)}

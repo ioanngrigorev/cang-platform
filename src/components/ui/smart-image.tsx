@@ -20,10 +20,16 @@ export function SmartImage({
   fill,
   photo,
   ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackLabel?: string; fill?: boolean; photo?: boolean }) {
+}: React.ImgHTMLAttributes<HTMLImageElement> & {
+  fallbackLabel?: string;
+  fill?: boolean;
+  /** true: match a stock photo on the label; a string: match on this text instead (use the English title on localised pages). */
+  photo?: boolean | string;
+}) {
   const subject = fallbackLabel ?? (typeof alt === "string" ? alt : "");
   const unusable = typeof src !== "string" || isPlaceholderSrc(src);
-  const stock = photo ? productPhoto(subject, typeof src === "string" ? src : "") : null;
+  const photoSubject = typeof photo === "string" ? photo : photo ? subject : null;
+  const stock = photoSubject ? productPhoto(photoSubject, typeof src === "string" ? src : "") : null;
   const [failed, setFailed] = React.useState(unusable);
   const [stockFailed, setStockFailed] = React.useState(false);
   React.useEffect(() => setFailed(unusable), [unusable, src]);

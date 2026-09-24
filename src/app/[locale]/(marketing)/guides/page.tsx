@@ -55,7 +55,7 @@ export default async function GuidesPage({ params }: Props) {
           {guides.map((g) => (
             <article key={g.id} className="group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover">
               <Link href={`/guides/${g.slug}`} className="relative block aspect-[16/9] overflow-hidden bg-steel-100">
-                <SmartImage src={g.coverImageUrl ?? undefined} alt={g.title} fill fallbackLabel={g.title} className="transition-transform duration-300 group-hover:scale-[1.03]" />
+                <SmartImage src={g.coverImageUrl ?? undefined} alt={g.title} fill photo={`logistics ${g.slug}`} fallbackLabel={g.title} className="transition-transform duration-300 group-hover:scale-[1.03]" />
               </Link>
               <div className="flex flex-1 flex-col p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brass-600">{t("guides.eyebrow")}</p>

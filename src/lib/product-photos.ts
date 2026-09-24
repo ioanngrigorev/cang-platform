@@ -101,6 +101,7 @@ const POOLS: Record<string, string[]> = {
   chemical: ["B5SLyGtYdbk", "ALUBtrDWZ_s"],
   skincare: ["WdJ4WnLxyDs", "CJFG-GOAeVk"],
   rubber: ["6-y14RTxDbw", "wEMZ1zM2C8I"],
+  logistics: ["I-_wYj9yOzw", "qO2ztAz5g7A", "jcav1COVvOc"],
 };
 
 /** Ordered: the specific before the general, because "polo shirt fabric" is fabric, not a polo. */
@@ -111,7 +112,7 @@ const RULES: Array<[RegExp, keyof typeof POOLS]> = [
   // bags and luggage
   [/\b(tents?|tarps?|dry bags?|bivy)\b/i, "tent"],
   [/\b(duffels?|duffles?|weekender|holdall)\b/i, "duffel"],
-  [/\b(hydration|vest pack|trekking backpack|hiking backpack)\b|\b(trek|hik|trail|summit|atlas|ridge)\w*\b.*\bbackpack/i, "backpack-hiking"],
+  [/\b(hydration|vest pack|trekking backpack|hiking backpack)\b|\b(trek|hik|trail|summit|atlas|ridge|camp)\w*\b.*\bbackpack/i, "backpack-hiking"],
   [/\b(backpacks?|rucksacks?|daypacks?|school bags?|bookbags?)\b/i, "backpack-urban"],
   [/\b(suitcases?|luggage|trolley|spinner|pilot case|cabin case|carry-on)\b/i, "suitcase"],
   [/\b(drawstring|gym sacks?)\b/i, "drawstring"],
@@ -211,6 +212,7 @@ const RULES: Array<[RegExp, keyof typeof POOLS]> = [
   // category names (homepage tiles) and other broad words
   [/\b(apparel|garments?|clothing|activewear|sportswear)\b/i, "tshirt"],
   [/\b(luggage|bags & luggage)\b/i, "suitcase"],
+  [/\b(garden|outdoor|patio|hospitality)\b.*\bfurniture\b/i, "outdoor-sofa"],
   [/\b(living room)\b/i, "outdoor-sofa"],
   [/\b(furniture)\b/i, "dining-table"],
   [/\b(home decor|decor)\b/i, "planter"],
@@ -222,11 +224,14 @@ const RULES: Array<[RegExp, keyof typeof POOLS]> = [
   [/\b(construction|building materials?|stone)\b/i, "tiles"],
   [/\b(agriculture|food)\b/i, "coffee-green"],
   [/\b(household)\b/i, "storage-box"],
-  [/\b(hardware)\b/i, "tool-set"],
+  [/\b(hardware|mro|maintenance|distributor)\b/i, "tool-set"],
+  [/\b(logistics|shipments?|incoterms?|export documents?|sourcing|buyer's guide|supplier's guide)\b/i, "logistics"],
   [/\b(sporting|sports|toys?|camping)\b/i, "tent"],
   [/\b(services?|engineering|design)\b/i, "cnc"],
+  [/\b(flexible packaging|flexible)\b/i, "pouch"],
+  [/\b(packaging)\b/i, "carton"],
   // last resort for anything that is at least a bag or a pack
-  [/\b(packaging|packs?|bags?)\b/i, "pouch"],
+  [/\b(packs?|bags?)\b/i, "pouch"],
 ];
 
 function hash(s: string): number {
@@ -239,7 +244,12 @@ function hash(s: string): number {
 export function productPhotoKey(subject: string | null | undefined): string | null {
   const s = (subject ?? "").trim();
   if (!s) return null;
-  for (const [re, key] of RULES) if (re.test(s)) return key;
+  // The head of a title or tagline names the thing ("Camping backpacks, tents and technical
+  // textiles" is a backpack maker), so the first comma-separated segment gets the first say.
+  const head = s.split(/[,;]/)[0];
+  for (const text of head === s ? [s] : [head, s]) {
+    for (const [re, key] of RULES) if (re.test(text)) return key;
+  }
   return null;
 }
 

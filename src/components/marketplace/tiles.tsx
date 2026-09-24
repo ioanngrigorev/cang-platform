@@ -64,11 +64,11 @@ export function IndustryIcon({ name, className }: { name: string | null | undefi
   return <Icon className={className} aria-hidden />;
 }
 
-export function CategoryTile({ href, name, imageUrl, count, countLabel, className }: { href: string; name: string; imageUrl?: string | null; count?: number; countLabel?: string; className?: string }) {
+export function CategoryTile({ href, name, photoSubject, imageUrl, count, countLabel, className }: { href: string; name: string; photoSubject?: string; imageUrl?: string | null; count?: number; countLabel?: string; className?: string }) {
   return (
     <Link href={href} className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
       <div className="relative aspect-[4/3] overflow-hidden bg-steel-100">
-        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo fallbackLabel={name} className="transition-transform duration-300 group-hover:scale-[1.04]" />
+        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? true} fallbackLabel={name} className="transition-transform duration-300 group-hover:scale-[1.04]" />
       </div>
       <div className="p-3">
         <p className="line-clamp-1 text-sm font-semibold text-ink-900 group-hover:underline">{name}</p>
@@ -99,6 +99,7 @@ export function ClusterCard({
   region,
   headline,
   imageUrl,
+  photoSubject,
   supplierLabel,
   verifiedLabel,
   industries,
@@ -110,6 +111,8 @@ export function ClusterCard({
   region?: string | null;
   headline?: string | null;
   imageUrl?: string | null;
+  /** English industry slug or name used to pick a stock photo when the hero image is missing. */
+  photoSubject?: string;
   supplierLabel: string;
   verifiedLabel?: string;
   industries: string[];
@@ -119,7 +122,7 @@ export function ClusterCard({
   return (
     <article className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
       <Link href={href} className="relative block aspect-[16/8] overflow-hidden bg-ink-900">
-        <SmartImage src={imageUrl ?? undefined} alt={name} fill fallbackLabel={name} className="opacity-90" />
+        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? false} fallbackLabel={name} className="opacity-90" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/80 to-transparent p-4">
           <p className="flex items-center gap-1 text-xs font-medium text-brass-200">
             <MapPin className="size-3.5" /> {region}

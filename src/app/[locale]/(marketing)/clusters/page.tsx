@@ -81,6 +81,7 @@ export default async function ClustersPage({ params }: Props) {
                 region={c.region ? t(`clusters.${c.region.toLowerCase() === "north" ? "north" : c.region.toLowerCase() === "central" ? "central" : "south"}`) : undefined}
                 headline={localized(c as unknown as Record<string, unknown>, "clusterHeadline", locale) || null}
                 imageUrl={c.heroImageUrl}
+                photoSubject={c.majorIndustries[0]}
                 supplierLabel={t("clusters.suppliersIn", { count: c.supplierCount })}
                 verifiedLabel={c.verifiedCount ? t("clusters.verifiedIn", { count: c.verifiedCount }) : undefined}
                 industries={c.majorIndustries.map((s) => industryName.get(s) ?? s)}
