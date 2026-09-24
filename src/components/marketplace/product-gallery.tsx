@@ -4,14 +4,28 @@ import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 import * as React from "react";
 import { SmartImage } from "@/components/ui/smart-image";
 import { isPlaceholderSrc } from "@/lib/placeholder-art";
+import { productPhotoFor } from "@/lib/product-photos";
 import { cn } from "@/lib/utils";
 
 export type GalleryImage = { url: string; alt?: string | null };
 
 /** Product image gallery: main image + thumbnail strip, keyboard navigable. */
 /** `imageOfLabel` is a template such as "Image {index} of {total}" — a plain string, so it crosses the server/client boundary. */
-export function ProductGallery({ images, title, photoSubject, videoUrl, imageOfLabel }: { images: GalleryImage[]; title: string; photoSubject?: string; videoUrl?: string | null; imageOfLabel: string }) {
+export function ProductGallery({ images: raw, title, photoSubject, photoSlug, videoUrl, imageOfLabel }: { images: GalleryImage[]; title: string; photoSubject?: string; photoSlug?: string; videoUrl?: string | null; imageOfLabel: string }) {
   const label = (index: number, total: number) => imageOfLabel.replace("{index}", String(index)).replace("{total}", String(total));
+  // Dead seed links become the product's own stock photos (first slot = the one on its card), and a
+  // photo is never shown twice: a small pool yields a shorter gallery rather than repeats.
+  const images = React.useMemo(() => {
+    const seen = new Set<string>();
+    const out: GalleryImage[] = [];
+    raw.forEach((img, i) => {
+      const url = isPlaceholderSrc(img.url) ? productPhotoFor(photoSubject ?? title, photoSlug, i) ?? img.url : img.url;
+      if (seen.has(url)) return;
+      seen.add(url);
+      out.push({ url, alt: img.alt });
+    });
+    return out;
+  }, [raw, photoSubject, photoSlug, title]);
   const [index, setIndex] = React.useState(0);
   const total = images.length;
   const current = images[index];
@@ -23,7 +37,7 @@ export function ProductGallery({ images, title, photoSubject, videoUrl, imageOfL
   return (
     <div className="space-y-3" onKeyDown={onKey}>
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-steel-200 bg-steel-50" tabIndex={0} aria-label={total ? label(index + 1, total) : title}>
-        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill photo={photoSubject ?? true} fallbackLabel={title} className={isPlaceholderSrc(current?.url) ? "object-cover" : "object-contain"} />
+        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill photo={photoSubject ?? true} photoSlug={photoSlug} fallbackLabel={title} className={!current || current.url.startsWith("/img/products/") ? "object-cover" : "object-contain"} />
         {total > 1 ? (
           <>
             <button type="button" onClick={() => go(-1)} aria-label="Previous image" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-steel-200 bg-white/90 p-2 text-ink-900 shadow-card hover:bg-white">
@@ -47,7 +61,7 @@ export function ProductGallery({ images, title, photoSubject, videoUrl, imageOfL
               aria-current={i === index}
               className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 bg-steel-50", i === index ? "border-ink-900" : "border-steel-200 hover:border-steel-400")}
             >
-              <SmartImage src={img.url} alt={img.alt ?? ""} fill photo={photoSubject ?? true} fallbackLabel={title} />
+              <SmartImage src={img.url} alt={img.alt ?? ""} fill fallbackLabel={title} />
             </button>
           ))}
           {videoUrl ? (

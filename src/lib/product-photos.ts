@@ -12,30 +12,32 @@
  * images shows three different photos of the same kind of thing rather than one three times.
  */
 
+import { PHOTO_ASSIGNMENTS } from "./product-photo-assignments";
+
 const P = "/img/products/";
 
 const POOLS: Record<string, string[]> = {
-  "backpack-hiking": ["8sjBzL1IyMo", "bQl2kRQyUE8"],
-  "backpack-urban": ["DWTzfqz9S1A", "1Frndjy7tkM"],
-  suitcase: ["ji5XMfO3dXY", "166umbWL6Ec"],
-  duffel: ["nL5Li3oJkJk"],
-  tote: ["smTDI-z1rlY", "-zBSu3rYjNs"],
+  "backpack-hiking": ["8sjBzL1IyMo", "bQl2kRQyUE8", "7e-VK6U-3Fs", "9aZ3T1q83CM"],
+  "backpack-urban": ["DWTzfqz9S1A", "1Frndjy7tkM", "GQQ6BRJxysU", "sheVJSpXmww", "XJrBxQClrlM", "BmH09wAkJa8"],
+  suitcase: ["ji5XMfO3dXY", "166umbWL6Ec", "BJ5gcirJa4Y", "9p9LbIW5uT0", "nGz8rTToXto", "FfoxL32E56A"],
+  duffel: ["nL5Li3oJkJk", "aiGdPDIIXts", "7vRbOLuM9i0"],
+  tote: ["smTDI-z1rlY", "-zBSu3rYjNs", "E5M98Nox2JA", "PENodSVsL1s", "kGDKrhFnXIM"],
   drawstring: ["8mvGoEYMugA"],
-  tent: ["y8Ngwq34_Ak", "wTVr4HR4SBI"],
-  sneaker: ["CX3LtR-AilA", "tpUdwgqbGSA"],
+  tent: ["y8Ngwq34_Ak", "wTVr4HR4SBI", "FhDyEDf2mLo", "CGE9E425-DM", "K-gva0dswzc", "5LHzBpiTuzQ"],
+  sneaker: ["CX3LtR-AilA", "tpUdwgqbGSA", "LKP-0vyZasQ", "S5naTls7PWI"],
   "canvas-shoe": ["JqSgHDUf9_o"],
-  "work-boot": ["s8TQiOfGlz0", "2u9aALMdPnI"],
+  "work-boot": ["s8TQiOfGlz0", "2u9aALMdPnI", "J34M8K1uqs4", "bnMTMGbvafI", "x7gz40Z9ObM", "RGeu06NDwoI", "B1Sn_ADEohs"],
   "hard-hat": ["9OB46apMbC4", "cigfVTfU39I"],
-  tshirt: ["8ACmRoleM24", "xPJYL0l5Ii8"],
+  tshirt: ["8ACmRoleM24", "xPJYL0l5Ii8", "SF-ij6iAa1c", "imZPE5DJLKo"],
   polo: ["rpiH-Z9ohmk", "WagwAh8U6LU"],
   hoodie: ["kJXGTOY1wLQ", "SbHt5T4C1Ys"],
-  jacket: ["7d7ftGJ5Gns"],
+  jacket: ["7d7ftGJ5Gns", "12P0_rzSNpM", "HK2uRwKINu0"],
   leggings: ["xn2Zh8b4yqw", "K_w5UNRxh-8"],
   "sports-bra": ["0hko-xWvyW8"],
-  cycling: ["5bCF12W6XsI"],
+  cycling: ["5bCF12W6XsI", "Gi0OMNguFaw", "OFyh9TpMyM8"],
   trousers: ["0tDuW9e-tc4", "_nKR-qjgXDE"],
   shirt: ["DRM_6zFkPFw", "BKYeLLB1OxI"],
-  fabric: ["stb9o3RE5lI", "IOJH65NuhXY"],
+  fabric: ["stb9o3RE5lI", "IOJH65NuhXY", "memVwP598cA", "aL7mLl5DZk4", "wcdHwuFJfn4", "4byBtNuIyIg", "G8-rpKSdXH0"],
   denim: ["I2WQQaXSy-k", "UP9DtTjRYpI"],
   towel: ["qPNgpYUCW0c", "0Qv4fUvlSrI"],
   bedding: ["hdD3g9NYM0U"],
@@ -58,37 +60,37 @@ const POOLS: Record<string, string[]> = {
   marble: ["fcWAwPKpkTU", "8GUOLtII7ig"],
   mosaic: ["jR4Zf-riEjI", "orEnWh0zdyw"],
   terrazzo: ["Y0uQ-YxYjOs", "qEQTujie8vg"],
-  "coffee-green": ["3X6VozzbL6w", "IJyQ1us6MVM"],
-  "coffee-roasted": ["TD4DBagg2wE", "obV_LM0KjxY"],
-  shrimp: ["UNefAhXPvf4", "cAGB3DoWIm8"],
+  "coffee-green": ["3X6VozzbL6w", "IJyQ1us6MVM", "Yx1XkPYUBss", "OE1zLjHsfm0", "W1VqcpcnSHk"],
+  "coffee-roasted": ["TD4DBagg2wE", "obV_LM0KjxY", "1LaCrYx5J7I"],
+  shrimp: ["UNefAhXPvf4", "cAGB3DoWIm8", "-3JrrX2qHpY", "RnjSj-m6PSg"],
   fish: ["nwSCt6ImBZQ", "GIpcS2IXsdc"],
   carton: ["3l19r5EOZaw", "qO2ztAz5g7A"],
   "mailer-box": ["2w-EQD1SkuY", "7KKy7-TeeVs"],
-  pouch: ["QosVSNhPA9M"],
+  pouch: ["QosVSNhPA9M", "PGctPZuz65I", "wizWrRZJXSg", "X3OabeX3zQI", "_B4MYwnfYRo"],
   "paper-bag": ["UCB3WeYYwx4", "Tp6z6HFF2kw"],
   cutlery: ["VRj_eDFZNNs", "lLIn2-GPQ5o"],
   caps: ["Qtj5RYq10vA"],
   "storage-box": ["F2JwUVuRz2I", "Uxj5sQmK_ug"],
-  "led-panel": ["fVKBJ39ehSM", "IkOUpzgt-C8"],
+  "led-panel": ["fVKBJ39ehSM", "IkOUpzgt-C8", "BZa9KBaKQHg", "u-iDOMC-mUk", "HdfXNAQ5TvM"],
   "street-light": ["D6xxk3_qZss"],
   "flood-light": ["gjsmCH39sPI", "fNR24kT8RZo"],
   warehouse: ["D7A6CiIFVk8", "bYcnue7qKNk"],
   racking: ["jcav1COVvOc", "I-_wYj9yOzw"],
-  pcb: ["jXd2FSvcRr8", "pfR18JNEMv8"],
+  pcb: ["jXd2FSvcRr8", "pfR18JNEMv8", "zs4gtT8thO0", "tTurhPw9bwQ", "nePxBIvqUlU"],
   "smart-plug": ["nBfTARHPxiU", "exfrR9KkzlE"],
-  "smart-device": ["JxgSbyAqUlk"],
+  "smart-device": ["JxgSbyAqUlk", "uUFh5odVJtc", "fSLI8RdCdyk"],
   router: ["hXVVNB6Qctg", "mhA3QOXME5M"],
   "ev-charger": ["r8Em_4mTkJ4"],
-  cable: ["hokONTrHIAQ", "ioAUyH-MkYs"],
-  harness: ["3TeMciP8iLM"],
+  cable: ["hokONTrHIAQ", "ioAUyH-MkYs", "TqueZSSAloY", "EYAfw1ujabI", "6ySmw7CwYDk"],
+  harness: ["3TeMciP8iLM", "3_I4NVI9d1k", "zqnfqFYaIhE"],
   switchboard: ["oj1zW_PNI4k", "maXnRLszYY0"],
-  battery: ["CH7kRmyBQ4I"],
-  machine: ["nyAzMQ6Ejgs", "E_B09LIHS9Q"],
-  cnc: ["eaanLTG7TCU", "sxtClAGwRck"],
-  "metal-parts": ["SRqJ3eli-4I", "qCmbTEsdvOw"],
+  battery: ["CH7kRmyBQ4I", "73taIS3YeNQ", "IUzs7uWOZ_Y"],
+  machine: ["nyAzMQ6Ejgs", "E_B09LIHS9Q", "GiuvVfcNFzY", "_XDK4naBbgw", "Ib71Uju1v5w", "j1K252iGCMs", "xAEcG3_hxpQ"],
+  cnc: ["eaanLTG7TCU", "sxtClAGwRck", "O5rSp_U-Pa0", "8MBTn3Z71zI", "SiA697XF2ds", "pl95tzT0f7Y"],
+  "metal-parts": ["SRqJ3eli-4I", "qCmbTEsdvOw", "XI4m_uzRqXE", "D60xwIqu-jA"],
   welding: ["9Q_pLLP_jmA", "Ws8SCmDS9mw"],
   "steel-structure": ["dSRhwPe6v9c", "wFFw_xUTXOY"],
-  "plastic-parts": ["gZQOtJrks9s"],
+  "plastic-parts": ["gZQOtJrks9s", "-RsSZVGdIj0", "G43SXsOivjw"],
   "tool-set": ["48LxRVIpv7Q"],
   pruner: ["yYC-hPnhksU"],
   hammer: ["sm0Bkoj5bnA", "0V_Da1pHqEk"],
@@ -99,8 +101,8 @@ const POOLS: Record<string, string[]> = {
   "floor-coating": ["4yCaHDEfgfk", "NADTQRbS0s4"],
   adhesive: ["q5EjOjgxP7c"],
   chemical: ["B5SLyGtYdbk", "ALUBtrDWZ_s"],
-  skincare: ["WdJ4WnLxyDs", "CJFG-GOAeVk"],
-  rubber: ["6-y14RTxDbw", "wEMZ1zM2C8I"],
+  skincare: ["WdJ4WnLxyDs", "CJFG-GOAeVk", "BlcA2-o-7IM", "ERZmrBuAkio", "oqLacF0lc00", "WhDIsecnFbw"],
+  rubber: ["6-y14RTxDbw", "wEMZ1zM2C8I", "V6Q48DJHQgY", "zG63Io_eFJo", "kCf25FT1sgw"],
   logistics: ["I-_wYj9yOzw", "qO2ztAz5g7A", "jcav1COVvOc"],
 };
 
@@ -253,16 +255,36 @@ export function productPhotoKey(subject: string | null | undefined): string | nu
   return null;
 }
 
+const url = (id: string) => `${P}${id}.webp`;
+
 /**
- * A stock photo path for `subject`, or null. `slot` distinguishes several images of the same
- * product (a gallery), so each slot draws a different picture when the pool has more than one.
+ * Photo for a catalogue product. Products listed in PHOTO_ASSIGNMENTS have their own picture, so
+ * two backpacks side by side never share one; `index` walks the rest of the pool for a gallery.
+ * Anything else (a product created after the table was generated) gets a stable hash pick.
  */
-export function productPhoto(subject: string | null | undefined, slot = ""): string | null {
+export function productPhotoFor(subject: string | null | undefined, slug?: string | null, index = 0): string | null {
   const key = productPhotoKey(subject);
   if (!key) return null;
   const pool = POOLS[key];
-  const i = hash(`${subject}|${slot}`) % pool.length;
-  return `${P}${pool[i]}.webp`;
+  const assigned = slug ? PHOTO_ASSIGNMENTS[slug] : undefined;
+  let start = assigned ? pool.indexOf(assigned) : -1;
+  if (start < 0) start = hash(`${subject}|${slug ?? ""}`) % pool.length;
+  return url(pool[(start + index) % pool.length]);
+}
+
+const ASSIGNED_IDS = new Set(Object.values(PHOTO_ASSIGNMENTS));
+
+/**
+ * Photo for everything around the products — supplier cards, banners, clusters, guides. It prefers
+ * pictures no product card uses, so a supplier row does not repeat the product grid under it.
+ */
+export function productPhoto(subject: string | null | undefined, seed = ""): string | null {
+  const key = productPhotoKey(subject);
+  if (!key) return null;
+  const pool = POOLS[key];
+  const free = pool.filter((id) => !ASSIGNED_IDS.has(id));
+  const list = free.length ? free : pool;
+  return url(list[hash(`${subject}|${seed}`) % list.length]);
 }
 
 export const PRODUCT_PHOTO_POOLS = POOLS;

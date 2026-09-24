@@ -1,4 +1,5 @@
-import { ChevronRight, Star } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useLocale } from "next-intl";
 import * as React from "react";
 import { Link } from "@/i18n/navigation";
 import { cn, initials } from "@/lib/utils";
@@ -21,10 +22,11 @@ export function RatingStars({ value, count, size = 14, className, showValue = tr
   const v = Math.max(0, Math.min(5, Number(value ?? 0)));
   return (
     <span className={cn("inline-flex items-center gap-1 text-xs text-steel-600", className)} aria-label={`${v.toFixed(1)} out of 5`}>
-      <span className="inline-flex">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Star key={i} width={size} height={size} className={cn(i <= Math.round(v) ? "fill-brass-400 text-brass-400" : "fill-steel-200 text-steel-200")} />
-        ))}
+      {/* Five text stars with a clipped overlay: a few hundred bytes instead of five SVGs per card
+          (a page of 24 supplier cards carried 150 KB of star markup). */}
+      <span aria-hidden className="relative inline-block leading-none tracking-[0.08em]" style={{ fontSize: size }}>
+        <span className="text-steel-200">★★★★★</span>
+        <span className="absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap text-brass-400" style={{ width: `${(v / 5) * 100}%` }}>★★★★★</span>
       </span>
       {showValue ? <span className="font-medium text-ink-900">{v > 0 ? v.toFixed(1) : "–"}</span> : null}
       {count != null ? <span>({count})</span> : null}
@@ -109,45 +111,43 @@ export function LinkTabs({ tabs, current, className }: { tabs: Array<{ label: Re
 }
 
 export function Pagination({ page, totalPages, hrefFor, className }: { page: number; totalPages: number; hrefFor: (page: number) => string; className?: string }) {
+  const locale = useLocale();
   if (totalPages <= 1) return null;
   const pages: number[] = [];
   const start = Math.max(1, page - 2);
   const end = Math.min(totalPages, page + 2);
   for (let p = start; p <= end; p++) pages.push(p);
   const btn = "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-sm";
+  // Plain anchors, not client-side links: a page change is a different query on the same route, and
+  // Next's router could drop that navigation when it was clicked while the page was still hydrating
+  // ("2" did nothing on a slow phone). A full load is reliable and lands at the top of the list.
+  const href = (p: number) => `/${locale}${hrefFor(p)}`;
+  const A = ({ p, children, current }: { p: number; children: React.ReactNode; current?: boolean }) => (
+    <a href={href(p)} aria-current={current ? "page" : undefined} className={cn(btn, current ? "border-ink-900 bg-ink-900 text-white" : "border-steel-300 bg-white hover:bg-steel-50")}>
+      {children}
+    </a>
+  );
   return (
     <nav className={cn("flex items-center justify-center gap-1", className)} aria-label="Pagination">
-      {page > 1 ? (
-        <Link href={hrefFor(page - 1)} className={cn(btn, "border-steel-300 bg-white hover:bg-steel-50")}>
-          ‹
-        </Link>
-      ) : null}
+      {page > 1 ? <A p={page - 1}>‹</A> : null}
       {start > 1 ? (
         <>
-          <Link href={hrefFor(1)} className={cn(btn, "border-steel-300 bg-white hover:bg-steel-50")}>
-            1
-          </Link>
+          <A p={1}>1</A>
           {start > 2 ? <span className="px-1 text-steel-400">…</span> : null}
         </>
       ) : null}
       {pages.map((p) => (
-        <Link key={p} href={hrefFor(p)} aria-current={p === page ? "page" : undefined} className={cn(btn, p === page ? "border-ink-900 bg-ink-900 text-white" : "border-steel-300 bg-white hover:bg-steel-50")}>
+        <A key={p} p={p} current={p === page}>
           {p}
-        </Link>
+        </A>
       ))}
       {end < totalPages ? (
         <>
           {end < totalPages - 1 ? <span className="px-1 text-steel-400">…</span> : null}
-          <Link href={hrefFor(totalPages)} className={cn(btn, "border-steel-300 bg-white hover:bg-steel-50")}>
-            {totalPages}
-          </Link>
+          <A p={totalPages}>{totalPages}</A>
         </>
       ) : null}
-      {page < totalPages ? (
-        <Link href={hrefFor(page + 1)} className={cn(btn, "border-steel-300 bg-white hover:bg-steel-50")}>
-          ›
-        </Link>
-      ) : null}
+      {page < totalPages ? <A p={page + 1}>›</A> : null}
     </nav>
   );
 }

@@ -62,7 +62,7 @@ export function ProductCard({
   return (
     <article className={cn("group flex flex-col overflow-hidden rounded-xl bg-surface transition-shadow hover:shadow-card-hover", className)}>
       <Link href={`/product/${product.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-steel-50">
-        <SmartImage src={product.primaryImageUrl ?? undefined} alt={title} fill photo={product.title} fallbackLabel={title} className="transition-transform duration-300 group-hover:scale-[1.03]" />
+        <SmartImage src={product.primaryImageUrl ?? undefined} alt={title} fill photo={product.title} photoSlug={product.slug} fallbackLabel={title} className="transition-transform duration-300 group-hover:scale-[1.03]" />
         {product.isFeatured ? <span className="absolute left-2.5 top-2.5 size-1.5 rounded-full bg-brand-500" aria-label="Featured" /> : null}
       </Link>
       <div className="flex flex-1 flex-col px-1 pb-1 pt-3">

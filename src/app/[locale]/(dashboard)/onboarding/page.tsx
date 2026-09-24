@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { countries } from "@/db/schema";
 import { redirect } from "@/i18n/navigation";
 import { getAuth } from "@/modules/auth/current-user";
+import { ClientMessages } from "@/i18n/client-messages";
 import { OnboardingForm } from "./onboarding-form";
 
 export const metadata: Metadata = { title: "Set up your company", robots: { index: false } };
@@ -24,11 +25,13 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="mt-1 text-sm text-steel-500">{t("subtitle")}</p>
         <div className="mt-6">
+          <ClientMessages namespaces={["auth"]}>
           <OnboardingForm
             countries={countryRows.map((c) => ({ code: c.code, name: locale === "vi" ? c.nameVi : c.name }))}
             existing={active ? { id: active.companyId, name: active.company.name, isBuyer: active.company.isBuyer, isSeller: active.company.isSeller } : null}
             enable={enable === "BUYER" || enable === "SELLER" ? enable : null}
           />
+          </ClientMessages>
         </div>
       </div>
     </div>

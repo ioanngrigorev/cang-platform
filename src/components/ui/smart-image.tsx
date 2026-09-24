@@ -3,7 +3,7 @@
 import * as React from "react";
 import { isPlaceholderSrc, placeholderArt } from "@/lib/placeholder-art";
 import { placeholderIcon } from "@/lib/placeholder-icon";
-import { productPhoto } from "@/lib/product-photos";
+import { productPhoto, productPhotoFor } from "@/lib/product-photos";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,17 +19,23 @@ export function SmartImage({
   fallbackLabel,
   fill,
   photo,
+  photoSlug,
+  photoIndex = 0,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement> & {
   fallbackLabel?: string;
   fill?: boolean;
   /** true: match a stock photo on the label; a string: match on this text instead (use the English title on localised pages). */
   photo?: boolean | string;
+  /** Catalogue slug: the product's own assigned photo instead of a pick from the pool. */
+  photoSlug?: string | null;
+  /** Gallery position; each index shows the next photo of the product's pool. */
+  photoIndex?: number;
 }) {
   const subject = fallbackLabel ?? (typeof alt === "string" ? alt : "");
   const unusable = typeof src !== "string" || isPlaceholderSrc(src);
   const photoSubject = typeof photo === "string" ? photo : photo ? subject : null;
-  const stock = photoSubject ? productPhoto(photoSubject, typeof src === "string" ? src : "") : null;
+  const stock = !photoSubject ? null : photoSlug !== undefined ? productPhotoFor(photoSubject, photoSlug, photoIndex) : productPhoto(photoSubject, typeof src === "string" ? src : "");
   const [failed, setFailed] = React.useState(unusable);
   const [stockFailed, setStockFailed] = React.useState(false);
   React.useEffect(() => setFailed(unusable), [unusable, src]);

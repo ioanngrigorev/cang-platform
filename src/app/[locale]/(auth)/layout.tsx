@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { Logo } from "@/components/layout/logo";
+import { ClientMessages } from "@/i18n/client-messages";
 import { Link } from "@/i18n/navigation";
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
@@ -32,7 +33,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           </div>
         </div>
         <div className="flex flex-1 items-center justify-center px-6 py-8">
-          <div className="w-full max-w-md">{children}</div>
+          <div className="w-full max-w-md"><ClientMessages namespaces={["auth"]}>{children}</ClientMessages></div>
         </div>
       </div>
     </div>

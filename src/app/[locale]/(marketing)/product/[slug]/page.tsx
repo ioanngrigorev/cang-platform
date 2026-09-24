@@ -139,7 +139,7 @@ export default async function ProductPage({ params }: Props) {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Gallery */}
         <div className="lg:col-span-5">
-          <ProductGallery images={product.images.map((i) => ({ url: i.url, alt: i.alt }))} title={title} photoSubject={product.title} videoUrl={product.videoUrl} imageOfLabel={t.raw("product.imageOf")} />
+          <ProductGallery images={product.images.map((i) => ({ url: i.url, alt: i.alt }))} title={title} photoSubject={product.title} photoSlug={product.slug} videoUrl={product.videoUrl} imageOfLabel={t.raw("product.imageOf")} />
         </div>
 
         {/* Summary */}

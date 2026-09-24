@@ -8,6 +8,7 @@ import { breadcrumbJsonLd, organizationJsonLd } from "@/lib/seo";
 import { getAuth } from "@/modules/auth/current-user";
 import { getRenderedPage } from "@/modules/content/queries";
 import { pageMetadata } from "@/modules/content/seo";
+import { ClientMessages } from "@/i18n/client-messages";
 import { ContactForm } from "./contact-form";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -55,7 +56,7 @@ export default async function ContactPage({ params }: Props) {
             <CardHeader title={t("contact.formTitle")} />
             <CardContent>
               {auth ? (
-                <ContactForm userName={auth.user.name} />
+                <ClientMessages namespaces={["content.contact"]}><ContactForm userName={auth.user.name} /></ClientMessages>
               ) : (
                 <div className="space-y-4">
                   <h3 className="text-base font-semibold">{t("contact.anonymousTitle")}</h3>
