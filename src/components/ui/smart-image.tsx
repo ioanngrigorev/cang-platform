@@ -3,12 +3,14 @@
 import * as React from "react";
 import { isPlaceholderSrc, placeholderArt } from "@/lib/placeholder-art";
 import { placeholderIcon } from "@/lib/placeholder-icon";
+import { productPhoto } from "@/lib/product-photos";
 import { cn } from "@/lib/utils";
 
 /**
- * Plain <img> that falls back to generated artwork rather than a broken-image icon, so a missing
- * or dead image URL still renders something deliberate: a tinted wash plus a pictogram chosen
- * from the subject's own words. Use `fill` for aspect-ratio boxes (parent must be relative).
+ * Plain <img> that never shows a broken-image icon. A missing or dead URL falls back, in order,
+ * to a stock photograph of the same kind of product (when `photo` is set and the subject is
+ * recognised), then to a tinted wash with a pictogram chosen from the subject's own words.
+ * Use `fill` for aspect-ratio boxes (parent must be relative).
  */
 export function SmartImage({
   src,
@@ -16,12 +18,30 @@ export function SmartImage({
   className,
   fallbackLabel,
   fill,
+  photo,
   ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackLabel?: string; fill?: boolean }) {
+}: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackLabel?: string; fill?: boolean; photo?: boolean }) {
   const subject = fallbackLabel ?? (typeof alt === "string" ? alt : "");
   const unusable = typeof src !== "string" || isPlaceholderSrc(src);
+  const stock = photo ? productPhoto(subject, typeof src === "string" ? src : "") : null;
   const [failed, setFailed] = React.useState(unusable);
+  const [stockFailed, setStockFailed] = React.useState(false);
   React.useEffect(() => setFailed(unusable), [unusable, src]);
+
+  if (failed && stock && !stockFailed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={stock}
+        alt={alt ?? ""}
+        loading="lazy"
+        decoding="async"
+        onError={() => setStockFailed(true)}
+        className={cn(fill && "absolute inset-0 h-full w-full object-cover", className)}
+        {...props}
+      />
+    );
+  }
 
   if (failed) {
     const Icon = placeholderIcon(subject);

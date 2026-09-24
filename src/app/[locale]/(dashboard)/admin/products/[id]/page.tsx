@@ -60,7 +60,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {p.images.map((img) => (
                     <div key={img.id} className="relative aspect-square overflow-hidden rounded-md border border-hairline bg-steel-50">
-                      <SmartImage src={img.url} alt={img.alt ?? p.title} fallbackLabel={p.title} className="h-full w-full object-cover" />
+                      <SmartImage src={img.url} alt={img.alt ?? p.title} photo fallbackLabel={p.title} className="h-full w-full object-cover" />
                       {img.isPrimary ? <Badge size="sm" variant="ink" className="absolute left-1.5 top-1.5">{t("primaryImage")}</Badge> : null}
                     </div>
                   ))}

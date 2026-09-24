@@ -40,7 +40,7 @@ export default async function SavedProductsPage({ params }: { params: Promise<{ 
               <Card key={row.id} hover className="overflow-hidden">
                 <Link href={`/product/${p.slug}`} className="block">
                   <div className="relative aspect-[4/3] bg-steel-50">
-                    <SmartImage src={p.images[0]?.url} alt={p.title} fill fallbackLabel={p.title} />
+                    <SmartImage src={p.images[0]?.url} alt={p.title} fill photo fallbackLabel={p.title} />
                   </div>
                 </Link>
                 <CardContent className="space-y-2 py-3">

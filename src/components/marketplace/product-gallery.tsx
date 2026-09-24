@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 import * as React from "react";
 import { SmartImage } from "@/components/ui/smart-image";
+import { isPlaceholderSrc } from "@/lib/placeholder-art";
 import { cn } from "@/lib/utils";
 
 export type GalleryImage = { url: string; alt?: string | null };
@@ -22,7 +23,7 @@ export function ProductGallery({ images, title, videoUrl, imageOfLabel }: { imag
   return (
     <div className="space-y-3" onKeyDown={onKey}>
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-steel-200 bg-steel-50" tabIndex={0} aria-label={total ? label(index + 1, total) : title}>
-        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill fallbackLabel={title} className="object-contain" />
+        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill photo fallbackLabel={title} className={isPlaceholderSrc(current?.url) ? "object-cover" : "object-contain"} />
         {total > 1 ? (
           <>
             <button type="button" onClick={() => go(-1)} aria-label="Previous image" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-steel-200 bg-white/90 p-2 text-ink-900 shadow-card hover:bg-white">
@@ -46,7 +47,7 @@ export function ProductGallery({ images, title, videoUrl, imageOfLabel }: { imag
               aria-current={i === index}
               className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 bg-steel-50", i === index ? "border-ink-900" : "border-steel-200 hover:border-steel-400")}
             >
-              <SmartImage src={img.url} alt={img.alt ?? ""} fill />
+              <SmartImage src={img.url} alt={img.alt ?? ""} fill photo fallbackLabel={title} />
             </button>
           ))}
           {videoUrl ? (

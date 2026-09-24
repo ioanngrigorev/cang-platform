@@ -68,7 +68,7 @@ export function CategoryTile({ href, name, imageUrl, count, countLabel, classNam
   return (
     <Link href={href} className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
       <div className="relative aspect-[4/3] overflow-hidden bg-steel-100">
-        <SmartImage src={imageUrl ?? undefined} alt={name} fill fallbackLabel={name} className="transition-transform duration-300 group-hover:scale-[1.04]" />
+        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo fallbackLabel={name} className="transition-transform duration-300 group-hover:scale-[1.04]" />
       </div>
       <div className="p-3">
         <p className="line-clamp-1 text-sm font-semibold text-ink-900 group-hover:underline">{name}</p>

@@ -102,7 +102,7 @@ export default async function SellerProductsPage({
                     <TD>
                       <div className="flex items-center gap-3">
                         <div className="relative size-11 shrink-0 overflow-hidden rounded-md border border-steel-200 bg-steel-50">
-                          <SmartImage src={image?.url} alt={p.title} fill fallbackLabel={p.title} />
+                          <SmartImage src={image?.url} alt={p.title} fill photo fallbackLabel={p.title} />
                         </div>
                         <div className="min-w-0">
                           <Link href={`/seller/products/${p.id}`} className="line-clamp-2 font-medium text-ink-900 hover:underline">
