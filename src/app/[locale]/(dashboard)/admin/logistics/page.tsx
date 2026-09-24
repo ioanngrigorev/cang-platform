@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { LogisticsProviderDialog, LogisticsProviderToggle, ShipmentEventDialog } from "@/components/admin/logistics-forms";
+import { shipmentStatusLabels } from "@/modules/logistics/tracking/labels";
+import { AssignPartnerDialog, LogisticsProviderDialog, LogisticsProviderToggle, ShipmentEventDialog } from "@/components/admin/logistics-forms";
 import { Card, CardContent, CardHeader, LinkTabs, PageHeader, Pagination, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { formatDate, formatMoney, humanize } from "@/lib/utils";
@@ -17,7 +18,9 @@ export default async function AdminLogisticsPage({ params, searchParams }: { par
   const sp = await searchParams;
   const auth = await requireAdmin("admin.logistics.write");
   const t = await getTranslations("admin.logistics");
+  const statusLabels = await shipmentStatusLabels();
   const tc = await getTranslations("admin.common");
+  const tt = await getTranslations("tracking");
   const tab = (TABS.includes(str(sp.tab) as (typeof TABS)[number]) ? str(sp.tab) : "shipments") as (typeof TABS)[number];
   const page = pageParam(sp.page);
   const canWrite = canPlatform(auth, "admin.logistics.write");
@@ -68,15 +71,26 @@ export default async function AdminLogisticsPage({ params, searchParams }: { par
                   <TD className="hidden text-xs md:table-cell">
                     {s.originPort ?? "—"} → {s.destinationPort ?? "—"}
                   </TD>
-                  <TD className="hidden text-xs lg:table-cell">{s.carrier ?? s.provider?.name ?? "—"}</TD>
+                  <TD className="hidden text-xs lg:table-cell">
+                    {s.provider?.name ?? "—"}
+                    {s.carrier ? <span className="block text-steel-500">{s.carrier}</span> : null}
+                  </TD>
                   <TD>
-                    <StatusBadge status={s.status} size="sm" />
+                    <StatusBadge status={s.status} label={statusLabels[s.status]} size="sm" />
+                    {s.exceptionReason ? <span className="block text-xs text-warning-700">{tt(`reasons.${s.exceptionReason}`)}</span> : null}
                   </TD>
                   <TD className="hidden whitespace-nowrap text-xs text-steel-600 xl:table-cell">
                     {s.etd ? `ETD ${formatDate(s.etd, locale)}` : ""}
                     {s.eta ? ` · ETA ${formatDate(s.eta, locale)}` : ""}
                   </TD>
-                  <TD className="text-right">{canWrite ? <ShipmentEventDialog shipmentId={s.id} status={s.status} /> : null}</TD>
+                  <TD className="text-right">
+                    {canWrite ? (
+                      <span className="inline-flex flex-wrap justify-end gap-1">
+                        <AssignPartnerDialog shipmentId={s.id} providerId={s.provider?.id ?? null} providers={providers.map((p) => ({ id: p.id, name: p.name, isActive: p.isActive }))} />
+                        <ShipmentEventDialog shipmentId={s.id} />
+                      </span>
+                    ) : null}
+                  </TD>
                 </TR>
               ))}
             </TBody>
@@ -181,18 +195,23 @@ export default async function AdminLogisticsPage({ params, searchParams }: { par
                       <span className="block text-xs text-steel-500">
                         {p.code} · {p.adapterCode}
                       </span>
+                      {p.company ? (
+                        <Link href={`/admin/companies/${p.company.id}`} className="block text-xs text-ink-700 hover:underline">
+                          {t("partnerPortalOf", { name: p.company.name })}
+                        </Link>
+                      ) : null}
                     </TD>
                     <TD className="hidden text-xs md:table-cell">{p.services.map(humanize).join(", ") || "—"}</TD>
                     <TD className="hidden text-xs lg:table-cell">{p.modes.map(humanize).join(", ") || "—"}</TD>
                     <TD className="hidden text-xs lg:table-cell">{p.countries.join(", ") || "—"}</TD>
                     <TD>
-                      <StatusBadge status={p.isActive ? "ACTIVE" : "INACTIVE"} size="sm" />
+                      {!p.isActive && p.company ? <StatusBadge status="PENDING" label={t("pendingApproval")} size="sm" /> : <StatusBadge status={p.isActive ? "ACTIVE" : "INACTIVE"} size="sm" />}
                     </TD>
                     <TD className="text-right">
                       {canWrite ? (
                         <span className="inline-flex gap-1">
-                          <LogisticsProviderDialog values={{ id: p.id, code: p.code, name: p.name, description: p.description, services: p.services, modes: p.modes, countries: p.countries, adapterCode: p.adapterCode, apiConfig: maskSecrets(p.apiConfig), sortOrder: p.sortOrder, isActive: p.isActive }} />
-                          <LogisticsProviderToggle providerId={p.id} isActive={p.isActive} />
+                          <LogisticsProviderDialog values={{ id: p.id, code: p.code, name: p.name, description: p.description, services: p.services, modes: p.modes, countries: p.countries, adapterCode: p.adapterCode, apiConfig: maskSecrets(p.apiConfig), sortOrder: p.sortOrder, isActive: p.isActive, companySlug: p.company?.slug ?? null }} />
+                          <LogisticsProviderToggle providerId={p.id} isActive={p.isActive} approve={!p.isActive && !!p.company} />
                         </span>
                       ) : null}
                     </TD>

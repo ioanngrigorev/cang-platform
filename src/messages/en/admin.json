@@ -686,7 +686,13 @@
     "milestone": "Milestone",
     "location": "Location",
     "occurredAt": "Occurred at",
-    "fieldDescription": "Description"
+    "fieldDescription": "Description",
+    "assignPartner": "Partner",
+    "partnerCompany": "Partner company (slug)",
+    "partnerCompanyHint": "The company that works this provider's shipments in the partner portal.",
+    "partnerPortalOf": "Partner portal: {name}",
+    "pendingApproval": "Pending approval",
+    "approvePartner": "Approve"
   },
   "disputes": {
     "title": "Disputes",

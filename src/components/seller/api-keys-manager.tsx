@@ -7,7 +7,7 @@ import { ActionForm, DialogForm } from "@/components/buyer/action-form";
 import { Alert, Badge, Button, Checkbox, EmptyState, Field, Input, PageHeader, Select, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { createApiKeyAction, revokeApiKeyAction, type CreatedApiKey } from "@/modules/seller/api-keys/actions";
-import { API_SCOPES } from "@/modules/seller/api-keys/schemas";
+import { SELLER_API_SCOPES } from "@/modules/seller/api-keys/schemas";
 
 export type ApiKeyItem = {
   id: string;
@@ -22,7 +22,7 @@ export type ApiKeyItem = {
   createdBy: string | null;
 };
 
-export function ApiKeysManager({ rows, locale, canManage }: { rows: ApiKeyItem[]; locale: string; canManage: boolean }) {
+export function ApiKeysManager({ rows, locale, canManage, scopes = SELLER_API_SCOPES, title, description }: { rows: ApiKeyItem[]; locale: string; canManage: boolean; scopes?: readonly string[]; title?: string; description?: string }) {
   const t = useTranslations("seller.api");
   const [created, setCreated] = React.useState<CreatedApiKey | null>(null);
   const [copied, setCopied] = React.useState(false);
@@ -60,7 +60,7 @@ export function ApiKeysManager({ rows, locale, canManage }: { rows: ApiKeyItem[]
           <div>
             <p className="mb-2 text-sm font-medium text-ink-900">{t("scopes")}</p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {API_SCOPES.map((s) => (
+              {scopes.map((s) => (
                 <Checkbox key={s} name="scopes[]" value={s} defaultChecked={s.endsWith(":read")} label={<code className="font-mono text-xs">{s}</code>} description={t(`scopeHints.${s.replace(":", "_")}`)} />
               ))}
             </div>
@@ -85,7 +85,7 @@ export function ApiKeysManager({ rows, locale, canManage }: { rows: ApiKeyItem[]
 
   return (
     <div className="space-y-5">
-      <PageHeader title={t("title")} description={t("description")} actions={createButton} className="mb-0" />
+      <PageHeader title={title ?? t("title")} description={description ?? t("description")} actions={createButton} className="mb-0" />
       {created ? (
         <Alert variant="success" title={t("createdTitle", { name: created.name })}>
           <p className="text-sm">{t("createdBody")}</p>

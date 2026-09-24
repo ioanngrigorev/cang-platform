@@ -631,7 +631,9 @@
       "quotations_write": "Gửi báo giá",
       "orders_read": "Đọc đơn hàng và trạng thái",
       "orders_write": "Cập nhật tiến độ đơn hàng",
-      "analytics_read": "Đọc số liệu truy cập"
+      "analytics_read": "Đọc số liệu truy cập",
+      "shipments_read": "Xem các lô hàng được giao cho bạn",
+      "shipments_write": "Cập nhật trạng thái và mã vận đơn"
     },
     "expiry": "Hết hạn",
     "noExpiry": "Không hết hạn",

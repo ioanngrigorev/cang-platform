@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 import { DialogForm } from "@/components/buyer/action-form";
 import { FileUpload } from "@/components/buyer/file-upload";
+import { ShipmentPartnerFields, type ProviderChoice } from "@/components/logistics/partner-fields";
 import { Button, Field, Input, Select, Textarea } from "@/components/ui";
 import { DISPUTE_TYPES } from "@/modules/disputes/schemas";
 import { sellerOpenDisputeAction } from "@/modules/seller/sales/disputes/actions";
@@ -22,6 +23,7 @@ export type SellerOrderActionsProps = {
   canDispute: boolean;
   currency: string;
   defaultOriginPort?: string | null;
+  providers?: ProviderChoice[];
 };
 
 const ICONS: Record<string, React.ReactNode> = {
@@ -34,7 +36,7 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 /** Every supplier-side decision on an order, each wired to a real server action. */
-export function SellerOrderActions({ orderId, statusCode, nextStatuses, isCancellable, hasShipment, hasOpenDispute, canDispute, currency, defaultOriginPort }: SellerOrderActionsProps) {
+export function SellerOrderActions({ orderId, statusCode, nextStatuses, isCancellable, hasShipment, hasOpenDispute, canDispute, currency, defaultOriginPort, providers = [] }: SellerOrderActionsProps) {
   const t = useTranslations("sales.orderActions");
   const tm = useTranslations("logistics.modes");
   const forward = nextStatuses.filter((s) => s !== "CANCELLED" && s !== "DISPUTED");
@@ -73,9 +75,8 @@ export function SellerOrderActions({ orderId, statusCode, nextStatuses, isCancel
                         ))}
                       </Select>
                     </Field>
-                    <Field label={t("shipment.carrier")} htmlFor="ship-carrier" error={fieldError("carrier")}>
-                      <Input id="ship-carrier" name="carrier" placeholder={t("shipment.carrierPlaceholder")} />
-                    </Field>
+                    <span className="hidden sm:block" />
+                    <ShipmentPartnerFields providers={providers} fieldError={fieldError} />
                     <Field label={t("shipment.trackingNumber")} htmlFor="ship-tracking" error={fieldError("trackingNumber")}>
                       <Input id="ship-tracking" name="trackingNumber" />
                     </Field>

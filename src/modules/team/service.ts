@@ -1,4 +1,5 @@
 import { and, eq, gt } from "drizzle-orm";
+import { companyHome } from "@/modules/auth/redirects";
 import { db } from "@/db";
 import { companies, companyInvitations, companyMembers, users } from "@/db/schema";
 import { ActionError } from "@/lib/action";
@@ -74,7 +75,7 @@ export async function inviteMember(companyId: string, inviterId: string, input: 
 export async function findInvitationByToken(token: string) {
   const row = await db.query.companyInvitations.findFirst({
     where: and(eq(companyInvitations.tokenHash, sha256(token)), eq(companyInvitations.status, "PENDING"), gt(companyInvitations.expiresAt, new Date())),
-    with: { company: { columns: { id: true, name: true, slug: true, logoUrl: true, isBuyer: true, isSeller: true } }, invitedBy: { columns: { id: true, name: true } } },
+    with: { company: { columns: { id: true, name: true, slug: true, logoUrl: true, isBuyer: true, isSeller: true, isLogisticsPartner: true } }, invitedBy: { columns: { id: true, name: true } } },
   });
   return row ?? null;
 }
@@ -108,7 +109,7 @@ export async function acceptInvitation(token: string, userId: string, userEmail:
   await notifyUser(invitation.invitedById, {
     type: "TEAM_INVITATION",
     title: `${invitation.email} joined ${invitation.company.name}`,
-    link: invitation.company.isSeller && !invitation.company.isBuyer ? "/seller/team" : "/buyer/team",
+    link: `${companyHome(invitation.company)}/team`,
     email: false,
   });
   await audit({ actorId: userId, action: "company.member.join", entityType: "company", entityId: invitation.companyId, after: { role: invitation.role } });

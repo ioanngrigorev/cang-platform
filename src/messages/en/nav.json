@@ -69,6 +69,14 @@
     "support": "Support",
     "systemSettings": "System settings",
     "auditLogs": "Audit logs",
-    "providers": "Partners & providers"
-  }
+    "providers": "Partners & providers",
+    "allShipments": "All shipments",
+    "pickups": "Pickups",
+    "inTransit": "In transit",
+    "deliveries": "Deliveries",
+    "problems": "Problems",
+    "partnerProfile": "Profile & coverage",
+    "integrations": "Integrations & API"
+  },
+  "partnerPortal": "Logistics partner portal"
 }

@@ -8,6 +8,7 @@ import { HolidayBanner } from "@/components/layout/holiday-banner";
 import { activeHoliday } from "@/lib/holidays";
 import { THEME_COOKIE, resolveTheme } from "@/lib/theme";
 import { ToastProvider } from "@/components/ui/toast";
+import { FormResetGuard } from "@/components/ui/form-reset-guard";
 import { ClientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
 import { siteUrl } from "@/lib/seo";
@@ -56,6 +57,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   return (
     <html lang={locale} data-theme={theme} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
+        <FormResetGuard />
         <ClientMessages>
           {holiday ? <HolidayBanner holiday={holiday} locale={locale} /> : null}
           <ToastProvider>{children}</ToastProvider>

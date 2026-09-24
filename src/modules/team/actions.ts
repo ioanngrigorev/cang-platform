@@ -5,11 +5,13 @@ import { getLocale } from "next-intl/server";
 import { formDataToObject, ok, parseInput, runAction, type ActionResult } from "@/lib/action";
 import { requireAuth, requireCompany } from "@/modules/auth/current-user";
 import { changeRoleSchema, invitationIdSchema, inviteMemberSchema, memberIdSchema } from "./schemas";
+import { companyHome } from "@/modules/auth/redirects";
 import { acceptInvitation, changeMemberRole, inviteMember, removeMember, revokeInvitation } from "./service";
 
 function revalidate() {
   revalidatePath("/[locale]/buyer/team", "page");
   revalidatePath("/[locale]/seller/team", "page");
+  revalidatePath("/[locale]/partner/team", "page");
 }
 
 export async function inviteMemberAction(_prev: ActionResult<{ email: string }> | null, formData: FormData): Promise<ActionResult<{ email: string }>> {
@@ -58,12 +60,12 @@ export async function revokeInvitationAction(_prev: ActionResult | null, formDat
 }
 
 /** Accept an invitation — the signed-in user's email must match the invited address. */
-export async function acceptInvitationAction(_prev: ActionResult<{ isSeller: boolean }> | null, formData: FormData): Promise<ActionResult<{ isSeller: boolean }>> {
+export async function acceptInvitationAction(_prev: ActionResult<{ isSeller: boolean; home: string }> | null, formData: FormData): Promise<ActionResult<{ isSeller: boolean; home: string }>> {
   return runAction(async () => {
     const auth = await requireAuth();
     const token = String(formData.get("token") ?? "");
     const invitation = await acceptInvitation(token, auth.user.id, auth.user.email);
     revalidate();
-    return ok({ isSeller: invitation.company.isSeller && !invitation.company.isBuyer }, `You joined ${invitation.company.name}.`);
+    return ok({ isSeller: invitation.company.isSeller && !invitation.company.isBuyer, home: companyHome(invitation.company) }, `You joined ${invitation.company.name}.`);
   });
 }

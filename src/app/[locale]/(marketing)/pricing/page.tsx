@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PricingPlans, type PricingPlan } from "@/components/marketplace/pricing-plans";
 import { Section, SectionTitle } from "@/components/marketplace/section";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
+import { sellerPlanHref } from "@/lib/cta";
+import { getAuth } from "@/modules/auth/current-user";
 import { Button } from "@/components/ui/button";
 import { Breadcrumbs, JsonLd } from "@/components/ui/misc";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
@@ -29,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PricingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, rows] = await Promise.all([getTranslations("content"), getPublicPlans()]);
+  const [t, rows, auth] = await Promise.all([getTranslations("content"), getPublicPlans(), getAuth()]);
   const faq = FAQ_KEYS.map((k, i) => ({ q: t(`pricing.faq.${k}`), a: t(`pricing.faq.a${i + 1}`) }));
 
   const plans: PricingPlan[] = rows.map((p) => ({
@@ -94,7 +97,7 @@ export default async function PricingPage({ params }: Props) {
       </header>
 
       <Section tone="white">
-        <PricingPlans plans={plans} locale={locale} labels={labels} />
+        <PricingPlans plans={plans} locale={locale} labels={labels} planHrefs={Object.fromEntries(plans.map((p) => [p.code, sellerPlanHref(auth, p.code)]))} />
       </Section>
 
       <Section tone="steel">
@@ -141,9 +144,7 @@ export default async function PricingPage({ params }: Props) {
             <p className="mt-2 text-sm text-steel-300">{t("pricing.cta2Body")}</p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
-            <Button href="/register?type=seller" variant="accent">
-              {t("common.becomeSupplier")}
-            </Button>
+            <SupplierCta label={t("common.becomeSupplier")} variant="accent" />
             <Button href="/contact" variant="secondary">
               {t("common.contactUs")}
             </Button>

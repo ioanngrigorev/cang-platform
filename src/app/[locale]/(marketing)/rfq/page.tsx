@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { rfqCardLabels } from "@/components/marketplace/labels";
 import { RfqCard } from "@/components/marketplace/rfq-card";
 import { RfqFilters } from "@/components/marketplace/rfq-filters";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/card";
 import { JsonLd, PageHeader, Pagination } from "@/components/ui/misc";
@@ -76,9 +77,7 @@ export default async function RfqMarketplacePage({ params, searchParams }: Props
         actions={
           <>
             <Button href="/buyer/rfqs/new">{t("rfq.postYourRfq")}</Button>
-            <Button href="/register?type=seller" variant="secondary">
-              {t("rfq.submitQuotation")}
-            </Button>
+            <SupplierCta label={t("rfq.submitQuotation")} sellerHref="/seller/rfqs" variant="secondary" />
           </>
         }
       />
@@ -145,9 +144,7 @@ export default async function RfqMarketplacePage({ params, searchParams }: Props
             <Button href="/buyer/rfqs/new" variant="accent">
               {t("rfq.postYourRfq")}
             </Button>
-            <Button href="/register?type=seller" variant="secondary">
-              {t("rfq.submitQuotation")}
-            </Button>
+            <SupplierCta label={t("rfq.submitQuotation")} sellerHref="/seller/rfqs" variant="secondary" />
           </div>
         </div>
       </section>

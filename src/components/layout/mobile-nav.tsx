@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./locale-switcher";
 import { Logo } from "./logo";
 
-export function MobileNav({ links, trigger }: { links: Array<{ key: string; href: string; label: string }>; trigger: React.ReactNode }) {
+export function MobileNav({ links, trigger, cta }: { links: Array<{ key: string; href: string; label: string }>; trigger: React.ReactNode; cta: { href: string; label: string } }) {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -35,8 +35,8 @@ export function MobileNav({ links, trigger }: { links: Array<{ key: string; href
                   {l.label}
                 </Link>
               ))}
-              <Link href="/register?type=seller" onClick={() => setOpen(false)} className="mt-2 block rounded-md bg-brass-50 px-3 py-2.5 text-base font-semibold text-brass-800">
-                Become a supplier →
+              <Link href={cta.href} onClick={() => setOpen(false)} className="mt-2 block rounded-md bg-brass-50 px-3 py-2.5 text-base font-semibold text-brass-800">
+                {cta.label} →
               </Link>
             </nav>
             <div className="border-t border-steel-200 px-4 py-3">

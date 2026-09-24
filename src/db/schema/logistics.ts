@@ -132,12 +132,26 @@ export const shipments = pgTable(
     cost: money("cost"),
     currency: text().notNull().default("USD"),
     notes: text(),
+    /** Carrier adapter for tracking-number sync / webhooks (GHN, GHTK, VTP, JT, VNPOST, MANUAL…). */
+    carrierCode: text(),
+    /** When the shipment was handed to its logistics partner (providerId). */
+    assignedAt: timestamp({ withTimezone: true }),
+    /** Reason code of the current failure / exception status, cleared when the shipment moves on. */
+    exceptionReason: text(),
+    lastEventAt: timestamp({ withTimezone: true }),
+    trackingSyncedAt: timestamp({ withTimezone: true }),
+    trackingSyncError: text(),
+    /** Proof of delivery. */
+    receiverName: text(),
+    podUrl: text(),
     ...timestamps(),
   },
   (t) => [
     uniqueIndex("shipments_number_idx").on(t.shipmentNumber),
     index("shipments_order_idx").on(t.orderId),
     index("shipments_status_idx").on(t.status),
+    index("shipments_provider_idx").on(t.providerId, t.status),
+    index("shipments_tracking_idx").on(t.carrierCode, t.trackingNumber),
   ],
 );
 
@@ -153,9 +167,22 @@ export const shipmentEvents = pgTable(
     status: shipmentStatusEnum().notNull(),
     location: text(),
     description: text(),
-    source: text().notNull().default("manual"), // manual | provider-api | webhook
+    source: text().notNull().default("manual"), // manual | partner | carrier-sync | webhook | api | system
+    /** Failure / exception reason code (see modules/logistics/tracking/statuses.ts). */
+    reasonCode: text(),
+    /** Photos, proof of delivery, B/L, customs declaration… [{ url, name, kind }]. */
+    attachments: jsonb().$type<Array<{ url: string; name: string; kind?: string }>>(),
+    /** Extra facts: receiver, measured weight/packages, carrier raw status, vehicle/driver… */
+    data: jsonb().$type<Record<string, unknown>>(),
+    actorUserId: text(),
+    actorCompanyId: text(),
+    /** Idempotency key for carrier webhooks / sync (carrier|tracking|status|time). */
+    externalKey: text(),
     occurredAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
     createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [index("shipment_events_shipment_idx").on(t.shipmentId, t.occurredAt)],
+  (t) => [
+    index("shipment_events_shipment_idx").on(t.shipmentId, t.occurredAt),
+    uniqueIndex("shipment_events_external_idx").on(t.externalKey).where(sql`${t.externalKey} is not null`),
+  ],
 );

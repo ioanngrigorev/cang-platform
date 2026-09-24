@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { OrderTimeline } from "@/components/orders/order-timeline";
 import { ShipmentStepper } from "@/components/orders/shipment-tracker";
+import { shipmentStatusLabels } from "@/modules/logistics/tracking/labels";
+import { listActiveProviders } from "@/modules/logistics/tracking/queries";
 import { SellerOrderActions } from "@/components/seller/sales/order-actions";
 import { CreateShipmentButton } from "@/components/seller/sales/shipment-actions";
 import { Alert, Avatar, Badge, Button, Card, CardContent, CardHeader, DataList, PageHeader, RatingStars, StatusBadge, TBody, TD, TH, THead, TR, Table, VerifiedMark } from "@/components/ui";
@@ -24,6 +26,8 @@ export default async function SellerOrderDetailPage({ params }: { params: Promis
   const t = await getTranslations("sales.orderDetail");
   const to = await getTranslations("sales.orders");
   const ts = await getTranslations("orders.shipments");
+  const statusLabels = await shipmentStatusLabels();
+  const providers = await listActiveProviders();
 
   const order = await getSellerOrder(company.id, id);
   if (!order) notFound();
@@ -85,6 +89,7 @@ export default async function SellerOrderDetailPage({ params }: { params: Promis
           hasOpenDispute={!!openDispute}
           canDispute={(currentStatus?.allowedTransitions ?? []).includes("DISPUTED")}
           currency={order.currency}
+          providers={providers}
         />
       </div>
 
@@ -193,7 +198,7 @@ export default async function SellerOrderDetailPage({ params }: { params: Promis
           <Card>
             <CardHeader
               title={t("shipments")}
-              action={SHIPPABLE_ORDER_STATUSES.includes(order.statusCode) ? <CreateShipmentButton orders={[{ id: order.id, orderNumber: order.orderNumber }]} defaultOrderId={order.id} size="sm" /> : undefined}
+              action={SHIPPABLE_ORDER_STATUSES.includes(order.statusCode) ? <CreateShipmentButton orders={[{ id: order.id, orderNumber: order.orderNumber }]} providers={providers} defaultOrderId={order.id} size="sm" /> : undefined}
             />
             <CardContent className="space-y-5">
               {order.shipments.length === 0 ? (
@@ -212,9 +217,9 @@ export default async function SellerOrderDetailPage({ params }: { params: Promis
                           {s.eta ? ` · ${t("eta")} ${formatDate(s.eta, locale)}` : ""}
                         </p>
                       </div>
-                      <StatusBadge status={s.status} />
+                      <StatusBadge status={s.status} label={statusLabels[s.status]} />
                     </div>
-                    <ShipmentStepper status={s.status} events={s.events} locale={locale} labels={milestoneLabels} orientation="horizontal" />
+                    <ShipmentStepper status={s.status} mode={s.mode} events={s.events} locale={locale} labels={statusLabels} orientation="horizontal" />
                     <Button href={`/seller/shipments/${s.id}`} variant="ghost" size="sm" className="mt-3">
                       <Truck /> {t("manageShipment")}
                     </Button>

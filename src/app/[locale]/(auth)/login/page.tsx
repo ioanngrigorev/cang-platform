@@ -15,7 +15,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next, error } = await searchParams;
   const auth = await getAuth();
   const locale = await getLocale();
-  if (auth) redirect({ href: next && next.startsWith("/") ? next : defaultHomeFor(auth.user.platformRole, auth.activeMembership?.company ?? null), locale });
+  if (auth) redirect({ href: next && next.startsWith("/") && !next.startsWith("//") ? next : defaultHomeFor(auth.user.platformRole, auth.activeMembership?.company ?? null), locale });
   const t = await getTranslations("auth.login");
   return (
     <div>

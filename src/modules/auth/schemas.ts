@@ -17,7 +17,7 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
-export const accountTypeSchema = z.enum(["BUYER", "SELLER"]);
+export const accountTypeSchema = z.enum(["BUYER", "SELLER", "LOGISTICS"]);
 
 export const registerSchema = z
   .object({

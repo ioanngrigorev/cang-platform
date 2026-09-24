@@ -75,6 +75,8 @@ export async function sellerTransitionOrderAction(_prev: ActionResult | null, fo
               orderId: order.id,
               mode: parsed.data.mode ?? "SEA_FCL",
               carrier: parsed.data.carrier ?? null,
+              carrierCode: parsed.data.carrierCode ?? null,
+              providerId: parsed.data.providerId ?? null,
               trackingNumber: parsed.data.trackingNumber ?? null,
               vesselOrFlight: parsed.data.vesselOrFlight ?? null,
               containerNumber: parsed.data.containerNumber ?? null,

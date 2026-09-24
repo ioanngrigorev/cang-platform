@@ -1,17 +1,60 @@
 "use client";
 
-import * as Icons from "lucide-react";
-import { Menu, X } from "lucide-react";
+import {
+  Award,
+  BadgeCheck,
+  BarChart3,
+  Bell,
+  Bookmark,
+  Boxes,
+  Building2,
+  ClipboardCheck,
+  CreditCard,
+  Crown,
+  Factory,
+  FileSpreadsheet,
+  FileText,
+  FolderOpen,
+  FolderTree,
+  Gavel,
+  Heart,
+  KeyRound,
+  Landmark,
+  LayoutDashboard,
+  LifeBuoy,
+  MapPinned,
+  Megaphone,
+  MessageSquare,
+  Newspaper,
+  Package,
+  PackageOpen,
+  Percent,
+  Plug,
+  Receipt,
+  Route,
+  ScrollText,
+  Settings,
+  ShieldAlert,
+  Star,
+  Truck,
+  Users,
+  Menu,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import * as React from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Avatar } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 
+/** Only the icons the sidebars use — importing all of lucide into the client bundle costs ~1 MB. */
+const Icons = { Award, BadgeCheck, BarChart3, Bell, Bookmark, Boxes, Building2, ClipboardCheck, CreditCard, Crown, Factory, FileSpreadsheet, FileText, FolderOpen, FolderTree, Gavel, Heart, KeyRound, Landmark, LayoutDashboard, LifeBuoy, MapPinned, Megaphone, MessageSquare, Newspaper, Package, PackageOpen, Percent, Plug, Receipt, Route, ScrollText, Settings, ShieldAlert, Star, Truck, Users } satisfies Record<string, LucideIcon>;
+
 export type NavItem = { label: string; href: string; icon: keyof typeof Icons; badge?: number };
 export type NavSection = { title?: string; items: NavItem[] };
 
 function Icon({ name, className }: { name: keyof typeof Icons; className?: string }) {
-  const Cmp = Icons[name] as React.ComponentType<{ className?: string }> | undefined;
+  const Cmp = Icons[name];
   return Cmp ? <Cmp className={className} /> : null;
 }
 

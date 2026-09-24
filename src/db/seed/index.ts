@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import * as schema from "@/db/schema";
 import type { Db } from "@/db";
 import { hashPassword } from "@/modules/auth/password";
+import { seedLogisticsPartners } from "./logistics-partners";
 import { seedMarketplace } from "./marketplace";
 import { seedPlatform } from "./platform";
 import { seedReference } from "./reference";
@@ -20,6 +21,7 @@ import { seedReference } from "./reference";
  *   admin@cang.vn                 — SUPER_ADMIN
  *   buyer@nordwind-outdoor.de     — German buyer (Nordwind Outdoor GmbH)
  *   sales@saigonpack.vn           — Vietnamese manufacturer (Saigon Pack Manufacturing)
+ *   ops@saigonfreight.vn          — logistics partner dispatcher (Saigon Freight Solutions), driver@saigonfreight.vn — driver
  */
 async function main() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -47,6 +49,8 @@ async function main() {
   if (seedDemo) {
     console.log("→ marketplace demo data");
     await seedMarketplace(db, { ...ref, ...platform });
+    console.log("→ logistics partner demo");
+    await seedLogisticsPartners(db);
   } else {
     console.log("→ marketplace demo data skipped (SEED_DEMO_DATA=false)");
   }

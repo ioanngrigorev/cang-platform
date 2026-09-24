@@ -9,10 +9,16 @@ import { ActionError, formDataToObject, ok, parseInput, runAction, type ActionRe
 import { audit } from "@/modules/audit/log";
 import { requireCompany } from "@/modules/auth/current-user";
 import { sha256 } from "@/modules/auth/session";
-import { apiKeyIdSchema, createApiKeySchema } from "./schemas";
+import { PARTNER_API_SCOPES, SELLER_API_SCOPES, apiKeyIdSchema, createApiKeySchema } from "./schemas";
 
 function revalidate() {
   revalidatePath("/[locale]/seller/api", "page");
+  revalidatePath("/[locale]/partner/integrations", "page");
+}
+
+/** Sellers get catalogue/sales scopes, logistics partners get shipment scopes. */
+function scopesFor(company: { isSeller: boolean; isLogisticsPartner: boolean }): readonly string[] {
+  return [...(company.isSeller ? SELLER_API_SCOPES : []), ...(company.isLogisticsPartner ? PARTNER_API_SCOPES : [])];
 }
 
 export type CreatedApiKey = { id: string; name: string; prefix: string; plainKey: string; scopes: string[] };
@@ -23,10 +29,13 @@ export type CreatedApiKey = { id: string; name: string; prefix: string; plainKey
  */
 export async function createApiKeyAction(_prev: ActionResult<CreatedApiKey> | null, formData: FormData): Promise<ActionResult<CreatedApiKey>> {
   return runAction(async () => {
-    const { user, company } = await requireCompany({ permission: "company.apikeys.manage", seller: true });
+    const { user, company } = await requireCompany({ permission: "company.apikeys.manage" });
+    const allowed = scopesFor(company);
+    if (!allowed.length) throw new ActionError("API keys are available to suppliers and logistics partners.", "FORBIDDEN");
     const parsed = parseInput(createApiKeySchema, formDataToObject(formData));
     if (!parsed.success) return parsed.result;
     const d = parsed.data;
+    if (d.scopes.some((s) => !allowed.includes(s))) throw new ActionError("One of the scopes is not available for your account.", "VALIDATION", { scopes: ["Choose scopes for your account type"] });
 
     const prefix = randomBytes(4).toString("hex");
     const secret = randomBytes(24).toString("base64url");
@@ -52,7 +61,7 @@ export async function createApiKeyAction(_prev: ActionResult<CreatedApiKey> | nu
 
 export async function revokeApiKeyAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   return runAction(async () => {
-    const { user, company } = await requireCompany({ permission: "company.apikeys.manage", seller: true });
+    const { user, company } = await requireCompany({ permission: "company.apikeys.manage" });
     const parsed = parseInput(apiKeyIdSchema, formDataToObject(formData));
     if (!parsed.success) return parsed.result;
     const [row] = await db

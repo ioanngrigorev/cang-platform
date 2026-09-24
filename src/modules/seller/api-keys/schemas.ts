@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const API_SCOPES = ["products:read", "products:write", "rfqs:read", "quotations:write", "orders:read", "orders:write", "analytics:read"] as const;
+export const SELLER_API_SCOPES = ["products:read", "products:write", "rfqs:read", "quotations:write", "orders:read", "orders:write", "analytics:read"] as const;
+/** Logistics partners: read assigned shipments, push status events from their own TMS. */
+export const PARTNER_API_SCOPES = ["shipments:read", "shipments:write"] as const;
+export const API_SCOPES = [...SELLER_API_SCOPES, ...PARTNER_API_SCOPES] as const;
 export type ApiScope = (typeof API_SCOPES)[number];
 
 const scopeList = z

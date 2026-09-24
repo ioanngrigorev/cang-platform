@@ -1,4 +1,4 @@
-import { BadgeCheck, Bookmark, Building2, Clock, FileText, Globe2, MapPin, MessageSquare, PlayCircle, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { BadgeCheck, Building2, Clock, FileText, Globe2, MapPin, MessageSquare, PlayCircle, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
@@ -9,6 +9,7 @@ import { ChipLink } from "@/components/marketplace/filter-fields";
 import { ProductGrid } from "@/components/marketplace/grids";
 import { countryName } from "@/components/marketplace/labels";
 import { DimensionRatings, RatingDistribution, ReviewCard } from "@/components/marketplace/reviews";
+import { SaveControl } from "@/components/marketplace/save-control";
 import { ShareButton } from "@/components/marketplace/share-button";
 import { Badge, StatusBadge, TrustBadges, VerifiedMark } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,6 @@ export default async function SupplierPage({ params, searchParams }: Props) {
   const badgeCodes = supplier.badges.filter((b) => !b.expiresAt || b.expiresAt > new Date()).map((b) => b.badge.code);
   const description = localized(supplier as unknown as Record<string, unknown>, "description", locale);
   const tagline = localized(supplier as unknown as Record<string, unknown>, "tagline", locale);
-  const saveHref = auth ? "/buyer/saved/suppliers" : `/login?next=${encodeURIComponent("/buyer/saved/suppliers")}`;
   const contactHref = `/buyer/messages/new?supplier=${supplier.slug}`;
   const rfqHref = `/buyer/rfqs/new?supplier=${supplier.id}`;
   const path = `/supplier/${supplier.slug}`;
@@ -170,9 +170,7 @@ export default async function SupplierPage({ params, searchParams }: Props) {
           </div>
           <div className="ml-auto flex flex-wrap items-center gap-2">
             <ShareButton title={name} label={t("product.share")} copiedLabel={tc("actions.saved")} size="sm" className="hidden sm:inline-flex" />
-            <Button href={saveHref} variant="ghost" size="sm">
-              <Bookmark /> <span className="hidden sm:inline">{t("supplier.save")}</span>
-            </Button>
+            <SaveControl auth={auth} kind="supplier" id={supplier.id} returnTo={path} label={t("supplier.save")} savedLabel={tc("actions.saved")} size="sm" variant="ghost" compactLabel />
             <Button href={contactHref} variant="secondary" size="sm">
               <MessageSquare /> {t("supplier.contact")}
             </Button>

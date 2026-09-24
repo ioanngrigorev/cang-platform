@@ -82,7 +82,7 @@ export function Field({
       ) : null}
       {children}
       {err ? (
-        <p className="text-xs text-danger-600" role="alert">
+        <p className="text-xs text-danger-600" role="alert" data-action-error="">
           {err}
         </p>
       ) : hint ? (

@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconCard, Section, SectionTitle, Step } from "@/components/marketplace/section";
 import { Badge } from "@/components/ui/badge";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
+import { financingHref } from "@/lib/cta";
+import { getAuth } from "@/modules/auth/current-user";
 import { Button } from "@/components/ui/button";
 import { Alert, Card, CardContent } from "@/components/ui/card";
 import { Avatar, Breadcrumbs, JsonLd } from "@/components/ui/misc";
@@ -27,7 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FinancingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, providers] = await Promise.all([getTranslations("content"), getFinancingProviders()]);
+  const [t, providers, auth] = await Promise.all([getTranslations("content"), getFinancingProviders(), getAuth()]);
+  const financingCta = financingHref(auth);
 
   return (
     <div>
@@ -50,12 +54,10 @@ export default async function FinancingPage({ params }: Props) {
           <h1 className="font-display text-3xl font-bold sm:text-4xl lg:text-5xl text-white">{t("financing.title")}</h1>
           <p className="mt-4 max-w-3xl text-base text-steel-300 sm:text-lg">{t("financing.subtitle")}</p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <Button href="/login?next=/buyer/financing" variant="accent">
+            <Button href={financingCta} variant="accent">
               {t("financing.cta")}
             </Button>
-            <Button href="/register?type=seller" variant="secondary">
-              {t("common.becomeSupplier")}
-            </Button>
+            <SupplierCta label={t("common.becomeSupplier")} variant="secondary" />
           </div>
         </div>
       </header>
@@ -186,7 +188,7 @@ export default async function FinancingPage({ params }: Props) {
             <p className="mt-2 text-sm text-steel-300">{t("financing.ctaBody")}</p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
-            <Button href="/login?next=/buyer/financing" variant="accent">
+            <Button href={financingCta} variant="accent">
               {t("financing.cta")}
             </Button>
             <Button href="/contact" variant="secondary">

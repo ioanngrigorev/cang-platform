@@ -8,7 +8,7 @@ import { acceptInvitationAction } from "@/modules/team/actions";
 export function AcceptInvitation({ token, label, isSeller }: { token: string; label: string; isSeller: boolean }) {
   const router = useRouter();
   const { state, formAction } = useActionForm(acceptInvitationAction, {
-    onSuccess: (data) => router.push(data.isSeller || isSeller ? "/seller" : "/buyer"),
+    onSuccess: (data) => router.push(data.home ?? (data.isSeller || isSeller ? "/seller" : "/buyer")),
   });
   return (
     <form action={formAction} className="space-y-3">

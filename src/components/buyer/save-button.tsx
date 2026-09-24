@@ -12,13 +12,15 @@ type Props = {
   saved: boolean;
   labelSave: string;
   labelSaved: string;
-  size?: "xs" | "sm" | "md";
+  size?: "xs" | "sm" | "md" | "lg";
+  /** Icon-only below the sm breakpoint (compact headers). */
+  compactLabel?: boolean;
   variant?: "secondary" | "ghost" | "subtle";
   className?: string;
 };
 
 /** Optimistic save/unsave toggle used on supplier and product cards across the buyer dashboard. */
-export function SaveButton({ kind, id, saved, labelSave, labelSaved, size = "sm", variant = "secondary", className }: Props) {
+export function SaveButton({ kind, id, saved, labelSave, labelSaved, size = "sm", variant = "secondary", className, compactLabel = false }: Props) {
   const action = kind === "supplier" ? toggleSavedSupplier : toggleSavedProduct;
   const [isSaved, setIsSaved] = React.useState(saved);
   const { formAction, pending } = useActionForm(action, { onSuccess: (data) => setIsSaved(data.saved) });
@@ -32,7 +34,7 @@ export function SaveButton({ kind, id, saved, labelSave, labelSaved, size = "sm"
       <input type="hidden" name={kind === "supplier" ? "supplierCompanyId" : "productId"} value={id} />
       <Button type="submit" variant={variant} size={size} disabled={pending} aria-pressed={isSaved}>
         {pending ? <Loader2 className="animate-spin" /> : isSaved ? <SavedIcon className={kind === "product" ? "fill-danger-500 text-danger-500" : "text-brass-600"} /> : <UnsavedIcon />}
-        {isSaved ? labelSaved : labelSave}
+        <span className={compactLabel ? "hidden sm:inline" : undefined}>{isSaved ? labelSaved : labelSave}</span>
       </Button>
     </form>
   );

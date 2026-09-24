@@ -4,9 +4,15 @@ import { LocaleSwitcher } from "./locale-switcher";
 import { cookies } from "next/headers";
 import { ThemeSwitcher } from "./theme-switcher";
 import { Logo } from "./logo";
+import { becomePartnerHref, becomeSupplierHref } from "@/lib/cta";
+import { getAuth } from "@/modules/auth/current-user";
 
 export async function SiteFooter() {
   const t = await getTranslations("common.footer");
+  const tn = await getTranslations("nav");
+  const auth = await getAuth();
+  const supplierHref = becomeSupplierHref(auth);
+  const partnerHref = becomePartnerHref(auth);
   const cols: Array<{ title: string; links: Array<{ label: string; href: string }> }> = [
     {
       title: t("forBuyers"),
@@ -23,9 +29,10 @@ export async function SiteFooter() {
       title: t("forSuppliers"),
       links: [
         { label: t("supplierGuide"), href: "/guides/supplier-guide" },
-        { label: t("becomeSupplier"), href: "/register?type=seller" },
+        supplierHref ? { label: t("becomeSupplier"), href: supplierHref } : { label: tn("sellerDashboard"), href: "/seller" },
         { label: t("pricing"), href: "/pricing" },
-        { label: "RFQ Marketplace", href: "/rfq" },
+        { label: tn("rfq"), href: "/rfq" },
+        partnerHref ? { label: t("becomePartner"), href: partnerHref } : { label: tn("partnerPortal"), href: "/partner" },
       ],
     },
     {
@@ -33,8 +40,9 @@ export async function SiteFooter() {
       links: [
         { label: t("whyVietnam"), href: "/why-vietnam" },
         { label: t("clusters"), href: "/clusters" },
-        { label: "Manufacturers", href: "/manufacturers" },
-        { label: "Products", href: "/products" },
+        { label: tn("manufacturers"), href: "/manufacturers" },
+        { label: tn("products"), href: "/products" },
+        { label: tn("allCategories"), href: "/categories" },
       ],
     },
     {

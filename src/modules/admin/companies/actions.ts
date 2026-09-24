@@ -1,5 +1,6 @@
 "use server";
 
+import { companyHome as homeFor } from "@/modules/auth/redirects";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { badges, companies, companyBadges, companyCertifications } from "@/db/schema";
@@ -26,7 +27,7 @@ function revalidate(companyId: string) {
   revalidateAdmin("/admin/companies", `/admin/companies/${companyId}`, "/admin");
 }
 
-const companyHome = (c: { isSeller: boolean }) => (c.isSeller ? "/seller" : "/buyer");
+const companyHome = (c: { isSeller: boolean; isBuyer?: boolean; isLogisticsPartner?: boolean }) => homeFor(c);
 
 export async function setCompanyStatusAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   return runAction(async () => {

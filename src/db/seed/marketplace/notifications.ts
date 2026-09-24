@@ -48,7 +48,7 @@ export async function seedNotifications(db: Db, w: World): Promise<void> {
   push(s, "INSPECTION_UPDATE", `Pre-shipment inspection booked on ${qcOrder.number}`, "VQC inspector confirmed for the day after tomorrow, 09:00 at Vinh Loc IP.", `/seller/orders/${qcOrder.id}`, 60, false);
   push(s, "FINANCING_UPDATE", "Financing offer received: US$35,000 production financing", "Vietnam Trade Bank offered 90 days at 12% p.a.; valid for 10 days.", `/seller/financing`, 15 * 24, true);
   push(s, "REVIEW_RECEIVED", "New 5-star review from Nordwind Outdoor GmbH", "“Sample room is the best we have worked with in Vietnam.”", `/seller/reviews`, 12 * 24, true);
-  push(s, "VERIFICATION_STATUS", "Factory audit badge renewed", "Your Factory Audited badge is valid for another 24 months.", `/seller/verification`, 30 * 24, true);
+  push(s, "VERIFICATION_STATUS", "Factory audit badge renewed", "Your Factory Audited badge is valid for another 24 months.", `/seller/company/verification`, 30 * 24, true);
   push(s, "SYSTEM", "Featured Product campaign: 1,420 impressions this week", "Your TrailRidge 35L listing received 96 clicks and 4 inquiries.", `/seller/advertising`, 8, false);
 
   // ---- admin

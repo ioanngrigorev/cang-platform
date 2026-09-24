@@ -5,7 +5,7 @@ import type { ZodSchema, ZodTypeDef } from "zod";
  * Client forms render `error` (top-level) and `fieldErrors` (per input).
  */
 export type ActionResult<T = undefined> =
-  | { ok: true; data: T; message?: string }
+  | { ok: true; data: T; message?: string; /** Set when the action called redirect(): the client navigates (see useActionForm). */ redirect?: string }
   | { ok: false; error: string; fieldErrors?: Record<string, string[]>; code?: string };
 
 export function ok<T>(data: T, message?: string): ActionResult<T> {
@@ -73,8 +73,16 @@ export async function runAction<T>(fn: () => Promise<ActionResult<T>>): Promise<
     if (err instanceof ActionError) {
       return { ok: false, error: err.message, code: err.code, fieldErrors: err.fieldErrors };
     }
-    // Next.js redirect()/notFound() throw special errors that must propagate.
+    // Next.js redirect()/notFound() throw special errors that must propagate — except redirects, which are
+    // handed to the client as data: a redirect thrown from an action occasionally never navigates in the
+    // App Router (the page stays put with the button spinning although the work is done), so the form
+    // navigates itself (useActionForm) with a hard-navigation fallback.
     if (err && typeof err === "object" && "digest" in err && typeof (err as { digest?: string }).digest === "string") {
+      const digest = (err as { digest: string }).digest;
+      if (digest.startsWith("NEXT_REDIRECT;")) {
+        const url = digest.split(";")[2];
+        if (url && url.startsWith("/") && !url.startsWith("//")) return { ok: true, data: undefined as T, redirect: url };
+      }
       throw err;
     }
     console.error("[action] unexpected error", err);

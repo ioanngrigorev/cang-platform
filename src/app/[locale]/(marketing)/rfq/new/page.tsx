@@ -2,6 +2,7 @@ import { CheckCircle2, ClipboardList, ShieldCheck, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconCard, Step } from "@/components/marketplace/section";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { JsonLd, PageHeader } from "@/components/ui/misc";
@@ -104,9 +105,7 @@ export default async function NewRfqLandingPage({ params }: Props) {
           <Card>
             <CardContent className="p-5">
               <p className="text-sm text-steel-600">{t("rfq.forSuppliersBody")}</p>
-              <Button href="/register?type=seller" variant="secondary" size="sm" className="mt-3 w-full">
-                {t("rfq.submitQuotation")}
-              </Button>
+              <SupplierCta label={t("rfq.submitQuotation")} sellerHref="/seller/rfqs" variant="secondary" size="sm" className="mt-3 w-full" />
             </CardContent>
           </Card>
           <p className="text-sm">

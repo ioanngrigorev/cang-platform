@@ -113,6 +113,8 @@ export const COMPANY_PERMISSIONS = [
   "messages.read",
   "messages.write",
   "logistics.manage",
+  /** Logistics partners: report shipment statuses (dispatchers, drivers). */
+  "shipments.update",
   "financing.apply",
   "disputes.manage",
   "reviews.write",
@@ -145,6 +147,7 @@ export const MEMBER_ROLE_PERMISSIONS: Record<MemberRole, CompanyPermission[]> = 
     "messages.read",
     "messages.write",
     "logistics.manage",
+    "shipments.update",
     "disputes.manage",
     "reviews.write",
     "advertising.manage",
@@ -183,7 +186,7 @@ export const MEMBER_ROLE_PERMISSIONS: Record<MemberRole, CompanyPermission[]> = 
     "company.billing.manage",
     "analytics.read",
   ],
-  STAFF: ["company.profile.read", "products.read", "rfq.read", "quotation.read", "orders.read", "messages.read", "messages.write"],
+  STAFF: ["company.profile.read", "products.read", "rfq.read", "quotation.read", "orders.read", "messages.read", "messages.write", "shipments.update"],
   VIEWER: ["company.profile.read", "products.read", "rfq.read", "quotation.read", "orders.read", "messages.read"],
 };
 

@@ -6,6 +6,7 @@ import { JsonDetails } from "@/components/admin/json-details";
 import { OrderAdminActions } from "@/components/admin/order-actions";
 import { PaymentAdminButtons } from "@/components/admin/payment-actions";
 import { ShipmentStepper } from "@/components/orders/shipment-tracker";
+import { shipmentStatusLabels } from "@/modules/logistics/tracking/labels";
 import { Alert, Badge, Card, CardContent, CardHeader, DataList, PageHeader, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { formatDate, formatDateTime, formatMoney, formatNumber, humanize, localized } from "@/lib/utils";
@@ -21,6 +22,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   const t = await getTranslations("admin.orders");
   const tc = await getTranslations("admin.common");
   const ts = await getTranslations("orders.shipments");
+  const statusLabels = await shipmentStatusLabels();
   const [order, statuses] = await Promise.all([getAdminOrder(id), orderStatusList()]);
   if (!order) notFound();
   const canWrite = canPlatform(auth, "admin.orders.write");
@@ -186,9 +188,9 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                           {s.eta ? ` · ETA ${formatDate(s.eta, locale)}` : ""}
                         </p>
                       </div>
-                      <StatusBadge status={s.status} />
+                      <StatusBadge status={s.status} label={statusLabels[s.status]} />
                     </div>
-                    <ShipmentStepper status={s.status} events={s.events} locale={locale} labels={milestoneLabels} orientation="horizontal" />
+                    <ShipmentStepper status={s.status} mode={s.mode} events={s.events} locale={locale} labels={statusLabels} orientation="horizontal" />
                   </div>
                 ))
               )}

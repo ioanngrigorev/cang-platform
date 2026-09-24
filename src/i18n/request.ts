@@ -22,6 +22,8 @@ const namespaces = [
   "orders",
   "payments",
   "logistics",
+  "tracking",
+  "partner",
   "financing",
   "content",
   "errors",

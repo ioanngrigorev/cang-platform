@@ -1,6 +1,7 @@
 import { Truck } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { shipmentStatusLabels } from "@/modules/logistics/tracking/labels";
 import { Button, EmptyState, PageHeader, Pagination, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { formatDate, formatDateTime, humanize } from "@/lib/utils";
@@ -20,6 +21,7 @@ export default async function BuyerShipmentsPage({
   const sp = await searchParams;
   const { company } = await requireCompany({ permission: "orders.read", buyer: true });
   const t = await getTranslations("orders.shipments");
+  const statusLabels = await shipmentStatusLabels();
 
   const page = Math.max(1, Number(sp.page ?? 1) || 1);
   const { rows, totalPages } = await listBuyerShipments(company.id, { page });
@@ -71,7 +73,7 @@ export default async function BuyerShipmentsPage({
                   </TD>
                   <TD className="hidden text-steel-600 md:table-cell">{humanize(s.mode)}</TD>
                   <TD>
-                    <StatusBadge status={s.status} />
+                    <StatusBadge status={s.status} label={statusLabels[s.status]} />
                   </TD>
                   <TD className="hidden whitespace-nowrap text-steel-600 lg:table-cell">{s.eta ? formatDate(s.eta, locale) : "—"}</TD>
                   <TD className="hidden max-w-[260px] text-xs text-steel-500 xl:table-cell">

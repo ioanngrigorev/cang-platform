@@ -686,7 +686,13 @@
     "milestone": "Mốc",
     "location": "Vị trí",
     "occurredAt": "Thời điểm",
-    "fieldDescription": "Mô tả"
+    "fieldDescription": "Mô tả",
+    "assignPartner": "Đối tác",
+    "partnerCompany": "Công ty đối tác (slug)",
+    "partnerCompanyHint": "Công ty xử lý lô hàng của nhà cung cấp dịch vụ này trong cổng đối tác.",
+    "partnerPortalOf": "Cổng đối tác: {name}",
+    "pendingApproval": "Chờ duyệt",
+    "approvePartner": "Duyệt"
   },
   "disputes": {
     "title": "Tranh chấp",

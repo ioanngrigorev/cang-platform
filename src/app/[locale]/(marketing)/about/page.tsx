@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ContentArticle } from "@/components/marketplace/content-article";
 import { StatTile } from "@/components/marketplace/section";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { JsonLd } from "@/components/ui/misc";
@@ -70,9 +71,7 @@ export default async function AboutPage({ params }: Props) {
         <Card>
           <CardContent className="p-4">
             <p className="text-sm font-semibold text-ink-900">{t("common.getStarted")}</p>
-            <Button href="/register?type=seller" size="sm" className="mt-3 w-full">
-              {t("common.becomeSupplier")}
-            </Button>
+            <SupplierCta label={t("common.becomeSupplier")} size="sm" className="mt-3 w-full" />
             <Button href="/buyer/rfqs/new" variant="secondary" size="sm" className="mt-2 w-full">
               {t("common.postRfq")}
             </Button>

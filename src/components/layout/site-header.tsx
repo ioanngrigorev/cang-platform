@@ -2,6 +2,7 @@ import { Menu } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { becomeSupplierHref } from "@/lib/cta";
 import { getAuth } from "@/modules/auth/current-user";
 import { unreadCount } from "@/modules/notifications/service";
 import { LocaleSwitcher } from "./locale-switcher";
@@ -28,11 +29,14 @@ export async function SiteHeader({ showSearch = true }: { showSearch?: boolean }
   const auth = await getAuth();
   const unread = auth ? await unreadCount(auth.user.id) : 0;
   const links = NAV_LINKS.map((l) => ({ ...l, label: t(l.key) }));
+  // Signed-in suppliers get their dashboard here instead of a sign-up link that would bounce them home.
+  const supplierHref = becomeSupplierHref(auth);
+  const cta = supplierHref ? { href: supplierHref, label: t("becomeSupplier") } : { href: "/seller", label: t("sellerDashboard") };
 
   return (
     <header className="sticky top-0 z-30 border-b border-steel-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container flex h-16 items-center gap-4">
-        <MobileNav links={links} trigger={<span className="inline-flex rounded-md p-2 text-steel-600 hover:bg-steel-100 lg:hidden" aria-label={t("menu")}><Menu className="size-5" /></span>} />
+        <MobileNav links={links} cta={cta} trigger={<span className="inline-flex rounded-md p-2 text-steel-600 hover:bg-steel-100 lg:hidden" aria-label={t("menu")}><Menu className="size-5" /></span>} />
         <Logo />
         {showSearch ? (
           <div className="hidden flex-1 md:block md:max-w-xl">
@@ -47,7 +51,7 @@ export async function SiteHeader({ showSearch = true }: { showSearch?: boolean }
           {auth ? (
             <UserMenu
               user={{ name: auth.user.name, email: auth.user.email, avatarUrl: auth.user.avatarUrl, platformRole: auth.user.platformRole }}
-              memberships={auth.memberships.map((m) => ({ companyId: m.companyId, role: m.role, company: { id: m.company.id, name: m.company.name, isSeller: m.company.isSeller, isBuyer: m.company.isBuyer, logoUrl: m.company.logoUrl } }))}
+              memberships={auth.memberships.map((m) => ({ companyId: m.companyId, role: m.role, company: { id: m.company.id, name: m.company.name, isSeller: m.company.isSeller, isBuyer: m.company.isBuyer, isLogisticsPartner: m.company.isLogisticsPartner, logoUrl: m.company.logoUrl } }))}
               activeCompanyId={auth.activeMembership?.companyId ?? null}
               unread={unread}
             />
@@ -70,8 +74,8 @@ export async function SiteHeader({ showSearch = true }: { showSearch?: boolean }
               {l.label}
             </Link>
           ))}
-          <Link href="/register?type=seller" className="ml-auto font-semibold text-jade-600 hover:text-jade-700">
-            {t("becomeSupplier")} →
+          <Link href={cta.href} className="ml-auto font-semibold text-jade-600 hover:text-jade-700">
+            {cta.label} →
           </Link>
         </div>
       </nav>

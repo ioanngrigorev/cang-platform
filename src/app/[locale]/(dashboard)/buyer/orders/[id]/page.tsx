@@ -6,6 +6,7 @@ import { OrderActions } from "@/components/orders/order-actions";
 import { OrderTimeline } from "@/components/orders/order-timeline";
 import { InvoiceLinks, PaymentSchedule } from "@/components/orders/payment-schedule";
 import { ShipmentStepper } from "@/components/orders/shipment-tracker";
+import { shipmentStatusLabels } from "@/modules/logistics/tracking/labels";
 import { Alert, Avatar, Badge, Button, Card, CardContent, CardHeader, DataList, PageHeader, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { formatDate, formatDateTime, formatMoney, formatNumber, humanize, localized } from "@/lib/utils";
@@ -22,6 +23,7 @@ export default async function BuyerOrderDetailPage({ params }: { params: Promise
   const { company } = await requireCompany({ permission: "orders.read", buyer: true });
   const t = await getTranslations("orders.detail");
   const ts = await getTranslations("orders.shipments");
+  const statusLabels = await shipmentStatusLabels();
 
   const order = await getBuyerOrder(company.id, id);
   if (!order) notFound();
@@ -199,9 +201,9 @@ export default async function BuyerOrderDetailPage({ params }: { params: Promise
                           {s.eta ? ` · ${t("eta")} ${formatDate(s.eta, locale)}` : ""}
                         </p>
                       </div>
-                      <StatusBadge status={s.status} />
+                      <StatusBadge status={s.status} label={statusLabels[s.status]} />
                     </div>
-                    <ShipmentStepper status={s.status} events={s.events} locale={locale} labels={milestoneLabels} orientation="horizontal" />
+                    <ShipmentStepper status={s.status} mode={s.mode} events={s.events} locale={locale} labels={statusLabels} orientation="horizontal" />
                     <Button href={`/buyer/shipments/${s.id}`} variant="ghost" size="sm" className="mt-3">
                       {t("viewShipment")}
                     </Button>

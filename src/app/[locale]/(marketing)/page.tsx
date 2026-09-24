@@ -173,7 +173,7 @@ export default async function HomePage({ params }: Props) {
           case "TOP_CATEGORIES":
             node = categories.length ? (
               <Section key={section.id} tone={nextTone()}>
-                <SectionTitle title={title(section)} subtitle={subtitle(section)} action={{ label: t("sections.allCategories"), href: "/products" }} />
+                <SectionTitle title={title(section)} subtitle={subtitle(section)} action={{ label: t("sections.allCategories"), href: "/categories" }} />
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                   {categories.map((c) => (
                     <CategoryTile key={c.id} href={`/products/${c.slug}`} name={localized(c as unknown as Record<string, unknown>, "name", locale)} photoSubject={c.name} imageUrl={c.imageUrl} countLabel={t("sections.productsCount", { count: c.productCount })} />

@@ -314,6 +314,17 @@ export const shipmentStatusEnum = pgEnum("shipment_status", [
   "DELIVERED",
   "EXCEPTION",
   "CANCELLED",
+  // Added with the logistics-partner portal (domestic parcel, truckload and export milestones, failures).
+  "READY_TO_PICK",
+  "PICKUP_FAILED",
+  "VEHICLE_ASSIGNED",
+  "EXPORT_CLEARED",
+  "IMPORT_CLEARED",
+  "DELIVERY_FAILED",
+  "RETURNING",
+  "RETURNED",
+  "LOST",
+  "DAMAGED",
 ]);
 export const logisticsServiceEnum = pgEnum("logistics_service", [
   "FACTORY_PICKUP",

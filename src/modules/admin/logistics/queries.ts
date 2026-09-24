@@ -35,6 +35,7 @@ export async function listAdminShipments(page = 1) {
         order: { id: orders.id, orderNumber: orders.orderNumber },
         supplier: { id: companies.id, name: companies.name },
         provider: { id: logisticsProviders.id, name: logisticsProviders.name },
+        exceptionReason: shipments.exceptionReason,
       })
       .from(shipments)
       .innerJoin(orders, eq(orders.id, shipments.orderId))
@@ -49,5 +50,10 @@ export async function listAdminShipments(page = 1) {
 }
 
 export async function listLogisticsProvidersAll() {
-  return db.select().from(logisticsProviders).orderBy(asc(logisticsProviders.sortOrder), asc(logisticsProviders.name));
+  const rows = await db
+    .select({ provider: logisticsProviders, company: { id: companies.id, name: companies.name, slug: companies.slug } })
+    .from(logisticsProviders)
+    .leftJoin(companies, eq(companies.id, logisticsProviders.companyId))
+    .orderBy(asc(logisticsProviders.isActive), asc(logisticsProviders.sortOrder), asc(logisticsProviders.name));
+  return rows.map((r) => ({ ...r.provider, company: r.company?.id ? r.company : null }));
 }

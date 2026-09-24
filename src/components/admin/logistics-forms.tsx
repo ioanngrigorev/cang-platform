@@ -4,8 +4,9 @@ import { Pencil, Plus, Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ActionForm, DialogForm } from "@/components/buyer/action-form";
 import { Button, Checkbox, Field, Input, Select, Textarea } from "@/components/ui";
-import { addShipmentEventAction, saveLogisticsProviderAction, toggleLogisticsProviderAction } from "@/modules/admin/logistics/actions";
-import { LOGISTICS_SERVICES, SHIPMENT_MILESTONES, SHIPMENT_MODES, SHIPMENT_STATUSES } from "@/modules/admin/logistics/schemas";
+import { StatusUpdateDialog } from "@/components/logistics/status-update-dialog";
+import { addShipmentEventAction, assignShipmentPartnerAction, saveLogisticsProviderAction, toggleLogisticsProviderAction } from "@/modules/admin/logistics/actions";
+import { LOGISTICS_SERVICES, SHIPMENT_MODES, SHIPMENT_STATUSES } from "@/modules/admin/logistics/schemas";
 
 export type LogisticsProviderValues = {
   id?: string;
@@ -19,6 +20,7 @@ export type LogisticsProviderValues = {
   apiConfig?: unknown;
   sortOrder?: number;
   isActive?: boolean;
+  companySlug?: string | null;
 };
 
 export function LogisticsProviderDialog({ values }: { values?: LogisticsProviderValues }) {
@@ -63,6 +65,9 @@ export function LogisticsProviderDialog({ values }: { values?: LogisticsProvider
             <Field label={t("sortOrder")} htmlFor="sortOrder" error={fieldError("sortOrder")}>
               <Input id="sortOrder" name="sortOrder" type="number" defaultValue={values?.sortOrder ?? 0} />
             </Field>
+            <Field label={t("partnerCompany")} htmlFor="companySlug" error={fieldError("companySlug")} hint={t("partnerCompanyHint")}>
+              <Input id="companySlug" name="companySlug" defaultValue={values?.companySlug ?? ""} placeholder="saigon-freight-solutions" />
+            </Field>
           </div>
           <Field label={t("fieldDescription")} htmlFor="description" error={fieldError("description")}>
             <Textarea id="description" name="description" rows={2} defaultValue={values?.description ?? ""} />
@@ -91,60 +96,47 @@ export function LogisticsProviderDialog({ values }: { values?: LogisticsProvider
   );
 }
 
-export function LogisticsProviderToggle({ providerId, isActive }: { providerId: string; isActive: boolean }) {
+export function LogisticsProviderToggle({ providerId, isActive, approve = false }: { providerId: string; isActive: boolean; approve?: boolean }) {
   const tc = useTranslations("admin.common");
-  return <ActionForm action={toggleLogisticsProviderAction} hidden={{ providerId, isActive: isActive ? "false" : "true" }} label={isActive ? tc("deactivate") : tc("activate")} variant="ghost" size="xs" />;
+  const t = useTranslations("admin.logistics");
+  return <ActionForm action={toggleLogisticsProviderAction} hidden={{ providerId, isActive: isActive ? "false" : "true" }} label={isActive ? tc("deactivate") : approve ? t("approvePartner") : tc("activate")} variant={approve ? "primary" : "ghost"} size="xs" />;
 }
 
-export function ShipmentEventDialog({ shipmentId, status }: { shipmentId: string; status: string }) {
+/** Admin status override: every status is available (CANG operations can correct any shipment). */
+export function ShipmentEventDialog({ shipmentId }: { shipmentId: string; status?: string }) {
+  return <StatusUpdateDialog action={addShipmentEventAction} shipmentId={shipmentId} allowed={SHIPMENT_STATUSES.filter((s) => s !== "PENDING")} uploads={false} size="sm" variant="secondary" />;
+}
+
+/** Hand a shipment to a logistics partner (or take it back). */
+export function AssignPartnerDialog({ shipmentId, providerId, providers }: { shipmentId: string; providerId: string | null; providers: Array<{ id: string; name: string; isActive: boolean }> }) {
   const t = useTranslations("admin.logistics");
+  const tt = useTranslations("tracking");
   const tc = useTranslations("admin.common");
   return (
     <DialogForm
-      action={addShipmentEventAction}
+      action={assignShipmentPartnerAction}
       hidden={{ shipmentId }}
-      title={t("addEvent")}
-      description={t("addEventHint")}
-      submitLabel={t("addEvent")}
+      title={t("assignPartner")}
+      description={tt("partner.chooseHint")}
+      submitLabel={tc("save")}
       cancelLabel={tc("cancel")}
       trigger={(open) => (
-        <Button variant="secondary" size="xs" onClick={open}>
-          <Truck /> {t("addEvent")}
+        <Button variant="ghost" size="xs" onClick={open}>
+          <Truck /> {t("assignPartner")}
         </Button>
       )}
     >
       {({ fieldError }) => (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t("milestone")} htmlFor="milestone" error={fieldError("milestone")} required>
-              <Select id="milestone" name="milestone" defaultValue="IN_TRANSIT">
-                {SHIPMENT_MILESTONES.map((m) => (
-                  <option key={m} value={m}>
-                    {m.replace(/_/g, " ")}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label={tc("status")} htmlFor="status" error={fieldError("status")} required>
-              <Select id="status" name="status" defaultValue={status}>
-                {SHIPMENT_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s.replace(/_/g, " ")}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label={t("location")} htmlFor="location" error={fieldError("location")}>
-              <Input id="location" name="location" />
-            </Field>
-            <Field label={t("occurredAt")} htmlFor="occurredAt" error={fieldError("occurredAt")}>
-              <Input id="occurredAt" name="occurredAt" type="datetime-local" />
-            </Field>
-          </div>
-          <Field label={t("fieldDescription")} htmlFor="description" error={fieldError("description")}>
-            <Textarea id="description" name="description" rows={2} />
-          </Field>
-        </>
+        <Field label={tt("partner.choose")} htmlFor="assign-provider" error={fieldError("providerId")}>
+          <Select id="assign-provider" name="providerId" defaultValue={providerId ?? ""}>
+            <option value="">{tt("partner.none")}</option>
+            {providers.filter((p) => p.isActive || p.id === providerId).map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
       )}
     </DialogForm>
   );

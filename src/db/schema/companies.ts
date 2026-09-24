@@ -38,6 +38,8 @@ export const companies = pgTable(
     businessType: businessTypeEnum().notNull().default("MANUFACTURER"),
     isSeller: boolean().notNull().default(false),
     isBuyer: boolean().notNull().default(false),
+    /** Carrier / forwarder / 3PL working shipments in the partner portal (linked logistics_providers row). */
+    isLogisticsPartner: boolean().notNull().default(false),
     status: companyStatusEnum().notNull().default("PENDING"),
     countryCode: text()
       .notNull()

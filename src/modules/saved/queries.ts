@@ -49,3 +49,13 @@ export async function savedProductIds(userId: string) {
     .where(and(eq(savedItems.userId, userId), eq(savedItems.type, "PRODUCT"), isNull(savedItems.rfqId)));
   return rows.map((r) => r.id).filter((x): x is string => !!x);
 }
+
+/** Whether the user has saved this product / supplier (public pages render the toggle in the right state). */
+export async function isSavedByUser(userId: string, kind: "product" | "supplier", id: string) {
+  const [row] = await db
+    .select({ id: savedItems.id })
+    .from(savedItems)
+    .where(and(eq(savedItems.userId, userId), kind === "product" ? eq(savedItems.productId, id) : eq(savedItems.supplierCompanyId, id)))
+    .limit(1);
+  return !!row;
+}

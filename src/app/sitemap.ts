@@ -12,6 +12,7 @@ type Entry = MetadataRoute.Sitemap[number];
 const STATIC_PATHS: Array<{ path: string; priority: number; changeFrequency: Entry["changeFrequency"] }> = [
   { path: "/", priority: 1, changeFrequency: "daily" },
   { path: "/products", priority: 0.9, changeFrequency: "daily" },
+  { path: "/categories", priority: 0.8, changeFrequency: "weekly" },
   { path: "/manufacturers", priority: 0.9, changeFrequency: "daily" },
   { path: "/clusters", priority: 0.8, changeFrequency: "weekly" },
   { path: "/rfq", priority: 0.8, changeFrequency: "hourly" },

@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
@@ -24,6 +25,15 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "10mb",
     },
+  },
+  webpack(config) {
+    // Work around a lost-ping bug in the bundled React DOM that can leave server-action and navigation
+    // transitions pending forever (see scripts/react-ping-fix-loader.cjs).
+    config.module.rules.push({
+      test: /next[\\/]dist[\\/]compiled[\\/]react-dom[\\/]cjs[\\/]react-dom-client\.production\.js$/,
+      use: [{ loader: path.resolve(process.cwd(), "scripts/react-ping-fix-loader.cjs") }],
+    });
+    return config;
   },
   async headers() {
     return [

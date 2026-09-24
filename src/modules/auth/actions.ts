@@ -13,7 +13,7 @@ import { audit } from "@/modules/audit/log";
 import { createCompanyForUser } from "@/modules/companies/service";
 import { emailLayout, sendEmail } from "@/modules/notifications/email";
 import { getAuth, requireAuth } from "./current-user";
-import { defaultHomeFor } from "./redirects";
+import { companyHome, defaultHomeFor } from "./redirects";
 import { hashPassword, verifyPassword } from "./password";
 import {
   changePasswordSchema,
@@ -109,14 +109,14 @@ export async function registerAction(_prev: ActionResult | null, formData: FormD
       subject: "Welcome to CANG — confirm your email",
       html: emailLayout(
         "Welcome to CANG",
-        `<p>Hi ${user.name},</p><p>Your ${input.accountType === "SELLER" ? "supplier" : "buyer"} account for <strong>${input.companyName}</strong> is ready. Please confirm your email address to unlock all features.</p>`,
+        `<p>Hi ${user.name},</p><p>Your ${input.accountType === "SELLER" ? "supplier" : input.accountType === "LOGISTICS" ? "logistics partner" : "buyer"} account for <strong>${input.companyName}</strong> is ready. Please confirm your email address to unlock all features.</p>`,
         { label: "Confirm email", url: verifyUrl },
       ),
     }).catch(() => {});
 
     await createSession(user.id);
     await audit({ actorId: user.id, action: "auth.register", entityType: "user", entityId: user.id, after: { accountType: input.accountType }, ipAddress: ip });
-    redirect({ href: safeNext(input.next, input.accountType === "SELLER" ? "/seller?welcome=1" : "/buyer?welcome=1"), locale });
+    redirect({ href: safeNext(input.next, input.accountType === "SELLER" ? "/seller?welcome=1" : input.accountType === "LOGISTICS" ? "/partner?welcome=1" : "/buyer?welcome=1"), locale });
     return ok(undefined);
   });
 }
@@ -253,7 +253,7 @@ export async function switchCompanyAction(companyId: string): Promise<ActionResu
     if (!m) throw new UnauthorizedError("You are not a member of that company.");
     await setActiveCompany(auth.sessionId, companyId);
     const locale = await getLocale();
-    redirect({ href: m.company.isSeller ? "/seller" : "/buyer", locale });
+    redirect({ href: companyHome(m.company), locale });
     return ok(undefined);
   });
 }

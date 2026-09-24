@@ -41,7 +41,7 @@ export type PricingLabels = {
 /** Plan comparison with a monthly / yearly billing toggle. */
 const fill = (template: string, values: Record<string, string>) => template.replace(/\{(\w+)\}/g, (m, k: string) => values[k] ?? m);
 
-export function PricingPlans({ plans, locale, labels }: { plans: PricingPlan[]; locale: string; labels: PricingLabels }) {
+export function PricingPlans({ plans, locale, labels, planHrefs = {} }: { plans: PricingPlan[]; locale: string; labels: PricingLabels; planHrefs?: Record<string, string> }) {
   const [cycle, setCycle] = React.useState<"monthly" | "yearly">("yearly");
   const savings = React.useMemo(() => {
     const p = plans.find((x) => x.priceMonthly > 0 && x.priceYearly > 0);
@@ -112,7 +112,7 @@ export function PricingPlans({ plans, locale, labels }: { plans: PricingPlan[]; 
                 ))}
               </ul>
               <div className="mt-auto pt-6">
-                <Button href={p.isEnterprise ? "/contact" : `/register?type=seller&plan=${p.code.toLowerCase()}`} variant={p.highlighted ? "primary" : "secondary"} className="w-full">
+                <Button href={p.isEnterprise ? "/contact" : (planHrefs[p.code] ?? `/register?type=seller&plan=${p.code.toLowerCase()}`)} variant={p.highlighted ? "primary" : "secondary"} className="w-full">
                   {p.isEnterprise ? labels.ctaEnterprise : isFree ? labels.ctaFree : labels.cta}
                 </Button>
               </div>

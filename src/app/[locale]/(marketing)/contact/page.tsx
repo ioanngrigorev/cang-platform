@@ -1,6 +1,7 @@
 import { Building2, Clock, Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { JsonLd, PageHeader } from "@/components/ui/misc";
@@ -133,9 +134,7 @@ export default async function ContactPage({ params }: Props) {
             <CardContent className="p-5">
               <p className="text-sm font-semibold text-ink-900">{t("contact.supplierOnboarding")}</p>
               <p className="mt-1 text-sm text-steel-600">{t("contact.supplierOnboardingBody")}</p>
-              <Button href="/register?type=seller" variant="secondary" size="sm" className="mt-3 w-full">
-                {t("common.becomeSupplier")}
-              </Button>
+              <SupplierCta label={t("common.becomeSupplier")} variant="secondary" size="sm" className="mt-3 w-full" />
             </CardContent>
           </Card>
         </aside>

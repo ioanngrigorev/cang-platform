@@ -76,6 +76,17 @@ const STATUS_VARIANTS: Record<string, VariantProps<typeof badgeVariants>["varian
   FAIL: "danger",
   HELD: "brass",
   AWARDED: "success",
+  // shipments
+  READY_TO_PICK: "info",
+  VEHICLE_ASSIGNED: "info",
+  EXPORT_CLEARED: "info",
+  IMPORT_CLEARED: "info",
+  PICKUP_FAILED: "warning",
+  DELIVERY_FAILED: "warning",
+  RETURNING: "warning",
+  RETURNED: "danger",
+  LOST: "danger",
+  DAMAGED: "danger",
 };
 
 export function StatusBadge({ status, label, className, size }: { status: string | null | undefined; label?: string; className?: string; size?: "sm" | "md" | "lg" }) {

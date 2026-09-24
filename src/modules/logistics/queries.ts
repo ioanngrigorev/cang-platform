@@ -66,7 +66,7 @@ export async function getBuyerShipment(companyId: string, shipmentId: string) {
   const shipment = await db.query.shipments.findFirst({
     where: eq(shipments.id, shipmentId),
     with: {
-      order: { columns: { id: true, orderNumber: true, buyerCompanyId: true, incoterm: true }, with: { supplierCompany: { columns: { id: true, name: true, slug: true, logoUrl: true } } } },
+      order: { columns: { id: true, orderNumber: true, buyerCompanyId: true, incoterm: true, statusCode: true }, with: { supplierCompany: { columns: { id: true, name: true, slug: true, logoUrl: true } } } },
       provider: true,
       events: { orderBy: (t, { asc }) => [asc(t.occurredAt)] },
       documents: { where: (t, { isNull: n }) => n(t.deletedAt) },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Factory, ShoppingBag } from "lucide-react";
+import { Factory, ShoppingBag, Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { Link } from "@/i18n/navigation";
@@ -10,11 +10,13 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { cn } from "@/lib/utils";
 import { registerAction } from "@/modules/auth/actions";
 
-export function RegisterForm({ defaultType, next, locale, countries }: { defaultType: "BUYER" | "SELLER"; next?: string; locale: string; countries: Array<{ code: string; name: string }> }) {
+type AccountType = "BUYER" | "SELLER" | "LOGISTICS";
+
+export function RegisterForm({ defaultType, next, locale, countries }: { defaultType: AccountType; next?: string; locale: string; countries: Array<{ code: string; name: string }> }) {
   const t = useTranslations("auth.register");
-  const [type, setType] = React.useState<"BUYER" | "SELLER">(defaultType);
+  const [type, setType] = React.useState<AccountType>(defaultType);
   const { state, formAction, fieldError } = useActionForm(registerAction);
-  const defaultCountry = type === "SELLER" ? "VN" : "US";
+  const defaultCountry = type === "BUYER" ? "US" : "VN";
   return (
     <form action={formAction} className="space-y-4" noValidate>
       {next ? <input type="hidden" name="next" value={next} /> : null}
@@ -25,6 +27,7 @@ export function RegisterForm({ defaultType, next, locale, countries }: { default
           [
             { v: "BUYER", icon: ShoppingBag, label: t("buyer"), hint: t("buyerHint") },
             { v: "SELLER", icon: Factory, label: t("seller"), hint: t("sellerHint") },
+            { v: "LOGISTICS", icon: Truck, label: t("logistics"), hint: t("logisticsHint") },
           ] as const
         ).map((o) => (
           <button
@@ -32,7 +35,7 @@ export function RegisterForm({ defaultType, next, locale, countries }: { default
             type="button"
             onClick={() => setType(o.v)}
             aria-pressed={type === o.v}
-            className={cn("rounded-lg border p-3 text-left transition-colors", type === o.v ? "border-ink-900 bg-ink-50 ring-1 ring-ink-900" : "border-steel-200 hover:border-steel-400")}
+            className={cn("rounded-lg border p-3 text-left transition-colors", o.v === "LOGISTICS" && "col-span-2", type === o.v ? "border-ink-900 bg-ink-50 ring-1 ring-ink-900" : "border-steel-200 hover:border-steel-400")}
           >
             <o.icon className={cn("size-5", type === o.v ? "text-ink-900" : "text-steel-400")} />
             <p className="mt-2 text-sm font-semibold text-ink-900">{o.label}</p>
@@ -89,7 +92,7 @@ export function RegisterForm({ defaultType, next, locale, countries }: { default
         />
       </Field>
       <FormError state={state} />
-      <SubmitButton className="w-full" size="lg" variant={type === "SELLER" ? "accent" : "primary"}>
+      <SubmitButton className="w-full" size="lg" variant={type === "BUYER" ? "primary" : "accent"}>
         {t("submit")}
       </SubmitButton>
       <p className="text-center text-sm text-steel-600">

@@ -69,6 +69,14 @@
     "support": "Hỗ trợ",
     "systemSettings": "Cấu hình hệ thống",
     "auditLogs": "Nhật ký kiểm toán",
-    "providers": "Đối tác & nhà cung cấp dịch vụ"
-  }
+    "providers": "Đối tác & nhà cung cấp dịch vụ",
+    "allShipments": "Tất cả lô hàng",
+    "pickups": "Chờ lấy hàng",
+    "inTransit": "Đang vận chuyển",
+    "deliveries": "Đang giao",
+    "problems": "Sự cố",
+    "partnerProfile": "Hồ sơ & phạm vi",
+    "integrations": "Tích hợp & API"
+  },
+  "partnerPortal": "Cổng đối tác logistics"
 }

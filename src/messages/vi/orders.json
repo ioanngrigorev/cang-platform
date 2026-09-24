@@ -2,7 +2,13 @@
   "list": {
     "title": "Đơn hàng",
     "description": "Các đơn đặt hàng được tạo từ những báo giá bạn đã chấp nhận.",
-    "tabs": { "all": "Tất cả", "active": "Đang thực hiện", "completed": "Hoàn tất", "disputed": "Tranh chấp", "cancelled": "Đã huỷ" },
+    "tabs": {
+      "all": "Tất cả",
+      "active": "Đang thực hiện",
+      "completed": "Hoàn tất",
+      "disputed": "Tranh chấp",
+      "cancelled": "Đã huỷ"
+    },
     "emptyTitle": "Chưa có đơn hàng",
     "emptyDescription": "Hãy chấp nhận một báo giá trong RFQ của bạn, đơn đặt hàng sẽ xuất hiện tại đây.",
     "emptyAction": "So sánh báo giá",
@@ -203,6 +209,7 @@
       "CUSTOMS": "Thông quan",
       "LAST_MILE": "Giao chặng cuối",
       "DELIVERED": "Đã giao"
-    }
+    },
+    "confirmReceiptHint": "Hàng đã được giao. Hãy kiểm tra và xác nhận đã nhận hàng trên đơn để giải ngân cho nhà cung cấp."
   }
 }

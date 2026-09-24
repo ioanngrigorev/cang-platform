@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { db, type Tx } from "@/db";
-import { buyerProfiles, companies, companyMembers, manufacturerProfiles, plans, subscriptions } from "@/db/schema";
+import { buyerProfiles, companies, companyMembers, logisticsProviders, manufacturerProfiles, plans, subscriptions } from "@/db/schema";
 import { slugify } from "@/lib/utils";
 
 export type CreateCompanyInput = {
   name: string;
   countryCode: string;
-  accountType: "BUYER" | "SELLER";
+  accountType: "BUYER" | "SELLER" | "LOGISTICS";
   ownerUserId: string;
   provinceId?: string | null;
   city?: string | null;
@@ -34,6 +34,7 @@ export async function createCompanyForUser(input: CreateCompanyInput, tx?: Tx) {
   const run = async (t: Tx) => {
     const slug = await uniqueCompanySlug(input.name, t);
     const isSeller = input.accountType === "SELLER";
+    const isPartner = input.accountType === "LOGISTICS";
     const [company] = await t
       .insert(companies)
       .values({
@@ -42,9 +43,10 @@ export async function createCompanyForUser(input: CreateCompanyInput, tx?: Tx) {
         countryCode: input.countryCode,
         provinceId: input.provinceId ?? null,
         city: input.city ?? null,
-        businessType: input.businessType ?? (isSeller ? "MANUFACTURER" : "IMPORTER"),
+        businessType: input.businessType ?? (isSeller ? "MANUFACTURER" : isPartner ? "LOGISTICS_PROVIDER" : "IMPORTER"),
         isSeller,
-        isBuyer: !isSeller,
+        isBuyer: !isSeller && !isPartner,
+        isLogisticsPartner: isPartner,
         status: "ACTIVE",
       })
       .returning();
@@ -55,12 +57,26 @@ export async function createCompanyForUser(input: CreateCompanyInput, tx?: Tx) {
       status: "ACTIVE",
       isPrimary: true,
     });
-    if (isSeller) {
+    if (isPartner) {
+      // Pending until CANG approves it (admin → Logistics → Providers).
+      let code = slug.toUpperCase().replace(/[^A-Z0-9]+/g, "_").slice(0, 50);
+      const [clash] = await t.select({ id: logisticsProviders.id }).from(logisticsProviders).where(eq(logisticsProviders.code, code)).limit(1);
+      if (clash) code = `${code.slice(0, 40)}_${Date.now().toString(36).toUpperCase()}`;
+      await t.insert(logisticsProviders).values({
+        companyId: company.id,
+        code,
+        name: input.name,
+        countries: [input.countryCode],
+        adapterCode: "manual",
+        isActive: false,
+        sortOrder: 100,
+      });
+    } else if (isSeller) {
       await t.insert(manufacturerProfiles).values({ companyId: company.id });
     } else {
       await t.insert(buyerProfiles).values({ companyId: company.id, destinationCountries: [input.countryCode] });
     }
-    const [free] = await t.select().from(plans).where(eq(plans.code, "FREE")).limit(1);
+    const [free] = isPartner ? [] : await t.select().from(plans).where(eq(plans.code, "FREE")).limit(1);
     if (free) {
       const now = new Date();
       await t.insert(subscriptions).values({

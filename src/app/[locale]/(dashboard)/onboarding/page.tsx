@@ -4,17 +4,18 @@ import { Logo } from "@/components/layout/logo";
 import { db } from "@/db";
 import { countries } from "@/db/schema";
 import { redirect } from "@/i18n/navigation";
+import { loginHrefForCurrentPath } from "@/lib/request-path";
 import { getAuth } from "@/modules/auth/current-user";
 import { ClientMessages } from "@/i18n/client-messages";
 import { OnboardingForm } from "./onboarding-form";
 
 export const metadata: Metadata = { title: "Set up your company", robots: { index: false } };
 
-export default async function OnboardingPage({ searchParams }: { searchParams: Promise<{ enable?: string }> }) {
-  const { enable } = await searchParams;
+export default async function OnboardingPage({ searchParams }: { searchParams: Promise<{ enable?: string; type?: string; next?: string }> }) {
+  const { enable, type, next } = await searchParams;
   const auth = await getAuth();
   const locale = await getLocale();
-  if (!auth) redirect({ href: "/login?next=/onboarding", locale });
+  if (!auth) redirect({ href: await loginHrefForCurrentPath("/onboarding"), locale });
   const t = await getTranslations("auth.onboarding");
   const countryRows = await db.select({ code: countries.code, name: countries.name, nameVi: countries.nameVi }).from(countries).orderBy(countries.sortOrder, countries.name);
   const active = auth!.activeMembership;
@@ -30,6 +31,8 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
             countries={countryRows.map((c) => ({ code: c.code, name: locale === "vi" ? c.nameVi : c.name }))}
             existing={active ? { id: active.companyId, name: active.company.name, isBuyer: active.company.isBuyer, isSeller: active.company.isSeller } : null}
             enable={enable === "BUYER" || enable === "SELLER" ? enable : null}
+            defaultType={type === "SELLER" || type === "LOGISTICS" ? type : "BUYER"}
+            next={next && next.startsWith("/") && !next.startsWith("//") ? next : undefined}
           />
           </ClientMessages>
         </div>

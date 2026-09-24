@@ -35,8 +35,9 @@ export async function ClientMessages({ namespaces = [], children }: { namespaces
 }
 
 export const DASHBOARD_NAMESPACES = {
-  buyer: ["buyer", "rfq", "orders", "payments", "logistics", "financing", "messaging", "dashboard"],
-  seller: ["seller", "sales", "buyer", "rfq", "orders", "payments", "logistics", "financing", "messaging", "dashboard"],
-  admin: ["admin", "buyer"],
+  buyer: ["buyer", "rfq", "orders", "payments", "logistics", "tracking", "financing", "messaging", "dashboard"],
+  seller: ["seller", "sales", "buyer", "rfq", "orders", "payments", "logistics", "tracking", "financing", "messaging", "dashboard"],
+  admin: ["admin", "buyer", "tracking", "logistics"],
+  partner: ["partner", "tracking", "logistics", "buyer", "seller.api", "dashboard"],
   onboarding: ["auth"],
 } as const;

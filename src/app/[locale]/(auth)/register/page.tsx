@@ -16,7 +16,8 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   const { type, next } = await searchParams;
   const auth = await getAuth();
   const locale = await getLocale();
-  if (auth) redirect({ href: defaultHomeFor(auth.user.platformRole, auth.activeMembership?.company ?? null), locale });
+  // Signed in (also right after this page's own register action set the session): go where they were heading.
+  if (auth) redirect({ href: next && next.startsWith("/") && !next.startsWith("//") ? next : defaultHomeFor(auth.user.platformRole, auth.activeMembership?.company ?? null), locale });
   const t = await getTranslations("auth.register");
   const countryRows = await db.select({ code: countries.code, name: countries.name, nameVi: countries.nameVi }).from(countries).orderBy(countries.sortOrder, countries.name);
   return (
@@ -25,7 +26,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
       <p className="mt-1 text-sm text-steel-500">{t("subtitle")}</p>
       <div className="mt-6">
         <RegisterForm
-          defaultType={type === "seller" ? "SELLER" : "BUYER"}
+          defaultType={type === "seller" ? "SELLER" : type === "logistics" || type === "partner" ? "LOGISTICS" : "BUYER"}
           next={next}
           locale={locale}
           countries={countryRows.map((c) => ({ code: c.code, name: locale === "vi" ? c.nameVi : c.name }))}

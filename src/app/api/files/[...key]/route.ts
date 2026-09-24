@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/db";
-import { disputes, documents, messages, orders, quotations, rfqs, shipments } from "@/db/schema";
+import { disputes, documents, logisticsProviders, messages, orders, quotations, rfqs, shipments } from "@/db/schema";
 import { getAuth } from "@/modules/auth/current-user";
 import { isStaff } from "@/modules/auth/rbac";
 import { storage } from "@/modules/storage";
@@ -27,6 +27,13 @@ async function canView(doc: Doc, viewer: { userId: string; companyIds: string[];
   if (doc.orderId) {
     const [o] = await db.select({ b: orders.buyerCompanyId, s: orders.supplierCompanyId }).from(orders).where(eq(orders.id, doc.orderId)).limit(1);
     if (o) parties.add(o.b).add(o.s);
+    // The logistics partner moving the goods needs the invoice, packing list, B/L…
+    const partners = await db
+      .select({ c: logisticsProviders.companyId })
+      .from(shipments)
+      .innerJoin(logisticsProviders, eq(logisticsProviders.id, shipments.providerId))
+      .where(eq(shipments.orderId, doc.orderId));
+    for (const p of partners) if (p.c) parties.add(p.c);
   }
   if (doc.rfqId) {
     const [r] = await db.select({ b: rfqs.buyerCompanyId }).from(rfqs).where(eq(rfqs.id, doc.rfqId)).limit(1);
@@ -46,6 +53,13 @@ async function canView(doc: Doc, viewer: { userId: string; companyIds: string[];
   if (doc.shipmentId) {
     const s = await db.query.shipments.findFirst({ where: eq(shipments.id, doc.shipmentId), columns: {}, with: { order: { columns: { buyerCompanyId: true, supplierCompanyId: true } } } });
     if (s?.order) parties.add(s.order.buyerCompanyId).add(s.order.supplierCompanyId);
+    const [p] = await db
+      .select({ c: logisticsProviders.companyId })
+      .from(shipments)
+      .innerJoin(logisticsProviders, eq(logisticsProviders.id, shipments.providerId))
+      .where(eq(shipments.id, doc.shipmentId))
+      .limit(1);
+    if (p?.c) parties.add(p.c);
   }
   if (doc.messageId) {
     // A chat attachment is visible to both companies of the conversation it was posted in.

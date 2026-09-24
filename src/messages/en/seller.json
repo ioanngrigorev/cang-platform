@@ -631,7 +631,9 @@
       "quotations_write": "Submit quotations",
       "orders_read": "Read orders and status",
       "orders_write": "Update order progress",
-      "analytics_read": "Read traffic metrics"
+      "analytics_read": "Read traffic metrics",
+      "shipments_read": "Read shipments assigned to you",
+      "shipments_write": "Report shipment statuses and tracking"
     },
     "expiry": "Expiry",
     "noExpiry": "Never expires",

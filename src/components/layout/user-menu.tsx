@@ -4,13 +4,14 @@ import { Bell, Building2, ChevronDown, LayoutDashboard, LogOut, Settings, Shield
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { logoutAction, switchCompanyAction } from "@/modules/auth/actions";
+import { companyHome } from "@/modules/auth/redirects";
 import { Avatar } from "@/components/ui/misc";
 import { Dropdown, DropdownItem } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 export type UserMenuProps = {
   user: { name: string; email: string; avatarUrl: string | null; platformRole: string };
-  memberships: Array<{ companyId: string; role: string; company: { id: string; name: string; isSeller: boolean; isBuyer: boolean; logoUrl: string | null } }>;
+  memberships: Array<{ companyId: string; role: string; company: { id: string; name: string; isSeller: boolean; isBuyer: boolean; isLogisticsPartner?: boolean; logoUrl: string | null } }>;
   activeCompanyId: string | null;
   unread: number;
   dark?: boolean;
@@ -21,8 +22,10 @@ export function UserMenu({ user, memberships, activeCompanyId, unread, dark }: U
   const tc = useTranslations("common");
   const active = memberships.find((m) => m.companyId === activeCompanyId) ?? memberships[0] ?? null;
   const isStaff = user.platformRole !== "USER";
-  const home = isStaff && !active ? "/admin" : active?.company.isSeller ? "/seller" : "/buyer";
-  const notificationsHref = active?.company.isSeller ? "/seller/notifications" : "/buyer/notifications";
+  const companyRoot = active ? companyHome(active.company) : "/buyer";
+  const home = isStaff && !active ? "/admin" : companyRoot;
+  const notificationsHref = `${companyRoot}/notifications`;
+  const dashboardLabel = companyRoot === "/partner" ? t("partnerPortal") : companyRoot === "/seller" ? t("sellerDashboard") : t("buyerDashboard");
   return (
     <div className="flex items-center gap-2">
       <Link href={notificationsHref} className={cn("relative rounded-md p-2", dark ? "text-white/80 hover:bg-white/10" : "text-steel-600 hover:bg-steel-100")} aria-label={tc("labels.notifications")}>
@@ -43,21 +46,25 @@ export function UserMenu({ user, memberships, activeCompanyId, unread, dark }: U
           <p className="truncate text-xs text-steel-500">{user.email}</p>
         </div>
         <Link href={home} className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-steel-100">
-          <LayoutDashboard className="size-4 text-steel-500" /> {active?.company.isSeller ? t("sellerDashboard") : t("buyerDashboard")}
+          <LayoutDashboard className="size-4 text-steel-500" /> {dashboardLabel}
         </Link>
         {isStaff ? (
           <Link href="/admin" className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-steel-100">
             <ShieldCheck className="size-4 text-steel-500" /> {t("adminConsole")}
           </Link>
         ) : null}
-        <Link href={active?.company.isSeller ? "/seller/settings" : "/buyer/settings"} className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-steel-100">
+        <Link href={`${companyRoot}/settings`} className="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-steel-100">
           <Settings className="size-4 text-steel-500" /> {tc("labels.settings")}
         </Link>
         {memberships.length > 1 ? (
           <div className="border-t border-steel-100 pt-1">
             <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-steel-400">{t("switchCompany")}</p>
             {memberships.map((m) => (
-              <DropdownItem key={m.companyId} onClick={() => switchCompanyAction(m.companyId)} className={cn(m.companyId === active?.companyId && "bg-steel-50 font-medium")}>
+              <DropdownItem key={m.companyId} onClick={async () => {
+                const r = await switchCompanyAction(m.companyId);
+                // Different company → different dashboard and sidebar: reload fully.
+                if (r.ok && r.redirect) window.location.assign(r.redirect);
+              }} className={cn(m.companyId === active?.companyId && "bg-steel-50 font-medium")}>
                 <Building2 /> <span className="truncate">{m.company.name}</span>
               </DropdownItem>
             ))}

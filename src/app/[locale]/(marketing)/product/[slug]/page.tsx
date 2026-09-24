@@ -1,4 +1,4 @@
-import { BadgeCheck, Bookmark, Clock, Eye, Factory, FileText, MapPin, MessageSquare, Package, ShieldCheck, Truck } from "lucide-react";
+import { BadgeCheck, Clock, Eye, Factory, FileText, MapPin, MessageSquare, Package, ShieldCheck, Truck } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { ProductGrid } from "@/components/marketplace/grids";
 import { ProductGallery } from "@/components/marketplace/product-gallery";
+import { SaveControl } from "@/components/marketplace/save-control";
 import { ShareButton } from "@/components/marketplace/share-button";
 import { Badge, TrustBadges, VerifiedMark } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,7 +86,6 @@ export default async function ProductPage({ params }: Props) {
     { label: categoryName, href: product.category.parent ? `/products/${product.category.parent.slug}?sub=${product.category.slug}` : `/products/${product.category.slug}` },
     { label: title },
   ];
-  const saveHref = auth ? "/buyer/saved/products" : `/login?next=${encodeURIComponent("/buyer/saved/products")}`;
   const contactHref = `/buyer/messages/new?supplier=${company.slug}&product=${product.slug}`;
   const rfqHref = `/buyer/rfqs/new?product=${product.id}`;
   const location = [company.city, company.province ? localized(company.province as unknown as Record<string, unknown>, "name", locale) : null].filter(Boolean).join(", ");
@@ -208,9 +208,7 @@ export default async function ProductPage({ params }: Props) {
             <Button href={contactHref} variant="secondary" size="lg">
               <MessageSquare /> {t("product.contactSupplier")}
             </Button>
-            <Button href={saveHref} variant="secondary" size="lg">
-              <Bookmark /> {t("product.save")}
-            </Button>
+            <SaveControl auth={auth} kind="product" id={product.id} returnTo={`/product/${product.slug}`} label={t("product.save")} savedLabel={tc("actions.saved")} size="lg" />
           </div>
           <div className="mt-2 flex items-center gap-3 text-xs text-steel-500">
             <ShareButton title={title} label={t("product.share")} copiedLabel={tc("actions.saved")} size="sm" />

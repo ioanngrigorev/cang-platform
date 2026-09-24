@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { countryName } from "@/components/marketplace/labels";
 import { Step } from "@/components/marketplace/section";
 import { Badge, StatusBadge } from "@/components/ui/badge";
+import { SupplierCta } from "@/components/marketplace/supplier-cta";
 import { Button } from "@/components/ui/button";
 import { Alert, Card, CardContent, CardHeader, DataList } from "@/components/ui/card";
 import { JsonLd, PageHeader } from "@/components/ui/misc";
@@ -209,9 +210,7 @@ export default async function PublicRfqPage({ params }: Props) {
               ) : (
                 <Button disabled>{t("rfq.submitQuotation")}</Button>
               )}
-              <Button href="/register?type=seller" variant="secondary">
-                {t("rfq.new.cta")}
-              </Button>
+              <SupplierCta sellerHref="/seller/rfqs" variant="secondary" />
             </div>
           </section>
         </div>

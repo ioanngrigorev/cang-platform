@@ -3,10 +3,16 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ShipmentStepper } from "@/components/orders/shipment-tracker";
-import { AddShipmentEventButton, UpdateShipmentButton } from "@/components/seller/sales/shipment-actions";
-import { Button, Card, CardContent, CardHeader, DataList, PageHeader, StatusBadge } from "@/components/ui";
-import { formatDate, formatDateTime, formatMoney, formatNumber, humanize } from "@/lib/utils";
+import { ShipmentTimeline, STATUS_BADGE } from "@/components/logistics/shipment-timeline";
+import { StatusUpdateDialog } from "@/components/logistics/status-update-dialog";
+import { UpdateShipmentButton } from "@/components/seller/sales/shipment-actions";
+import { Alert, Badge, Button, Card, CardContent, CardHeader, DataList, PageHeader } from "@/components/ui";
+import { formatDate, formatMoney, formatNumber } from "@/lib/utils";
 import { requireCompany } from "@/modules/auth/current-user";
+import { listActiveProviders, shipmentTimeline } from "@/modules/logistics/tracking/queries";
+import { nextStatusesFor } from "@/modules/logistics/tracking/service";
+import { SHIPMENT_STATUSES, statusTone } from "@/modules/logistics/tracking/statuses";
+import { addShipmentEventAction } from "@/modules/seller/sales/shipments/actions";
 import { getSellerShipment } from "@/modules/seller/sales/shipments/queries";
 
 export const metadata: Metadata = { title: "Shipment", robots: { index: false } };
@@ -15,18 +21,18 @@ const toDateInput = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : null
 
 export default async function SellerShipmentDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
-  const { company } = await requireCompany({ permission: "orders.read", seller: true });
+  const { company, user } = await requireCompany({ permission: "orders.read", seller: true });
   const t = await getTranslations("sales.shipments");
-  const ts = await getTranslations("orders.shipments");
   const tm = await getTranslations("logistics.modes");
-  const ta = await getTranslations("sales.shipmentActions");
+  const tt = await getTranslations("tracking");
 
   const s = await getSellerShipment(company.id, id);
   if (!s) notFound();
 
-  const labels = Object.fromEntries(["FACTORY", "PICKUP", "WAREHOUSE", "ORIGIN_PORT", "DEPARTED", "IN_TRANSIT", "DESTINATION_PORT", "CUSTOMS", "LAST_MILE", "DELIVERED"].map((m) => [m, ts(`milestoneLabels.${m}`)]));
+  const labels = Object.fromEntries(SHIPMENT_STATUSES.map((k) => [k, tt(`status.${k}`)]));
   const addr = (a: typeof s.destinationAddress) => (a ? [a.company, a.line1, `${a.postalCode ?? ""} ${a.city}`.trim(), a.countryCode].filter(Boolean).join(", ") : "—");
-  const events = [...s.events].reverse();
+  const [timeline, providers, allowed] = await Promise.all([shipmentTimeline(s.id), listActiveProviders(), nextStatusesFor({ kind: "SELLER", userId: user.id, companyId: company.id }, s.id)]);
+  const managedBy = s.provider && providers.find((p) => p.id === s.provider?.id)?.onPlatform ? s.provider.name : null;
 
   return (
     <>
@@ -39,7 +45,7 @@ export default async function SellerShipmentDetailPage({ params }: { params: Pro
         title={t("detailTitle", { number: s.shipmentNumber })}
         description={
           <span className="flex flex-wrap items-center gap-2">
-            <StatusBadge status={s.status} />
+            <Badge variant={STATUS_BADGE[statusTone(s.status)]}>{tt(`status.${s.status}`)}</Badge>
             <span>{tm(s.mode)}</span>
             {s.carrier ? <span>· {s.carrier}</span> : null}
             {s.trackingNumber ? <span>· {s.trackingNumber}</span> : null}
@@ -52,8 +58,11 @@ export default async function SellerShipmentDetailPage({ params }: { params: Pro
             </Button>
             <UpdateShipmentButton
               shipmentId={s.id}
+              providers={providers}
               values={{
                 mode: s.mode,
+                providerId: s.provider?.id ?? null,
+                carrierCode: s.carrierCode,
                 carrier: s.carrier,
                 trackingNumber: s.trackingNumber,
                 vesselOrFlight: s.vesselOrFlight,
@@ -68,43 +77,35 @@ export default async function SellerShipmentDetailPage({ params }: { params: Pro
                 notes: s.notes,
               }}
             />
-            <AddShipmentEventButton shipmentId={s.id} currentStatus={s.status} />
+            <StatusUpdateDialog action={addShipmentEventAction} shipmentId={s.id} allowed={allowed} />
           </>
         }
       />
+
+      {managedBy ? (
+        <Alert variant="info" title={tt("partner.label")} className="mb-5">
+          {tt("partner.managedNote", { name: managedBy })}
+        </Alert>
+      ) : null}
+      {s.exceptionReason ? (
+        <Alert variant="warning" title={tt(`status.${s.status}`)} className="mb-5">
+          {tt(`reasons.${s.exceptionReason}`)}
+        </Alert>
+      ) : null}
 
       <div className="grid gap-6 lg:grid-cols-3 [&>*]:min-w-0">
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <CardHeader title={t("milestones")} description={t("milestonesHint")} />
             <CardContent>
-              <ShipmentStepper status={s.status} events={s.events} locale={locale} labels={labels} />
+              <ShipmentStepper status={s.status} mode={s.mode} events={s.events} locale={locale} labels={labels} />
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader title={t("events")} action={<MapPin className="size-4 text-steel-400" />} />
-            <CardContent className="p-0">
-              {events.length === 0 ? (
-                <p className="px-5 py-4 text-sm text-steel-500">{t("noEvents")}</p>
-              ) : (
-                <ol className="divide-y divide-steel-100">
-                  {events.map((e) => (
-                    <li key={e.id} className="flex flex-wrap items-start justify-between gap-2 px-5 py-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-ink-900">{ta.has(`statuses.${e.status}`) ? ta(`statuses.${e.status}`) : humanize(e.status)}</p>
-                        <p className="text-xs text-steel-500">
-                          {[e.location, e.description].filter(Boolean).join(" · ") || (labels[e.milestone] ?? humanize(e.milestone))}
-                        </p>
-                      </div>
-                      <div className="shrink-0 text-right text-xs text-steel-500">
-                        <p>{formatDateTime(e.occurredAt, locale)}</p>
-                        <p>{e.source === "manual" ? t("sourceManual") : t("sourceProvider")}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              )}
+            <CardContent>
+              <ShipmentTimeline events={timeline} locale={locale} />
             </CardContent>
           </Card>
         </div>
@@ -137,7 +138,8 @@ export default async function SellerShipmentDetailPage({ params }: { params: Pro
               <DataList
                 columns={1}
                 items={[
-                  { label: t("carrier"), value: s.carrier ?? s.provider?.name ?? "—" },
+                  { label: tt("partner.label"), value: s.provider?.name ?? tt("partner.none") },
+                  { label: t("carrier"), value: s.carrier ?? "—" },
                   { label: t("tracking"), value: s.trackingNumber ?? "—" },
                   { label: t("vessel"), value: s.vesselOrFlight ?? "—" },
                   { label: t("container"), value: s.containerNumber ?? "—" },

@@ -9,7 +9,7 @@ import { Logo } from "./logo";
 import { SidebarNav, type NavItem, type NavSection } from "./sidebar-nav";
 import { UserMenu } from "./user-menu";
 
-export type DashboardRole = "buyer" | "seller" | "admin";
+export type DashboardRole = "buyer" | "seller" | "admin" | "partner";
 
 /** Sidebar navigation per dashboard. Keys map to nav.sidebar.* translations. */
 export function navFor(role: DashboardRole, t: (k: string) => string): NavSection[] {
@@ -28,6 +28,19 @@ export function navFor(role: DashboardRole, t: (k: string) => string): NavSectio
       {
         title: "Company",
         items: [s("companyProfile", "/buyer/company", "Building2"), s("verification", "/buyer/company/verification", "BadgeCheck"), s("documents", "/buyer/documents", "FolderOpen"), s("team", "/buyer/team", "Users"), s("notifications", "/buyer/notifications", "Bell"), s("settings", "/buyer/settings", "Settings")],
+      },
+    ];
+  }
+  if (role === "partner") {
+    return [
+      { items: [s("overview", "/partner", "LayoutDashboard")] },
+      {
+        title: "Shipments",
+        items: [s("allShipments", "/partner/shipments", "Truck"), s("pickups", "/partner/shipments?tab=pickup", "PackageOpen"), s("inTransit", "/partner/shipments?tab=transit", "Route"), s("deliveries", "/partner/shipments?tab=delivery", "MapPinned"), s("problems", "/partner/shipments?tab=problems", "ShieldAlert")],
+      },
+      {
+        title: "Company",
+        items: [s("partnerProfile", "/partner/profile", "Building2"), s("integrations", "/partner/integrations", "Plug"), s("team", "/partner/team", "Users"), s("notifications", "/partner/notifications", "Bell"), s("settings", "/partner/settings", "Settings")],
       },
     ];
   }
@@ -87,7 +100,7 @@ export async function DashboardShell({ role, auth, children, title }: { role: Da
       if (item.href.endsWith("/notifications") && unread > 0) item.badge = unread;
     }
   }
-  const roleLabel = { buyer: t("buyerDashboard"), seller: t("sellerDashboard"), admin: t("adminConsole") }[role];
+  const roleLabel = { buyer: t("buyerDashboard"), seller: t("sellerDashboard"), admin: t("adminConsole"), partner: t("partnerPortal") }[role];
 
   return (
     <div className="flex min-h-screen bg-steel-50">
@@ -108,7 +121,7 @@ export async function DashboardShell({ role, auth, children, title }: { role: Da
             <LocaleSwitcher className="hidden sm:inline-flex" />
             <UserMenu
               user={{ name: auth.user.name, email: auth.user.email, avatarUrl: auth.user.avatarUrl, platformRole: auth.user.platformRole }}
-              memberships={auth.memberships.map((m) => ({ companyId: m.companyId, role: m.role, company: { id: m.company.id, name: m.company.name, isSeller: m.company.isSeller, isBuyer: m.company.isBuyer, logoUrl: m.company.logoUrl } }))}
+              memberships={auth.memberships.map((m) => ({ companyId: m.companyId, role: m.role, company: { id: m.company.id, name: m.company.name, isSeller: m.company.isSeller, isBuyer: m.company.isBuyer, isLogisticsPartner: m.company.isLogisticsPartner, logoUrl: m.company.logoUrl } }))}
               activeCompanyId={auth.activeMembership?.companyId ?? null}
               unread={unread}
             />

@@ -12,8 +12,11 @@ import { createCompanyForUser, enableCapability } from "@/modules/companies/serv
 const schema = z.object({
   companyName: z.string().trim().min(2, "Enter your company name").max(200),
   countryCode: z.string().trim().length(2).toUpperCase(),
-  accountType: z.enum(["BUYER", "SELLER"]),
+  accountType: z.enum(["BUYER", "SELLER", "LOGISTICS"]),
+  next: z.string().optional(),
 });
+
+const safeNext = (next: unknown) => (typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : null);
 
 export async function onboardingAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   return runAction(async () => {
@@ -24,7 +27,7 @@ export async function onboardingAction(_prev: ActionResult | null, formData: For
     await setActiveCompany(auth.sessionId, company.id);
     await audit({ actorId: auth.user.id, action: "company.create", entityType: "company", entityId: company.id, after: { accountType: parsed.data.accountType } });
     const locale = await getLocale();
-    redirect({ href: parsed.data.accountType === "SELLER" ? "/seller?welcome=1" : "/buyer?welcome=1", locale });
+    redirect({ href: safeNext(parsed.data.next) ?? (parsed.data.accountType === "SELLER" ? "/seller?welcome=1" : parsed.data.accountType === "LOGISTICS" ? "/partner?welcome=1" : "/buyer?welcome=1"), locale });
     return ok(undefined);
   });
 }
@@ -39,7 +42,7 @@ export async function enableCapabilityAction(_prev: ActionResult | null, formDat
     await enableCapability(m.companyId, capability);
     await audit({ actorId: auth.user.id, action: "company.enableCapability", entityType: "company", entityId: m.companyId, after: { capability } });
     const locale = await getLocale();
-    redirect({ href: capability === "SELLER" ? "/seller" : "/buyer", locale });
+    redirect({ href: safeNext(formData.get("next")) ?? (capability === "SELLER" ? "/seller?welcome=1" : "/buyer"), locale });
     return ok(undefined);
   });
 }

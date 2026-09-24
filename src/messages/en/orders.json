@@ -2,7 +2,13 @@
   "list": {
     "title": "Orders",
     "description": "Purchase orders created from the quotations you accepted.",
-    "tabs": { "all": "All", "active": "Active", "completed": "Completed", "disputed": "In dispute", "cancelled": "Cancelled" },
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed",
+      "disputed": "In dispute",
+      "cancelled": "Cancelled"
+    },
     "emptyTitle": "No orders yet",
     "emptyDescription": "Accept a quotation on one of your RFQs and the purchase order appears here.",
     "emptyAction": "Compare quotations",
@@ -203,6 +209,7 @@
       "CUSTOMS": "Customs clearance",
       "LAST_MILE": "Last mile",
       "DELIVERED": "Delivered"
-    }
+    },
+    "confirmReceiptHint": "The goods were delivered. Inspect them and confirm receipt on the order to release the payment to the supplier."
   }
 }
