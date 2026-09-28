@@ -37,7 +37,7 @@ export function ProductGallery({ images: raw, title, photoSubject, photoSlug, vi
   return (
     <div className="space-y-3" onKeyDown={onKey}>
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-steel-200 bg-steel-50" tabIndex={0} aria-label={total ? label(index + 1, total) : title}>
-        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill photo={photoSubject ?? true} photoSlug={photoSlug} fallbackLabel={title} className={!current || current.url.startsWith("/img/products/") ? "object-cover" : "object-contain"} />
+        <SmartImage key={current?.url ?? "none"} src={current?.url} alt={current?.alt ?? title} fill photo={photoSubject ?? true} photoSlug={photoSlug} fallbackLabel={title} sizes="(min-width: 1024px) 600px, 100vw" className={!current || current.url.startsWith("/img/products/") ? "object-cover" : "object-contain"} />
         {total > 1 ? (
           <>
             <button type="button" onClick={() => go(-1)} aria-label="Previous image" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-steel-200 bg-white/90 p-2 text-ink-900 shadow-card hover:bg-white">
@@ -61,7 +61,7 @@ export function ProductGallery({ images: raw, title, photoSubject, photoSlug, vi
               aria-current={i === index}
               className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 bg-steel-50", i === index ? "border-ink-900" : "border-steel-200 hover:border-steel-400")}
             >
-              <SmartImage src={img.url} alt={img.alt ?? ""} fill fallbackLabel={title} />
+              <SmartImage src={img.url} alt={img.alt ?? ""} fill fallbackLabel={title} sizes="64px" />
             </button>
           ))}
           {videoUrl ? (

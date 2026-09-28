@@ -372,7 +372,7 @@ async function FactoryTab({ supplier, locale, photos, videos, notProvided }: { s
             {photos.map((m) => (
               <figure key={m.id} className="overflow-hidden rounded-lg border border-steel-200 bg-steel-50">
                 <div className="relative aspect-[4/3]">
-                  <SmartImage src={m.url} alt={m.caption ?? supplier.name} fill fallbackLabel={m.caption ?? undefined} />
+                  <SmartImage src={m.url} alt={m.caption ?? supplier.name} fill fallbackLabel={m.caption ?? undefined} sizes="(min-width: 1024px) 300px, (min-width: 640px) 33vw, 50vw" />
                 </div>
                 {m.caption ? <figcaption className="px-3 py-2 text-xs text-steel-600">{m.caption}</figcaption> : null}
               </figure>

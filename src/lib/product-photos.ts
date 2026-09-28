@@ -288,3 +288,17 @@ export function productPhoto(subject: string | null | undefined, seed = ""): str
 }
 
 export const PRODUCT_PHOTO_POOLS = POOLS;
+
+const SELF_HOSTED = /^\/img\/products\/([^/]+\.webp)$/;
+
+/**
+ * `srcset` for a self-hosted stock photo: the 160 / 320 / 640 px copies made by
+ * scripts/make-photo-thumbnails.mjs plus the 960 px original. Undefined for any other URL
+ * (seller uploads, external images), which keep a plain `src`. Pair it with a `sizes` that says how
+ * wide the picture is drawn, otherwise the browser assumes the full viewport width.
+ */
+export function productPhotoSrcSet(src: string | null | undefined): string | undefined {
+  const m = typeof src === "string" ? SELF_HOSTED.exec(src) : null;
+  if (!m) return undefined;
+  return `${P}w160/${m[1]} 160w, ${P}w320/${m[1]} 320w, ${P}w640/${m[1]} 640w, ${src} 960w`;
+}

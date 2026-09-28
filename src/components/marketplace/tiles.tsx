@@ -68,7 +68,7 @@ export function CategoryTile({ href, name, photoSubject, imageUrl, count, countL
   return (
     <Link href={href} className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
       <div className="relative aspect-[4/3] overflow-hidden bg-steel-100">
-        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? true} fallbackLabel={name} className="transition-transform duration-300 group-hover:scale-[1.04]" />
+        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? true} fallbackLabel={name} sizes="(min-width: 1280px) 200px, (min-width: 640px) 33vw, 50vw" className="transition-transform duration-300 group-hover:scale-[1.04]" />
       </div>
       <div className="p-3">
         <p className="line-clamp-1 text-sm font-semibold text-ink-900 group-hover:underline">{name}</p>
@@ -122,7 +122,7 @@ export function ClusterCard({
   return (
     <article className={cn("group flex flex-col overflow-hidden rounded-lg border border-steel-200 bg-white shadow-card transition-shadow hover:border-steel-300 hover:shadow-card-hover", className)}>
       <Link href={href} className="relative block aspect-[16/8] overflow-hidden bg-ink-900">
-        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? false} fallbackLabel={name} className="opacity-90" />
+        <SmartImage src={imageUrl ?? undefined} alt={name} fill photo={photoSubject ?? false} fallbackLabel={name} sizes="(min-width: 1280px) 420px, (min-width: 640px) 50vw, 100vw" className="opacity-90" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/80 to-transparent p-4">
           <p className="flex items-center gap-1 text-xs font-medium text-brass-200">
             <MapPin className="size-3.5" /> {region}

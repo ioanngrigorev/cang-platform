@@ -3,14 +3,15 @@
 import * as React from "react";
 import { isPlaceholderSrc, placeholderArt } from "@/lib/placeholder-art";
 import { placeholderIcon } from "@/lib/placeholder-icon";
-import { productPhoto, productPhotoFor } from "@/lib/product-photos";
+import { productPhoto, productPhotoFor, productPhotoSrcSet } from "@/lib/product-photos";
 import { cn } from "@/lib/utils";
 
 /**
  * Plain <img> that never shows a broken-image icon. A missing or dead URL falls back, in order,
  * to a stock photograph of the same kind of product (when `photo` is set and the subject is
  * recognised), then to a tinted wash with a pictogram chosen from the subject's own words.
- * Use `fill` for aspect-ratio boxes (parent must be relative).
+ * Use `fill` for aspect-ratio boxes (parent must be relative). Self-hosted stock photos get a
+ * `srcset` of downscaled copies; pass `sizes` (the drawn width) so small slots load small files.
  */
 export function SmartImage({
   src,
@@ -45,6 +46,7 @@ export function SmartImage({
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={stock}
+        srcSet={productPhotoSrcSet(stock)}
         alt={alt ?? ""}
         loading="lazy"
         decoding="async"
@@ -72,6 +74,7 @@ export function SmartImage({
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
+      srcSet={typeof src === "string" ? productPhotoSrcSet(src) : undefined}
       alt={alt ?? ""}
       loading="lazy"
       decoding="async"
