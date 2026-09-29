@@ -19,7 +19,7 @@ import { SmartImage } from "@/components/ui/smart-image";
 import { isPlaceholderSrc } from "@/lib/placeholder-art";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Link } from "@/i18n/navigation";
-import { breadcrumbJsonLd, supplierJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, entityOgImage, supplierJsonLd } from "@/lib/seo";
 import { employeeRangeLabel, formatDate, formatMoney, formatNumber, humanize, localized } from "@/lib/utils";
 import { getAuth } from "@/modules/auth/current-user";
 import { first, type SearchParams } from "@/modules/catalog/filters";
@@ -44,7 +44,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     path: `/supplier/${supplier.slug}`,
     title: supplier.seoTitle ?? (tab && tab !== "overview" ? `${name} · ${t(`supplier.tabs.${tab}`)}` : name),
     description: supplier.seoDescription ?? supplier.tagline ?? t("supplier.metaDescription", { name, type: humanize(supplier.businessType), location, products: supplier.productCount, rating: supplier.ratingAvg.toFixed(1), reviews: supplier.ratingCount }),
-    image: supplier.coverUrl ?? supplier.logoUrl ?? null,
+    image: entityOgImage("supplier", supplier.slug, locale),
   });
 }
 

@@ -28,10 +28,12 @@ systemctl enable --now docker
 # firewall
 ufw allow OpenSSH; ufw allow 80/tcp; ufw allow 443/tcp; ufw --force enable
 
-# source
+# source: the current head of main (update.sh below syncs exactly this commit and bakes it into the image)
+apt-get install -y -qq git rsync >/dev/null
+REPO=ioanngrigorev/cang-platform
+SHA="$(git ls-remote https://github.com/$REPO.git refs/heads/main | cut -f1)"
 mkdir -p /opt/cang && cd /opt/cang
-curl -fsSL \
-  -o /tmp/src.tgz https://codeload.github.com/ioanngrigorev/cang-platform/tar.gz/refs/heads/main
+curl -fsSL -o /tmp/src.tgz "https://codeload.github.com/$REPO/tar.gz/${SHA}"
 tar xzf /tmp/src.tgz --strip-components=1 -C /opt/cang
 rm -f /tmp/src.tgz
 
@@ -70,17 +72,14 @@ SMTP_URL=
 ENVEOF
 chmod 600 /opt/cang/.env; fi
 
-# build and start
-cd /opt/cang
-BUILD_NODE_OPTIONS="--max-old-space-size=3072" docker compose build app
-docker compose up -d
+# build, start, wait for the new version, seed — the same path the auto-deploy timer uses
+exec 9>/var/lock/cang-deploy.lock
+flock 9
+bash /opt/cang/deploy/update.sh "$SHA"
+flock -u 9
 
-# wait for health, then seed reference data
-for i in $(seq 1 100); do
-  docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health >/dev/null 2>&1 </dev/null && break
-  sleep 5
-done
-docker compose exec -T app sh -lc 'node_modules/.bin/tsx src/db/seed/index.ts' </dev/null
+# from now on every push to main deploys itself (deploy/autodeploy.sh, checked every 2 minutes)
+bash /opt/cang/deploy/install-autodeploy.sh
 
 # nightly backup
 chmod +x /opt/cang/deploy/backup.sh 2>/dev/null || true

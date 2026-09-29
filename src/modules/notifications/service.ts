@@ -2,6 +2,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { db, type Tx } from "@/db";
 import { companyMembers, notifications, users } from "@/db/schema";
 import { emailLayout, sendEmail } from "./email";
+import { emailDict, emailFooter } from "./email-templates";
 import { absoluteUrl } from "@/lib/utils";
 
 export type NotificationType =
@@ -73,7 +74,7 @@ export async function notifyUser(userId: string, input: NotifyInput, tx?: Tx): P
         sendEmail({
           to: u.email,
           subject: `[CANG] ${input.title}`,
-          html: emailLayout(input.title, `<p>${escapeHtml(input.body ?? "")}</p>`, link ? { label: "Open in CANG", url: link } : undefined),
+          html: emailLayout(escapeHtml(input.title), `<p>${escapeHtml(input.body ?? "")}</p>`, link ? { label: emailDict(u.locale).notification.cta, url: link } : undefined, emailFooter(u.locale)),
         }).catch((e) => console.error("[notify] email failed", e));
       }
     }

@@ -71,6 +71,10 @@ COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --chown=nextjs:nodejs deploy/entrypoint.sh ./deploy/entrypoint.sh
 RUN chmod +x ./deploy/entrypoint.sh && mkdir -p /app/storage/uploads && chown -R nextjs:nodejs /app/storage
 
+# Commit the image was built from; GET /api/health reports it as "version".
+ARG BUILD_SHA=unknown
+ENV BUILD_SHA=${BUILD_SHA}
+
 USER nextjs
 EXPOSE 3000
 VOLUME ["/app/storage/uploads"]

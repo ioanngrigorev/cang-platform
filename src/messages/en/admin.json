@@ -961,12 +961,15 @@
     "routingRules": "Routing rules (JSON)",
     "routingRulesHint": "e.g. {\"minCreditScore\": 60, \"side\": \"BUYER\"}",
     "apiConfig": "API config (JSON)",
-    "emailHint": "E-mail delivery is configured through environment variables (EMAIL_PROVIDER, SMTP_URL, EMAIL_FROM).",
+    "emailHint": "E-mail delivery is configured in the server environment: EMAIL_PROVIDER (console, resend or smtp), RESEND_API_KEY or SMTP_URL, EMAIL_FROM and optionally EMAIL_REPLY_TO.",
     "emailProvider": "Provider",
     "emailFrom": "From address",
     "smtpHost": "SMTP host",
     "credentials": "Credentials configured",
-    "fieldDescription": "Description"
+    "fieldDescription": "Description",
+    "emailReplyTo": "Reply-to",
+    "sendTestEmail": "Send me a test e-mail",
+    "emailNotConfigured": "E-mails are not being delivered: they are only written to the server log. Set EMAIL_PROVIDER=resend with RESEND_API_KEY (or smtp with SMTP_URL) in /opt/cang/.env and restart the app."
   },
   "analytics": {
     "title": "Analytics",
@@ -1058,7 +1061,8 @@
     "variablesHint": "Comma separated placeholders",
     "subject": "Subject",
     "bodyHtml": "Body (HTML)",
-    "bodyText": "Plain-text body"
+    "bodyText": "Plain-text body",
+    "emailTemplatesHint": "Codes the platform sends (the locale must match: en or vi). An active template replaces the built-in text; placeholders:"
   },
   "support": {
     "title": "Support",

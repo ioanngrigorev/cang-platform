@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Send } from "lucide-react";
 import { JsonDetails } from "@/components/admin/json-details";
+import { ActionForm } from "@/components/buyer/action-form";
 import { LogisticsProviderDialog } from "@/components/admin/logistics-forms";
 import { FinancingProviderDialog, InspectionProviderDialog, PaymentProviderDialog, ProviderToggle } from "@/components/admin/provider-forms";
 import { Alert, Badge, Card, CardContent, CardHeader, DataList, LinkTabs, PageHeader, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { formatMoney, humanize } from "@/lib/utils";
+import { sendTestEmailAction } from "@/modules/admin/providers/actions";
 import { allProviders, emailProviderSummary } from "@/modules/admin/providers/queries";
 import { str } from "@/modules/admin/shared";
 import { canPlatform, requireAdmin } from "@/modules/auth/current-user";
@@ -226,17 +229,23 @@ export default async function AdminProvidersPage({ params, searchParams }: { par
 
       {tab === "email" ? (
         <Card>
-          <CardHeader title={t("tabs.email")} description={t("emailHint")} />
+          <CardHeader title={t("tabs.email")} description={t("emailHint")} action={canPlatform(auth, "admin.settings.write") ? <ActionForm action={sendTestEmailAction} label={t("sendTestEmail")} icon={<Send />} variant="secondary" refresh={false} /> : null} />
           <CardContent>
             <DataList
               columns={2}
               items={[
                 { label: t("emailProvider"), value: <Badge variant="ink">{email.provider}</Badge> },
                 { label: t("emailFrom"), value: email.from },
+                { label: t("emailReplyTo"), value: email.replyTo ?? "—" },
                 { label: t("smtpHost"), value: email.smtpHost ?? "—" },
                 { label: t("credentials"), value: email.credentialsConfigured ? tc("yes") : tc("no") },
               ]}
             />
+            {email.provider === "console" || !email.credentialsConfigured ? (
+              <Alert variant="warning" className="mt-4">
+                {t("emailNotConfigured")}
+              </Alert>
+            ) : null}
           </CardContent>
         </Card>
       ) : null}

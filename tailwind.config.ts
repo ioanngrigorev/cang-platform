@@ -41,8 +41,9 @@ const config: Config = {
         info: { 50: "rgb(var(--info-50) / <alpha-value>)", 100: "rgb(var(--info-100) / <alpha-value>)", 500: "rgb(var(--info-500) / <alpha-value>)", 600: "rgb(var(--info-600) / <alpha-value>)", 700: "rgb(var(--info-700) / <alpha-value>)" },
       },
       fontFamily: {
-        sans: ["'Inter Variable'", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ["'Manrope Variable'", "Manrope", "'Inter Variable'", "ui-sans-serif", "system-ui", "sans-serif"],
+        // Font stacks are CSS variables (globals.css) so Vietnamese pages can switch to Be Vietnam Pro.
+        sans: ["var(--font-sans)"],
+        display: ["var(--font-display)"],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {

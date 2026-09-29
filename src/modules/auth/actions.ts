@@ -11,7 +11,8 @@ import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { absoluteUrl } from "@/lib/utils";
 import { audit } from "@/modules/audit/log";
 import { createCompanyForUser } from "@/modules/companies/service";
-import { emailLayout, sendEmail } from "@/modules/notifications/email";
+import { sendEmail } from "@/modules/notifications/email";
+import { emailDict, renderEmail } from "@/modules/notifications/email-templates";
 import { getAuth, requireAuth } from "./current-user";
 import { companyHome, defaultHomeFor } from "./redirects";
 import { hashPassword, verifyPassword } from "./password";
@@ -104,15 +105,10 @@ export async function registerAction(_prev: ActionResult | null, formData: FormD
       expiresAt: new Date(Date.now() + 48 * 3600 * 1000),
     });
     const verifyUrl = absoluteUrl(`/${locale}/verify-email?token=${token}`);
-    sendEmail({
-      to: user.email,
-      subject: "Welcome to CANG — confirm your email",
-      html: emailLayout(
-        "Welcome to CANG",
-        `<p>Hi ${user.name},</p><p>Your ${input.accountType === "SELLER" ? "supplier" : input.accountType === "LOGISTICS" ? "logistics partner" : "buyer"} account for <strong>${input.companyName}</strong> is ready. Please confirm your email address to unlock all features.</p>`,
-        { label: "Confirm email", url: verifyUrl },
-      ),
-    }).catch(() => {});
+    const kind = (emailDict(locale).welcome.kind as Record<string, string>)[input.accountType] ?? input.accountType.toLowerCase();
+    renderEmail("welcome", locale, { name: user.name, company: input.companyName, kind, url: verifyUrl })
+      .then((mail) => sendEmail({ to: user.email, ...mail }))
+      .catch(() => {}); // logged by sendEmail; registration must not fail on e-mail
 
     await createSession(user.id);
     await audit({ actorId: user.id, action: "auth.register", entityType: "user", entityId: user.id, after: { accountType: input.accountType }, ipAddress: ip });
@@ -147,16 +143,14 @@ export async function forgotPasswordAction(_prev: ActionResult | null, formData:
         purpose: "PASSWORD_RESET",
         expiresAt: new Date(Date.now() + 60 * 60 * 1000),
       });
-      const locale = await getLocale();
+      const locale = user.locale === "vi" || user.locale === "en" ? user.locale : await getLocale();
       const url = absoluteUrl(`/${locale}/reset-password?token=${token}`);
-      await sendEmail({
-        to: user.email,
-        subject: "Reset your CANG password",
-        html: emailLayout("Reset your password", `<p>We received a request to reset the password for ${user.email}. This link expires in 1 hour.</p>`, {
-          label: "Choose a new password",
-          url,
-        }),
-      });
+      try {
+        const mail = await renderEmail("password_reset", locale, { email: user.email, url });
+        await sendEmail({ to: user.email, ...mail });
+      } catch {
+        // Logged by sendEmail. The answer stays the same so the form does not reveal which e-mails exist.
+      }
     }
     return ok(undefined, "If an account exists for that email, we've sent password reset instructions.");
   });

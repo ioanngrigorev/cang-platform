@@ -1,3 +1,38 @@
+# CANG production (cang.vn, Vultr) — how it runs today
+
+**Deploys are automatic.** A systemd timer on the server (`cang-autodeploy.timer`, installed by
+`vultr-bootstrap.sh` → `install-autodeploy.sh`) checks `main` every 2 minutes. A new commit is deployed by
+`deploy/update.sh`:
+
+1. Fetch that commit.
+2. Sync it into `/opt/cang` (`.env` is kept).
+3. Rebuild the image, with the commit baked in as `BUILD_SHA`.
+4. Restart.
+5. Wait until `GET /api/health` reports the new `version`.
+6. Run the idempotent seed.
+
+If the new container never becomes healthy, the previous image is started again and the commit is written
+to `/opt/cang/.failed-sha`, so it is not retried. Push a fix, or `rm /opt/cang/.failed-sha` to retry it.
+
+| What | Where |
+|---|---|
+| Deployed commit | `https://cang.vn/api/health` → `version`, or `/opt/cang/.deployed-sha` |
+| Deploy logs | `/var/log/cang-deploy/*.log` (last 20), `journalctl -u cang-autodeploy` |
+| Pause / resume | `touch /opt/cang/.autodeploy-paused` / `rm /opt/cang/.autodeploy-paused` |
+| Deploy by hand | `bash /opt/cang/deploy/update.sh [sha]` |
+| Full reinstall of tooling | `curl -fsSL https://raw.githubusercontent.com/ioanngrigorev/cang-platform/main/deploy/vultr-bootstrap.sh \| bash` |
+| Private repository | put a read-only GitHub token in `/root/.cang-github-token` |
+
+**E-mail.** `EMAIL_PROVIDER=resend` + `RESEND_API_KEY`, or `EMAIL_PROVIDER=smtp` + `SMTP_URL`, in
+`/opt/cang/.env`, followed by `cd /opt/cang && docker compose up -d app`. The sending domain must be verified
+with the provider, using the DNS records it gives you, at iNET. Test from Admin → Providers → E-mail →
+"Send me a test e-mail". Texts live in `src/messages/{en,vi}/emails.json` and can be overridden per locale in
+Admin → CMS → E-mail templates.
+
+The rest of this file is the original manual guide for a generic VPS.
+
+---
+
 # Deploying CANG to a Sprintbox VPS
 
 Step-by-step for a single Ubuntu VPS running the Docker Compose stack in `docker-compose.yml`

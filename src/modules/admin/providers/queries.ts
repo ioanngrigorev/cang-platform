@@ -36,5 +36,6 @@ export function emailProviderSummary() {
   } catch {
     smtpHost = null;
   }
-  return { provider, from: env.EMAIL_FROM || "CANG <no-reply@cang.vn>", smtpHost, credentialsConfigured: !!(env.RESEND_API_KEY || env.SMTP_URL) };
+  const credentialsConfigured = provider === "resend" ? !!env.RESEND_API_KEY : provider === "smtp" ? !!env.SMTP_URL : false;
+  return { provider, from: env.EMAIL_FROM || "CANG <no-reply@cang.vn>", replyTo: env.EMAIL_REPLY_TO || null, smtpHost, credentialsConfigured };
 }

@@ -11,17 +11,21 @@ import { ToastProvider } from "@/components/ui/toast";
 import { FormResetGuard } from "@/components/ui/form-reset-guard";
 import { ClientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
-import { siteUrl } from "@/lib/seo";
+import { defaultOgImage, siteUrl } from "@/lib/seo";
 
 /**
  * Search-engine ownership tokens come from the environment (/opt/cang/.env on the server), so
  * Search Console and Bing can be verified with a container restart instead of a code change.
  */
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
   const google = process.env.GOOGLE_SITE_VERIFICATION?.trim();
   const bing = process.env.BING_SITE_VERIFICATION?.trim();
+  const image = defaultOgImage(locale);
   return {
     ...baseMetadata,
+    openGraph: { siteName: "CANG", type: "website", images: [image] },
+    twitter: { card: "summary_large_image", images: [image.url] },
     verification: {
       ...(google ? { google } : {}),
       ...(bing ? { other: { "msvalidate.01": bing } } : {}),
@@ -34,9 +38,8 @@ const baseMetadata: Metadata = {
   title: { default: "CANG – Source from verified Vietnamese manufacturers", template: "%s | CANG" },
   description: "CANG is Vietnam's B2B marketplace: verified manufacturers, RFQs, trade assurance, logistics and financing for global buyers.",
   icons: { icon: "/favicon.svg" },
-  // Default social card; pages built with `pageMetadata` override title/description and may set their own image.
-  openGraph: { siteName: "CANG", type: "website", images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "CANG – Vietnam B2B industrial marketplace" }] },
-  twitter: { card: "summary_large_image" },
+  // Default social card (PNG, per locale) is added in generateMetadata; pages built with `pageMetadata`
+  // override title/description and may set their own card (products, suppliers).
 };
 
 // All routes render on demand: content is DB-driven and the header is session-aware.

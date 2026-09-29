@@ -26,6 +26,8 @@ const schema = z.object({
   EMAIL_PROVIDER: z.enum(["console", "smtp", "resend"]).default("console"),
   SMTP_URL: z.string().optional().default(""),
   EMAIL_FROM: z.string().default("CANG <no-reply@cang.vn>"),
+  EMAIL_REPLY_TO: z.string().optional().default(""),
+  RESEND_API_KEY: z.string().optional().default(""),
 });
 
 let cached: z.infer<typeof schema> | null = null;

@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, DataList } from "@/components/ui/card";
 import { Avatar, Breadcrumbs, JsonLd, RatingStars, SectionHeading } from "@/components/ui/misc";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Link } from "@/i18n/navigation";
-import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, entityOgImage, productJsonLd } from "@/lib/seo";
 import { formatMoney, formatNumber, localized, truncate } from "@/lib/utils";
 import { getAuth } from "@/modules/auth/current-user";
 import { getBadgeLabels, getMoreFromSupplier, getProductBySlug, getProductReviewStats, getSimilarProducts, getSupplierReviewSummary } from "@/modules/catalog/queries";
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       product.seoDescription ??
       product.shortDescription ??
       t("product.metaDescription", { title, supplier: product.company.name, moq: formatNumber(product.moq, locale), unit: product.unit, lead: product.leadTimeDays ? t("product.days", { count: product.leadTimeDays }) : "—" }),
-    image: product.images[0]?.url ?? null,
+    image: entityOgImage("product", product.slug, locale),
     type: "product",
   });
 }

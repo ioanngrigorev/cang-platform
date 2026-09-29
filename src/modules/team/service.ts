@@ -7,7 +7,8 @@ import { secureToken } from "@/lib/ids";
 import { absoluteUrl } from "@/lib/utils";
 import { audit } from "@/modules/audit/log";
 import { sha256 } from "@/modules/auth/session";
-import { emailLayout, sendEmail } from "@/modules/notifications/email";
+import { sendEmail } from "@/modules/notifications/email";
+import { emailDict, renderEmail } from "@/modules/notifications/email-templates";
 import { notifyUser } from "@/modules/notifications/service";
 import type { InviteMemberInput } from "./schemas";
 
@@ -48,15 +49,10 @@ export async function inviteMember(companyId: string, inviterId: string, input: 
     .returning();
 
   const url = absoluteUrl(`/${locale}/invite/${token}`);
-  await sendEmail({
-    to: input.email,
-    subject: `[CANG] You have been invited to join ${company.name}`,
-    html: emailLayout(
-      `Join ${company.name} on CANG`,
-      `<p>You were invited to join <strong>${escapeHtml(company.name)}</strong> on CANG as <strong>${input.role.toLowerCase()}</strong>.</p><p>This invitation expires in ${INVITE_TTL_DAYS} days.</p>`,
-      { label: "Accept the invitation", url },
-    ),
-  }).catch((e) => console.error("[team] invite email failed", e));
+  const roles = emailDict(locale).team_invite.role as Record<string, string>;
+  await renderEmail("team_invite", locale, { company: company.name, role: roles[input.role] ?? input.role.toLowerCase(), days: INVITE_TTL_DAYS, url })
+    .then((mail) => sendEmail({ to: input.email, ...mail }))
+    .catch((e) => console.error("[team] invite email failed", e));
 
   if (existingUser) {
     await notifyUser(existingUser.id, {

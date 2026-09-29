@@ -1,0 +1,34 @@
+{
+  "layout": {
+    "tagline": "Vietnam's B2B trade infrastructure",
+    "why": "You are receiving this email because you have an account on CANG."
+  },
+  "welcome": {
+    "subject": "Welcome to CANG — confirm your email",
+    "title": "Welcome to CANG",
+    "body": ["Hi {name},", "Your {kind} account for {company} is ready. Please confirm your email address to unlock all features."],
+    "cta": "Confirm email",
+    "kind": { "BUYER": "buyer", "SELLER": "supplier", "LOGISTICS": "logistics partner" }
+  },
+  "password_reset": {
+    "subject": "Reset your CANG password",
+    "title": "Reset your password",
+    "body": ["We received a request to reset the password for {email}.", "The link expires in 1 hour. If you did not ask for this, ignore this email — your password stays the same."],
+    "cta": "Choose a new password"
+  },
+  "team_invite": {
+    "subject": "[CANG] You have been invited to join {company}",
+    "title": "Join {company} on CANG",
+    "body": ["You were invited to join {company} on CANG as {role}.", "This invitation expires in {days} days."],
+    "cta": "Accept the invitation",
+    "role": { "OWNER": "owner", "ADMIN": "admin", "MANAGER": "manager", "SALES": "sales", "PURCHASING": "purchasing", "FINANCE": "finance", "STAFF": "staff", "VIEWER": "viewer" }
+  },
+  "notification": {
+    "cta": "Open in CANG"
+  },
+  "test": {
+    "subject": "CANG test email",
+    "title": "E-mail delivery works",
+    "body": ["This test message was sent from the CANG admin panel at {time}.", "Provider: {provider}. Sender: {from}."]
+  }
+}

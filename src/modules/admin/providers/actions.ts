@@ -3,7 +3,10 @@
 import { and, eq, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { financingProviders, inspectionProviders, logisticsProviders, paymentProviders } from "@/db/schema";
-import { ActionError, formDataToObject, ok, parseInput, runAction, type ActionResult } from "@/lib/action";
+import { ActionError, fail, formDataToObject, ok, parseInput, runAction, type ActionResult } from "@/lib/action";
+import { env } from "@/lib/env";
+import { emailProvider, sendEmail } from "@/modules/notifications/email";
+import { renderEmail } from "@/modules/notifications/email-templates";
 import { adminActor, revalidateAdmin } from "../context";
 import { maskSecrets, unmaskSecrets } from "../shared";
 import { financingProviderSchema, inspectionProviderSchema, paymentProviderSchema, providerToggleSchema } from "./schemas";
@@ -131,5 +134,25 @@ export async function toggleProviderAction(_prev: ActionResult | null, formData:
     await log({ action: `admin.provider.${parsed.data.kind}.toggle`, entityType: `${parsed.data.kind}_provider`, entityId: row.id, after: { code: row.code, isActive: active } });
     revalidate();
     return ok(undefined, active ? "Provider activated." : "Provider deactivated.");
+  });
+}
+
+/** Sends a test e-mail to the signed-in admin through the configured provider and reports the result. */
+export async function sendTestEmailAction(_prev: ActionResult | null, _formData: FormData): Promise<ActionResult> {
+  return runAction(async () => {
+    const { user, log } = await adminActor("admin.settings.write");
+    const provider = emailProvider();
+    const mail = await renderEmail("test", user.locale, {
+      time: `${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC`,
+      provider: provider.name,
+      from: env().EMAIL_FROM,
+    });
+    try {
+      const res = await sendEmail({ to: user.email, ...mail });
+      await log({ action: "admin.email.test", entityType: "user", entityId: user.id, after: { provider: provider.name, messageId: res.id ?? null } });
+      return ok(undefined, provider.name === "console" ? `EMAIL_PROVIDER is "console": the message was only written to the server log.` : `Test e-mail sent to ${user.email} via ${provider.name}.`);
+    } catch (err) {
+      return fail(`Sending through ${provider.name} failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
   });
 }

@@ -961,12 +961,15 @@
     "routingRules": "Quy tắc định tuyến (JSON)",
     "routingRulesHint": "ví dụ {\"minCreditScore\": 60, \"side\": \"BUYER\"}",
     "apiConfig": "Cấu hình API (JSON)",
-    "emailHint": "Gửi e-mail được cấu hình qua biến môi trường (EMAIL_PROVIDER, SMTP_URL, EMAIL_FROM).",
+    "emailHint": "Việc gửi e-mail được cấu hình trong môi trường máy chủ: EMAIL_PROVIDER (console, resend hoặc smtp), RESEND_API_KEY hoặc SMTP_URL, EMAIL_FROM và tùy chọn EMAIL_REPLY_TO.",
     "emailProvider": "Nhà cung cấp",
     "emailFrom": "Địa chỉ gửi",
     "smtpHost": "Máy chủ SMTP",
     "credentials": "Đã cấu hình thông tin xác thực",
-    "fieldDescription": "Mô tả"
+    "fieldDescription": "Mô tả",
+    "emailReplyTo": "Địa chỉ trả lời",
+    "sendTestEmail": "Gửi e-mail thử cho tôi",
+    "emailNotConfigured": "E-mail hiện không được gửi đi mà chỉ ghi vào nhật ký máy chủ. Hãy đặt EMAIL_PROVIDER=resend cùng RESEND_API_KEY (hoặc smtp với SMTP_URL) trong /opt/cang/.env rồi khởi động lại ứng dụng."
   },
   "analytics": {
     "title": "Phân tích",
@@ -1058,7 +1061,8 @@
     "variablesHint": "Các placeholder, cách nhau bằng dấu phẩy",
     "subject": "Tiêu đề e-mail",
     "bodyHtml": "Nội dung (HTML)",
-    "bodyText": "Nội dung văn bản thuần"
+    "bodyText": "Nội dung văn bản thuần",
+    "emailTemplatesHint": "Các mã nền tảng đang gửi (ngôn ngữ phải khớp: en hoặc vi). Mẫu đang bật sẽ thay thế nội dung mặc định; placeholder:"
   },
   "support": {
     "title": "Hỗ trợ",

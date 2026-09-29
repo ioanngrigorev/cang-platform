@@ -1,0 +1,34 @@
+{
+  "layout": {
+    "tagline": "Hạ tầng thương mại B2B của Việt Nam",
+    "why": "Bạn nhận được email này vì bạn có tài khoản trên CANG."
+  },
+  "welcome": {
+    "subject": "Chào mừng bạn đến với CANG — hãy xác nhận email",
+    "title": "Chào mừng bạn đến với CANG",
+    "body": ["Xin chào {name},", "Tài khoản {kind} của {company} đã sẵn sàng. Vui lòng xác nhận địa chỉ email để sử dụng đầy đủ các tính năng."],
+    "cta": "Xác nhận email",
+    "kind": { "BUYER": "người mua", "SELLER": "nhà cung cấp", "LOGISTICS": "đối tác logistics" }
+  },
+  "password_reset": {
+    "subject": "Đặt lại mật khẩu CANG",
+    "title": "Đặt lại mật khẩu",
+    "body": ["Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho {email}.", "Liên kết có hiệu lực trong 1 giờ. Nếu bạn không gửi yêu cầu này, hãy bỏ qua email — mật khẩu của bạn vẫn giữ nguyên."],
+    "cta": "Chọn mật khẩu mới"
+  },
+  "team_invite": {
+    "subject": "[CANG] Lời mời tham gia {company}",
+    "title": "Tham gia {company} trên CANG",
+    "body": ["Bạn được mời tham gia {company} trên CANG với vai trò {role}.", "Lời mời hết hạn sau {days} ngày."],
+    "cta": "Chấp nhận lời mời",
+    "role": { "OWNER": "chủ sở hữu", "ADMIN": "quản trị viên", "MANAGER": "quản lý", "SALES": "kinh doanh", "PURCHASING": "mua hàng", "FINANCE": "tài chính", "STAFF": "nhân viên", "VIEWER": "người xem" }
+  },
+  "notification": {
+    "cta": "Mở trong CANG"
+  },
+  "test": {
+    "subject": "Email thử nghiệm từ CANG",
+    "title": "Gửi email hoạt động bình thường",
+    "body": ["Email thử nghiệm này được gửi từ trang quản trị CANG lúc {time}.", "Nhà cung cấp: {provider}. Người gửi: {from}."]
+  }
+}

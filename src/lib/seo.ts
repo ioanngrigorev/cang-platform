@@ -8,6 +8,16 @@ export function siteUrl() {
   return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
 }
 
+/** Default social preview card for a locale (PNG rendered by src/app/og/[...parts]/route.tsx). */
+export function defaultOgImage(locale: string) {
+  return { url: `/og/default.${locale === "vi" ? "vi" : "en"}.png`, width: 1200, height: 630, alt: "CANG" };
+}
+
+/** Social preview card for a product or supplier page. */
+export function entityOgImage(kind: "product" | "supplier", slug: string, locale: string) {
+  return `/og/${kind}/${encodeURIComponent(slug)}.${locale === "vi" ? "vi" : "en"}.png`;
+}
+
 /** Build page metadata with canonical + hreflang alternates for every locale. */
 export function buildMetadata(opts: {
   locale: Locale | string;
@@ -20,6 +30,7 @@ export function buildMetadata(opts: {
   suffix?: boolean;
 }): Metadata {
   const base = siteUrl();
+  const abs = (u: string) => (u.startsWith("http") ? u : `${base}${u}`);
   const title = opts.suffix === false ? opts.title : `${opts.title}${SUFFIX}`;
   const canonical = `${base}/${opts.locale}${opts.path === "/" ? "" : opts.path}`;
   const languages: Record<string, string> = {};
@@ -37,9 +48,9 @@ export function buildMetadata(opts: {
       siteName: SITE,
       locale: opts.locale === "vi" ? "vi_VN" : "en_US",
       type: opts.type === "product" ? "website" : (opts.type ?? "website"),
-      images: opts.image ? [{ url: opts.image.startsWith("http") ? opts.image : `${base}${opts.image}` }] : undefined,
+      images: opts.image ? [{ url: abs(opts.image), ...(opts.image.startsWith("/og/") ? { width: 1200, height: 630, alt: opts.title } : {}) }] : undefined,
     },
-    twitter: { card: opts.image ? "summary_large_image" : "summary", title, description: opts.description },
+    twitter: { card: opts.image ? "summary_large_image" : "summary", title, description: opts.description, images: opts.image ? [abs(opts.image)] : undefined },
   };
 }
 

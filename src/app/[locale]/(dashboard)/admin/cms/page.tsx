@@ -1,9 +1,10 @@
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
+import { EMAIL_TEMPLATE_CODES } from "@/modules/notifications/email-templates";
 import { getTranslations } from "next-intl/server";
 import { BannerDialog, BannerToggle, CmsPageDialog, CmsPageStatusButtons, EmailTemplateDialog, HomepageSectionDialog, SectionToggle } from "@/components/admin/cms-forms";
 import { JsonDetails } from "@/components/admin/json-details";
-import { Badge, LinkTabs, PageHeader, SmartImage, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
+import { Alert, Badge, LinkTabs, PageHeader, SmartImage, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { listBanners, listCmsPages, listEmailTemplates, listHomepageSections } from "@/modules/admin/cms/queries";
@@ -179,6 +180,16 @@ export default async function AdminCmsPage({ params, searchParams }: { params: P
       ) : null}
 
       {tab === "emails" ? (
+        <>
+        <Alert variant="info" className="mb-4">
+          {t("emailTemplatesHint")}{" "}
+          {Object.entries(EMAIL_TEMPLATE_CODES).map(([code, vars], i) => (
+            <span key={code}>
+              {i ? "; " : ""}
+              <code className="font-mono text-xs">{code}</code> ({vars.map((v) => `{{${v}}}`).join(", ")})
+            </span>
+          ))}
+        </Alert>
         <Table>
           <THead>
             <TR>
@@ -225,6 +236,7 @@ export default async function AdminCmsPage({ params, searchParams }: { params: P
             ))}
           </TBody>
         </Table>
+        </>
       ) : null}
     </div>
   );
