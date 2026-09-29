@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Send } from "lucide-react";
 import { JsonDetails } from "@/components/admin/json-details";
 import { ActionForm } from "@/components/buyer/action-form";
+import { Input } from "@/components/ui/input";
 import { LogisticsProviderDialog } from "@/components/admin/logistics-forms";
 import { FinancingProviderDialog, InspectionProviderDialog, PaymentProviderDialog, ProviderToggle } from "@/components/admin/provider-forms";
 import { Alert, Badge, Card, CardContent, CardHeader, DataList, LinkTabs, PageHeader, StatusBadge, TBody, TD, TH, THead, TR, Table } from "@/components/ui";
@@ -229,7 +230,13 @@ export default async function AdminProvidersPage({ params, searchParams }: { par
 
       {tab === "email" ? (
         <Card>
-          <CardHeader title={t("tabs.email")} description={t("emailHint")} action={canPlatform(auth, "admin.settings.write") ? <ActionForm action={sendTestEmailAction} label={t("sendTestEmail")} icon={<Send />} variant="secondary" refresh={false} /> : null} />
+          <CardHeader title={t("tabs.email")} description={t("emailHint")} action={
+              canPlatform(auth, "admin.settings.write") ? (
+                <ActionForm action={sendTestEmailAction} label={t("sendTestEmail")} icon={<Send />} variant="secondary" refresh={false} className="gap-2">
+                  <Input name="to" type="email" defaultValue={auth.user.email} aria-label={t("testRecipient")} className="h-8 w-56 text-sm" />
+                </ActionForm>
+              ) : null
+            } />
           <CardContent>
             <DataList
               columns={2}

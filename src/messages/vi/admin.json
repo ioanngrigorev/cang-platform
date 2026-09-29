@@ -968,8 +968,9 @@
     "credentials": "Đã cấu hình thông tin xác thực",
     "fieldDescription": "Mô tả",
     "emailReplyTo": "Địa chỉ trả lời",
-    "sendTestEmail": "Gửi e-mail thử cho tôi",
-    "emailNotConfigured": "E-mail hiện không được gửi đi mà chỉ ghi vào nhật ký máy chủ. Hãy đặt EMAIL_PROVIDER=resend cùng RESEND_API_KEY (hoặc smtp với SMTP_URL) trong /opt/cang/.env rồi khởi động lại ứng dụng."
+    "sendTestEmail": "Gửi e-mail thử",
+    "emailNotConfigured": "E-mail hiện không được gửi đi mà chỉ ghi vào nhật ký máy chủ. Hãy đặt EMAIL_PROVIDER=resend cùng RESEND_API_KEY (hoặc smtp với SMTP_URL) trong /opt/cang/.env rồi khởi động lại ứng dụng.",
+    "testRecipient": "Người nhận e-mail thử"
   },
   "analytics": {
     "title": "Phân tích",

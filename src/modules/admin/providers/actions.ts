@@ -138,9 +138,12 @@ export async function toggleProviderAction(_prev: ActionResult | null, formData:
 }
 
 /** Sends a test e-mail to the signed-in admin through the configured provider and reports the result. */
-export async function sendTestEmailAction(_prev: ActionResult | null, _formData: FormData): Promise<ActionResult> {
+export async function sendTestEmailAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
   return runAction(async () => {
     const { user, log } = await adminActor("admin.settings.write");
+    const raw = String(formData.get("to") ?? "").trim();
+    const to = raw || user.email;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return fail("Enter a valid e-mail address.", { code: "VALIDATION", fieldErrors: { to: ["Enter a valid e-mail address."] } });
     const provider = emailProvider();
     const mail = await renderEmail("test", user.locale, {
       time: `${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC`,
@@ -148,9 +151,9 @@ export async function sendTestEmailAction(_prev: ActionResult | null, _formData:
       from: env().EMAIL_FROM,
     });
     try {
-      const res = await sendEmail({ to: user.email, ...mail });
-      await log({ action: "admin.email.test", entityType: "user", entityId: user.id, after: { provider: provider.name, messageId: res.id ?? null } });
-      return ok(undefined, provider.name === "console" ? `EMAIL_PROVIDER is "console": the message was only written to the server log.` : `Test e-mail sent to ${user.email} via ${provider.name}.`);
+      const res = await sendEmail({ to, ...mail });
+      await log({ action: "admin.email.test", entityType: "user", entityId: user.id, after: { provider: provider.name, to, messageId: res.id ?? null } });
+      return ok(undefined, provider.name === "console" ? `EMAIL_PROVIDER is "console": the message was only written to the server log.` : `Test e-mail sent to ${to} via ${provider.name}.`);
     } catch (err) {
       return fail(`Sending through ${provider.name} failed: ${err instanceof Error ? err.message : String(err)}`);
     }

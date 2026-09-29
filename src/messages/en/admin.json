@@ -968,8 +968,9 @@
     "credentials": "Credentials configured",
     "fieldDescription": "Description",
     "emailReplyTo": "Reply-to",
-    "sendTestEmail": "Send me a test e-mail",
-    "emailNotConfigured": "E-mails are not being delivered: they are only written to the server log. Set EMAIL_PROVIDER=resend with RESEND_API_KEY (or smtp with SMTP_URL) in /opt/cang/.env and restart the app."
+    "sendTestEmail": "Send a test e-mail",
+    "emailNotConfigured": "E-mails are not being delivered: they are only written to the server log. Set EMAIL_PROVIDER=resend with RESEND_API_KEY (or smtp with SMTP_URL) in /opt/cang/.env and restart the app.",
+    "testRecipient": "Test e-mail recipient"
   },
   "analytics": {
     "title": "Analytics",
