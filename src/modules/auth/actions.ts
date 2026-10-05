@@ -4,8 +4,8 @@ import { and, eq, gt, isNull } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { db } from "@/db";
-import { users, verificationTokens, companyMembers } from "@/db/schema";
-import { fail, ok, parseInput, runAction, type ActionResult, UnauthorizedError } from "@/lib/action";
+import { users, verificationTokens, companyMembers, sessions } from "@/db/schema";
+import { fail, ok, parseInput, runAction, type ActionResult, ActionError, UnauthorizedError } from "@/lib/action";
 import { secureToken } from "@/lib/ids";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 import { absoluteUrl } from "@/lib/utils";
@@ -24,7 +24,7 @@ import {
   resetPasswordSchema,
   updateProfileSchema,
 } from "./schemas";
-import { createSession, destroyAllSessions, destroyCurrentSession, requestMeta, setActiveCompany, sha256 } from "./session";
+import { createSession, destroyCurrentSession, requestMeta, setActiveCompany, sha256 } from "./session";
 
 function safeNext(next: string | undefined, fallback: string) {
   if (!next || !next.startsWith("/") || next.startsWith("//")) return fallback;
@@ -37,8 +37,12 @@ export async function loginAction(_prev: ActionResult | null, formData: FormData
     if (!parsed.success) return parsed.result;
     const { email, password, next } = parsed.data;
     const { ip } = await requestMeta();
-    const rl = await rateLimit(`login:${ip ?? "unknown"}:${email}`, RATE_LIMITS.login);
-    if (!rl.allowed) return fail("Too many attempts. Please try again in a few minutes.", { code: "RATE_LIMITED" });
+    const limits = await Promise.all([
+      rateLimit(`login:${ip ?? "unknown"}:${email}`, RATE_LIMITS.login),
+      rateLimit(`login-ip:${ip ?? "unknown"}`, { limit: 100, windowMs: RATE_LIMITS.login.windowMs }),
+      rateLimit(`login-account:${email}`, { limit: 30, windowMs: RATE_LIMITS.login.windowMs }),
+    ]);
+    if (limits.some((r) => !r.allowed)) return fail("Too many attempts. Please try again in a few minutes.", { code: "RATE_LIMITED" });
 
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
     const valid = user ? await verifyPassword(password, user.passwordHash) : false;
@@ -175,10 +179,14 @@ export async function resetPasswordAction(_prev: ActionResult | null, formData: 
       .limit(1);
     if (!row?.userId) return fail("This reset link is invalid or has expired.", { code: "INVALID_TOKEN" });
     await db.transaction(async (tx) => {
+      await tx.select({ id: users.id }).from(users).where(eq(users.id, row.userId!)).for("update");
+      const [claimed] = await tx.update(verificationTokens).set({ consumedAt: new Date() })
+        .where(and(eq(verificationTokens.id, row.id), isNull(verificationTokens.consumedAt), gt(verificationTokens.expiresAt, new Date()))).returning({ id: verificationTokens.id });
+      if (!claimed) throw new ActionError("This reset link is invalid or has expired.", "INVALID_TOKEN");
       await tx.update(users).set({ passwordHash: await hashPassword(parsed.data.password) }).where(eq(users.id, row.userId!));
-      await tx.update(verificationTokens).set({ consumedAt: new Date() }).where(eq(verificationTokens.id, row.id));
+      await tx.delete(sessions).where(eq(sessions.userId, row.userId!));
+      await tx.delete(verificationTokens).where(and(eq(verificationTokens.userId, row.userId!), eq(verificationTokens.purpose, "PASSWORD_RESET")));
     });
-    await destroyAllSessions(row.userId);
     await audit({ actorId: row.userId, action: "auth.password.reset", entityType: "user", entityId: row.userId });
     return ok(undefined, "Your password has been updated. You can now sign in.");
   });
@@ -215,7 +223,12 @@ export async function changePasswordAction(_prev: ActionResult | null, formData:
     if (!(await verifyPassword(parsed.data.currentPassword, auth.user.passwordHash))) {
       return fail("Current password is incorrect.", { fieldErrors: { currentPassword: ["Incorrect password"] } });
     }
-    await db.update(users).set({ passwordHash: await hashPassword(parsed.data.password) }).where(eq(users.id, auth.user.id));
+    await db.transaction(async (tx) => {
+      await tx.update(users).set({ passwordHash: await hashPassword(parsed.data.password) }).where(eq(users.id, auth.user.id));
+      await tx.delete(sessions).where(eq(sessions.userId, auth.user.id));
+      await tx.delete(verificationTokens).where(and(eq(verificationTokens.userId, auth.user.id), eq(verificationTokens.purpose, "PASSWORD_RESET")));
+    });
+    await createSession(auth.user.id, auth.activeMembership?.companyId);
     await audit({ actorId: auth.user.id, action: "auth.password.change", entityType: "user", entityId: auth.user.id });
     return ok(undefined, "Password updated.");
   });

@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, type Db, type Tx } from "@/db";
 import { paymentProviders } from "@/db/schema";
 import { ManualBankTransferAdapter } from "./adapters/manual-bank-transfer";
 import type { PaymentProviderAdapter, ProviderRow } from "./provider";
@@ -20,17 +20,16 @@ export function registerAdapter(adapter: PaymentProviderAdapter) {
 }
 
 /** Pick the provider for a payment: explicit id, else default active, else first active supporting the currency. */
-export async function chooseProvider(opts: { providerId?: string | null; currency: string; escrow?: boolean }): Promise<ProviderRow | null> {
+export async function chooseProvider(opts: { providerId?: string | null; currency: string; escrow?: boolean }, executor: Db | Tx = db): Promise<ProviderRow | null> {
+  const supports = (p: ProviderRow) => (p.supportedCurrencies.length === 0 || p.supportedCurrencies.includes(opts.currency)) && (!opts.escrow || p.supportsEscrow);
   if (opts.providerId) {
-    const [p] = await db.select().from(paymentProviders).where(and(eq(paymentProviders.id, opts.providerId), eq(paymentProviders.isActive, true))).limit(1);
-    if (p) return p;
+    const [p] = await executor.select().from(paymentProviders).where(and(eq(paymentProviders.id, opts.providerId), eq(paymentProviders.isActive, true))).limit(1);
+    return p && supports(p) ? p : null;
   }
-  const active = await db.select().from(paymentProviders).where(eq(paymentProviders.isActive, true)).orderBy(paymentProviders.sortOrder);
-  const supports = (p: ProviderRow) => p.supportedCurrencies.length === 0 || p.supportedCurrencies.includes(opts.currency);
+  const active = await executor.select().from(paymentProviders).where(eq(paymentProviders.isActive, true)).orderBy(paymentProviders.sortOrder);
   return (
     active.find((p) => p.isDefault && supports(p) && (!opts.escrow || p.supportsEscrow)) ??
     active.find((p) => supports(p) && (!opts.escrow || p.supportsEscrow)) ??
-    active[0] ??
     null
   );
 }

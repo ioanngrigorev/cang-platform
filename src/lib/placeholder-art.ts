@@ -46,7 +46,7 @@ export function placeholderArt(subject: string | null | undefined, wide = false)
   const x1 = corner === 0 || corner === 3 ? 0 : 1;
   const y1 = corner < 2 ? 0 : 1;
   const id = `w${seed.toString(36)}`;
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">`
     + `<defs><linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${1 - x1}" y2="${1 - y1}">`
     + `<stop offset="0" stop-color="${brand(0.14)}"/><stop offset="1" stop-color="${brand(0.03)}"/></linearGradient></defs>`
     + `<rect width="${W}" height="${H}" fill="url(#${id})"/>`;

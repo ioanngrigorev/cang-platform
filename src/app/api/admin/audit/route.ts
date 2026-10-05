@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   for (const { log, actorName, actorEmail } of rows) {
     lines.push([log.id, log.createdAt, log.actorType, log.actorId, actorName, actorEmail, log.action, log.entityType, log.entityId, log.ipAddress, log.before, log.after].map(csvEscape).join(","));
   }
-  return new NextResponse(`﻿${lines.join("\r\n")}`, {
+  return new NextResponse(`\uFEFF${lines.join("\r\n")}`, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="audit-log-${new Date().toISOString().slice(0, 10)}.csv"`,

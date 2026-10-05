@@ -33,6 +33,7 @@ export type NotifyInput = {
   type: NotificationType;
   title: string;
   body?: string;
+  translations?: { vi: { title: string; body?: string } };
   link?: string; // path without locale, e.g. "/buyer/rfqs/abc"
   data?: Record<string, unknown>;
   email?: boolean; // also send email (default: true for important types)
@@ -57,24 +58,25 @@ const EMAIL_BY_DEFAULT: NotificationType[] = [
 export async function notifyUser(userId: string, input: NotifyInput, tx?: Tx): Promise<void> {
   try {
     const executor = tx ?? db;
+    const [u] = await executor.select({ email: users.email, locale: users.locale }).from(users).where(eq(users.id, userId)).limit(1);
+    const text = u?.locale === "vi" && input.translations?.vi ? input.translations.vi : input;
     await executor.insert(notifications).values({
       userId,
       type: input.type,
       channel: "IN_APP",
-      title: input.title,
-      body: input.body ?? null,
+      title: text.title,
+      body: text.body ?? null,
       link: input.link ?? null,
       data: input.data ?? null,
     });
     const shouldEmail = input.email ?? EMAIL_BY_DEFAULT.includes(input.type);
     if (shouldEmail) {
-      const [u] = await executor.select({ email: users.email, locale: users.locale }).from(users).where(eq(users.id, userId)).limit(1);
       if (u?.email) {
         const link = input.link ? absoluteUrl(`/${u.locale || "en"}${input.link}`) : undefined;
         sendEmail({
           to: u.email,
-          subject: `[CANG] ${input.title}`,
-          html: emailLayout(escapeHtml(input.title), `<p>${escapeHtml(input.body ?? "")}</p>`, link ? { label: emailDict(u.locale).notification.cta, url: link } : undefined, emailFooter(u.locale)),
+          subject: `[CANG] ${text.title}`,
+          html: emailLayout(escapeHtml(text.title), `<p>${escapeHtml(text.body ?? "")}</p>`, link ? { label: emailDict(u.locale).notification.cta, url: link } : undefined, emailFooter(u.locale)),
         }).catch((e) => console.error("[notify] email failed", e));
       }
     }
@@ -85,12 +87,16 @@ export async function notifyUser(userId: string, input: NotifyInput, tx?: Tx): P
 
 /** Notify every active member of a company. */
 export async function notifyCompany(companyId: string, input: NotifyInput, tx?: Tx): Promise<void> {
-  const executor = tx ?? db;
-  const members = await executor
-    .select({ userId: companyMembers.userId })
-    .from(companyMembers)
-    .where(and(eq(companyMembers.companyId, companyId), eq(companyMembers.status, "ACTIVE")));
-  await Promise.all(members.map((m) => notifyUser(m.userId, input, tx)));
+  try {
+    const executor = tx ?? db;
+    const members = await executor
+      .select({ userId: companyMembers.userId })
+      .from(companyMembers)
+      .where(and(eq(companyMembers.companyId, companyId), eq(companyMembers.status, "ACTIVE")));
+    await Promise.all(members.map((m) => notifyUser(m.userId, input, tx)));
+  } catch {
+    console.error("[notify] company notification failed");
+  }
 }
 
 export async function unreadCount(userId: string): Promise<number> {

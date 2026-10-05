@@ -1,0 +1,71 @@
+name: Quality checks
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cang
+          POSTGRES_PASSWORD: cang
+          POSTGRES_DB: cang_integration_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd 'pg_isready -U cang'
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd 'redis-cli ping'
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_REDIS_URL: redis://127.0.0.1:6379
+      DATABASE_URL: postgresql://cang:cang@127.0.0.1:5432/cang_integration_test
+      SESSION_SECRET: ci-only-secret-never-used-in-production-12345
+      NEXT_PUBLIC_APP_URL: http://localhost:3216
+      APP_URL: http://localhost:3216
+      NEXT_TELEMETRY_DISABLED: '1'
+      EMAIL_PROVIDER: console
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm audit --prod --audit-level high
+      - run: pnpm db:migrate && pnpm db:seed
+      - run: pnpm test:integration
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Journey and link audit
+        run: |
+          mkdir -p test-results
+          pnpm exec next start -p 3216 > test-results/server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:3216/api/health && break
+            sleep 2
+          done
+          curl -fsS http://localhost:3216/api/health
+          pnpm test:e2e
+          node e2e/security-session.mjs
+          pnpm test:links
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/

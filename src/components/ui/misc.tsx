@@ -8,7 +8,7 @@ export function Avatar({ src, name, size = 40, className, square }: { src?: stri
   const style = { width: size, height: size, fontSize: Math.max(10, size / 2.6) };
   const shape = square ? "rounded-md" : "rounded-full";
   if (src) {
-    // eslint-disable-next-line @next/next/no-img-element
+
     return <img src={src} alt={name} width={size} height={size} style={style} className={cn(shape, "shrink-0 object-cover bg-steel-100", className)} />;
   }
   return (

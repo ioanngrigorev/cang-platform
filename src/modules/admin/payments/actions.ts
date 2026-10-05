@@ -8,7 +8,7 @@ import { idSchema, optionalNumber, optionalText, reasonSchema } from "../shared"
 
 const confirmSchema = z.object({ paymentId: idSchema, bankReference: optionalText(200), note: optionalText(1000) });
 const releaseSchema = z.object({ paymentId: idSchema, reason: reasonSchema });
-const refundSchema = z.object({ paymentId: idSchema, amount: optionalNumber, reason: reasonSchema });
+const refundSchema = z.object({ paymentId: idSchema, amount: optionalNumber.refine((n) => n === null || n > 0, "Enter a positive refund amount"), reason: reasonSchema });
 
 function revalidate() {
   revalidateAdmin("/admin/payments", "/admin/orders", "/admin", "/admin/fees");
@@ -44,7 +44,7 @@ export async function adminRefundPaymentAction(_prev: ActionResult | null, formD
     const { user, log } = await adminActor("admin.payments.write");
     const parsed = parseInput(refundSchema, formDataToObject(formData));
     if (!parsed.success) return parsed.result;
-    const amount = parsed.data.amount && parsed.data.amount > 0 ? parsed.data.amount : undefined;
+    const amount = parsed.data.amount ?? undefined;
     await refundPayment(parsed.data.paymentId, user.id, amount, parsed.data.reason);
     await log({ action: "admin.payment.refund", entityType: "payment", entityId: parsed.data.paymentId, after: { amount: amount ?? "full", reason: parsed.data.reason } });
     revalidate();

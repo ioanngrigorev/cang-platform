@@ -83,6 +83,7 @@ export const orders = pgTable(
   },
   (t) => [
     uniqueIndex("orders_number_idx").on(t.orderNumber),
+    uniqueIndex("orders_quotation_idx").on(t.quotationId),
     index("orders_buyer_status_idx").on(t.buyerCompanyId, t.statusCode),
     index("orders_supplier_status_idx").on(t.supplierCompanyId, t.statusCode),
     index("orders_status_idx").on(t.statusCode),

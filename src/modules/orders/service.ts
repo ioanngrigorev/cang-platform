@@ -46,19 +46,30 @@ export async function createOrderFromQuotation(input: {
   shippingAddress?: OrderRow["shippingAddress"];
   buyerNotes?: string | null;
 }) {
-  const quotation = await db.query.quotations.findFirst({
-    where: eq(quotations.id, input.quotationId),
-    with: { items: true, rfq: true },
-  });
-  if (!quotation) throw new ActionError("Quotation not found.", "NOT_FOUND");
-  if (quotation.rfq.buyerCompanyId !== input.buyerCompanyId) throw new ActionError("This quotation does not belong to your RFQ.", "FORBIDDEN");
-  if (!["SUBMITTED", "UNDER_REVIEW", "REVISED", "ACCEPTED"].includes(quotation.status)) throw new ActionError("This quotation can no longer be accepted.", "INVALID_STATE");
+  const [defaultDepositPercent, assuranceEnabled, inspectionWindowDays] = await Promise.all([
+    getSetting("orders.defaultDepositPercent"), getSetting("tradeAssurance.enabled"), getSetting("tradeAssurance.inspectionWindowDays"),
+  ]);
+  const { order, quotation, created } = await db.transaction(async (tx) => {
+    const [reference] = await tx.select({ rfqId: quotations.rfqId }).from(quotations).where(eq(quotations.id, input.quotationId));
+    if (!reference) throw new ActionError("Quotation not found.", "NOT_FOUND");
+    // Serialize competing awards of the same RFQ, then read the quotation under a row lock.
+    await tx.select({ id: rfqs.id }).from(rfqs).where(eq(rfqs.id, reference.rfqId)).for("update");
+    await tx.select({ id: quotations.id }).from(quotations).where(eq(quotations.id, input.quotationId)).for("update");
+    const quotation = await tx.query.quotations.findFirst({
+      where: eq(quotations.id, input.quotationId),
+      with: { items: true, rfq: true },
+    });
+    if (!quotation) throw new ActionError("Quotation not found.", "NOT_FOUND");
+    if (quotation.rfq.buyerCompanyId !== input.buyerCompanyId) throw new ActionError("This quotation does not belong to your RFQ.", "FORBIDDEN");
+    const [existing] = await tx.select().from(orders).where(eq(orders.quotationId, quotation.id)).limit(1);
+    if (existing) return { order: existing, quotation, created: false };
+    if (quotation.rfq.awardedQuotationId && quotation.rfq.awardedQuotationId !== quotation.id) throw new ActionError("This RFQ has already been awarded.", "INVALID_STATE");
+    if (!["SUBMITTED", "UNDER_REVIEW", "REVISED", "ACCEPTED"].includes(quotation.status)) throw new ActionError("This quotation can no longer be accepted.", "INVALID_STATE");
 
-  const depositPercent = parseDepositPercent(quotation.paymentTerms) ?? (await getSetting("orders.defaultDepositPercent"));
-  const tradeAssurance = input.tradeAssurance ?? (await getSetting("tradeAssurance.enabled"));
-  const productionDays = quotation.leadTimeDays ?? null;
+    const depositPercent = parseDepositPercent(quotation.paymentTerms) ?? (defaultDepositPercent);
+    const tradeAssurance = input.tradeAssurance ?? (assuranceEnabled);
+    const productionDays = quotation.leadTimeDays ?? null;
 
-  const order = await db.transaction(async (tx) => {
     const [o] = await tx
       .insert(orders)
       .values({
@@ -81,7 +92,7 @@ export async function createOrderFromQuotation(input: {
           ? {
               version: "2026-09",
               coverage: ["on-time shipment", "product quality as agreed", "refund on non-delivery"],
-              inspectionWindowDays: await getSetting("tradeAssurance.inspectionWindowDays"),
+              inspectionWindowDays: inspectionWindowDays,
               fundsHeldBy: "licensed payment partner",
             }
           : null,
@@ -116,12 +127,14 @@ export async function createOrderFromQuotation(input: {
       actorId: input.actorUserId,
     });
     await createPaymentSchedule(o, tx);
-    return o;
+    return { order: o, quotation, created: true };
   });
+  if (!created) return order;
 
   await notifyCompany(quotation.supplierCompanyId, {
     type: "ORDER_CREATED",
     title: `New purchase order ${order.orderNumber}`,
+    translations: { vi: { title: `Đơn đặt hàng mới ${order.orderNumber}`, body: `Báo giá ${quotation.quotationNumber} đã được chấp nhận. Vui lòng xác nhận đơn hàng.` } },
     body: `Your quotation ${quotation.quotationNumber} was accepted. Please confirm the order.`,
     link: `/seller/orders/${order.id}`,
   });
@@ -141,7 +154,7 @@ export async function transitionOrder(input: {
   tx?: Tx;
 }) {
   const run = async (tx: Tx) => {
-    const [order] = await tx.select().from(orders).where(eq(orders.id, input.orderId)).limit(1);
+    const [order] = await tx.select().from(orders).where(eq(orders.id, input.orderId)).limit(1).for("update");
     if (!order) throw new ActionError("Order not found.", "NOT_FOUND");
     const [current] = await tx.select().from(orderStatuses).where(eq(orderStatuses.code, order.statusCode)).limit(1);
     const [target] = await tx.select().from(orderStatuses).where(eq(orderStatuses.code, input.toStatus)).limit(1);
@@ -185,12 +198,14 @@ export async function transitionOrder(input: {
   await notifyCompany(result.order.buyerCompanyId, {
     type: "ORDER_STATUS",
     title: `Order ${result.order.orderNumber}: ${result.target.name}`,
+    translations: { vi: { title: `Đơn hàng ${result.order.orderNumber}: ${result.target.nameVi}`, body: input.note ?? undefined } },
     body: input.note ?? undefined,
     link: link("buyer"),
   });
   await notifyCompany(result.order.supplierCompanyId, {
     type: "ORDER_STATUS",
     title: `Order ${result.order.orderNumber}: ${result.target.name}`,
+    translations: { vi: { title: `Đơn hàng ${result.order.orderNumber}: ${result.target.nameVi}`, body: input.note ?? undefined } },
     body: input.note ?? undefined,
     link: link("seller"),
   });

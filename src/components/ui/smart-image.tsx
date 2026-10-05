@@ -43,7 +43,7 @@ export function SmartImage({
 
   if (failed && stock && !stockFailed) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
+
       <img
         src={stock}
         srcSet={productPhotoSrcSet(stock)}
@@ -71,7 +71,7 @@ export function SmartImage({
     );
   }
   return (
-    // eslint-disable-next-line @next/next/no-img-element
+
     <img
       src={src}
       srcSet={typeof src === "string" ? productPhotoSrcSet(src) : undefined}

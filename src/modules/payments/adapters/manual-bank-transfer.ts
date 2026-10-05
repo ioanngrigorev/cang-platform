@@ -23,7 +23,7 @@ export class ManualBankTransferAdapter implements PaymentProviderAdapter {
         currency: input.payment.currency,
         amount: input.payment.amount,
         reference,
-        note: `Include the reference ${reference} in the transfer description. Funds are matched automatically within 1 business day.`,
+        note: `Include the reference ${reference} in the transfer description. CANG finance staff must verify receipt with the bank before confirming this payment.`,
       },
     };
   }

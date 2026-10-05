@@ -29,6 +29,13 @@
       "when": 1790257843574,
       "tag": "0003_logistics_partners",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791165550477,
+      "tag": "0004_unique_order_quotation",
+      "breakpoints": true
     }
   ]
 }

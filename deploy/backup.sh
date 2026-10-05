@@ -20,6 +20,7 @@
 #     sh -c "cd /data && tar xzf /backup/uploads-YYYYmmdd.tar.gz"
 
 set -euo pipefail
+umask 077
 
 BACKUP_DIR="${BACKUP_DIR:-/var/backups/cang}"
 RETENTION_DAYS="${RETENTION_DAYS:-14}"
@@ -27,8 +28,7 @@ BACKUP_REMOTE="${BACKUP_REMOTE:-}"
 COMPOSE_PROJECT="${COMPOSE_PROJECT:-cang}"
 SKIP_UPLOADS="${SKIP_UPLOADS:-false}"
 
-STAMP="$(date +%Y%m%d-%H%M)"
-DAY="$(date +%Y%m%d)"
+STAMP="$(date +%Y%m%d-%H%M%S)"
 DB_DIR="${BACKUP_DIR}/db"
 UP_DIR="${BACKUP_DIR}/uploads"
 mkdir -p "$DB_DIR" "$UP_DIR"
@@ -36,30 +36,31 @@ mkdir -p "$DB_DIR" "$UP_DIR"
 log() { printf '%s [backup] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
 fail() { log "ERROR: $*"; exit 1; }
 
-# Read DB credentials from the compose .env so the script has a single source of truth.
-if [ -f .env ]; then
-  # shellcheck disable=SC1091
-  set -a; . ./.env; set +a
-fi
-PGUSER="${POSTGRES_USER:-cang}"
-PGDB="${POSTGRES_DB:-cang}"
+# Read the running database configuration without executing the dotenv file as shell code.
+PGUSER="$(docker compose exec -T db printenv POSTGRES_USER)"
+PGDB="$(docker compose exec -T db printenv POSTGRES_DB)"
 
 # ---- 1. database ----
 DB_FILE="${DB_DIR}/${PGDB}-${STAMP}.dump"
 log "dumping database ${PGDB} → ${DB_FILE}"
-docker compose exec -T db pg_dump -U "$PGUSER" -d "$PGDB" -Fc --no-owner --no-privileges > "$DB_FILE" \
+docker compose exec -T db pg_dump -U "$PGUSER" -d "$PGDB" -Fc --no-owner --no-privileges > "${DB_FILE}.partial" \
   || fail "pg_dump failed"
-[ -s "$DB_FILE" ] || fail "dump is empty"
+[ -s "${DB_FILE}.partial" ] || fail "dump is empty"
+docker compose exec -T db pg_restore --list < "${DB_FILE}.partial" >/dev/null || fail "dump archive is unreadable"
+mv "${DB_FILE}.partial" "$DB_FILE"
 sha256sum "$DB_FILE" > "${DB_FILE}.sha256"
 log "database dump $(du -h "$DB_FILE" | cut -f1)"
 
 # ---- 2. uploads volume ----
 if [ "$SKIP_UPLOADS" != "true" ]; then
-  UP_FILE="${UP_DIR}/uploads-${DAY}.tar.gz"
+  UP_FILE="${UP_DIR}/uploads-${STAMP}.tar.gz"
   log "archiving uploads volume → ${UP_FILE}"
   docker run --rm -v "${COMPOSE_PROJECT}_uploads:/data:ro" -v "${UP_DIR}:/backup" alpine \
-    sh -c "cd /data && tar czf /backup/uploads-${DAY}.tar.gz ." \
+    sh -c "umask 077; cd /data && tar czf /backup/uploads-${STAMP}.tar.gz.partial ." \
     || fail "uploads archive failed"
+  tar tzf "${UP_FILE}.partial" >/dev/null || fail "uploads archive is unreadable"
+  mv "${UP_FILE}.partial" "$UP_FILE"
+  sha256sum "$UP_FILE" > "${UP_FILE}.sha256"
   log "uploads archive $(du -h "$UP_FILE" | cut -f1)"
 else
   log "SKIP_UPLOADS=true — uploads live in object storage"
@@ -71,13 +72,13 @@ if [ -n "$BACKUP_REMOTE" ]; then
   log "copying to ${BACKUP_REMOTE}"
   rclone copy "$DB_DIR" "${BACKUP_REMOTE}/db" --include "*-${STAMP}.dump*" || fail "rclone db copy failed"
   if [ "$SKIP_UPLOADS" != "true" ]; then
-    rclone copy "$UP_DIR" "${BACKUP_REMOTE}/uploads" --include "uploads-${DAY}.tar.gz" || fail "rclone uploads copy failed"
+    rclone copy "$UP_DIR" "${BACKUP_REMOTE}/uploads" --include "uploads-${STAMP}.tar.gz*" || fail "rclone uploads copy failed"
   fi
 fi
 
 # ---- 4. rotation (14 days) ----
 log "pruning local backups older than ${RETENTION_DAYS} days"
 find "$DB_DIR" -type f -name '*.dump*' -mtime "+${RETENTION_DAYS}" -print -delete
-find "$UP_DIR" -type f -name 'uploads-*.tar.gz' -mtime "+${RETENTION_DAYS}" -print -delete
+find "$UP_DIR" -type f -name 'uploads-*.tar.gz*' -mtime "+${RETENTION_DAYS}" -print -delete
 
 log "done"

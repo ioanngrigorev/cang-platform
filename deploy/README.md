@@ -1,261 +1,152 @@
-# CANG production (cang.vn, Vultr) — how it runs today
+# CANG production operations
 
-**Deploys are automatic.** A systemd timer on the server (`cang-autodeploy.timer`, installed by
-`vultr-bootstrap.sh` → `install-autodeploy.sh`) checks `main` every 2 minutes. A new commit is deployed by
-`deploy/update.sh`:
+Source of truth: Ivan's `~/CANG/cang-push`. Only the owner pushes to GitHub.
+VPS: `cang-prod`, 149.28.158.60, Vultr Singapore; app directory `/opt/cang`.
+Secrets belong in `/opt/cang/.env`, never in Git, logs or support messages.
 
-1. Fetch that commit.
-2. Sync it into `/opt/cang` (`.env` is kept).
-3. Rebuild the image, with the commit baked in as `BUILD_SHA`.
-4. Restart.
-5. Wait until `GET /api/health` reports the new `version`.
-6. Run the idempotent seed.
+## Release process
 
-If the new container never becomes healthy, the previous image is started again and the commit is written
-to `/opt/cang/.failed-sha`, so it is not retried. Push a fix, or `rm /opt/cang/.failed-sha` to retry it.
+1. `Quality checks` runs lint, type checks, unit/integration tests, dependency audit,
+   production build, the 29-step journey and the five-role link audit.
+2. The systemd timer checks `main` every two minutes and waits for a successful
+   **push** workflow for that exact commit. A failed/missing workflow does not deploy.
+3. `deploy/update.sh` takes a DB/uploads backup before changing source or schema.
+4. It builds the image, validates Caddy, starts the app, recreates Caddy to remount
+   its configuration and verifies `/api/health` against the expected SHA.
+5. On failure it restores the previous source/Compose/Caddy and actual running app
+   image, then checks rollback health. `.env`, uploads and the pause marker survive.
 
-| What | Where |
-|---|---|
-| Deployed commit | `https://cang.vn/api/health` → `version`, or `/opt/cang/.deployed-sha` |
-| Deploy logs | `/var/log/cang-deploy/*.log` (last 20), `journalctl -u cang-autodeploy` |
-| Pause / resume | `touch /opt/cang/.autodeploy-paused` / `rm /opt/cang/.autodeploy-paused` |
-| Deploy by hand | `bash /opt/cang/deploy/update.sh [sha]` |
-| Full reinstall of tooling | `curl -fsSL https://raw.githubusercontent.com/ioanngrigorev/cang-platform/main/deploy/vultr-bootstrap.sh \| bash` |
-| Private repository | put a read-only GitHub token in `/root/.cang-github-token` |
+Regular releases **do not run seed**. `seedPlatform` and `seedReference` insert
+missing defaults without overwriting operator settings. New mandatory data must
+be introduced by a migration or an explicit reviewed initialization command.
 
-**E-mail.** `EMAIL_PROVIDER=resend` + `RESEND_API_KEY`, or `EMAIL_PROVIDER=smtp` + `SMTP_URL`, in
-`/opt/cang/.env`, followed by `cd /opt/cang && docker compose up -d app`. The sending domain must be verified
-with the provider, using the DNS records it gives you, at iNET. Test from Admin → Providers → E-mail →
-"Send me a test e-mail". Texts live in `src/messages/{en,vi}/emails.json` and can be overridden per locale in
-Admin → CMS → E-mail templates.
+Only backward-compatible migrations belong in an automatic release. Image rollback
+cannot reverse data migrations. Do not use `docker compose down -v` on production.
 
-The rest of this file is the original manual guide for a generic VPS.
+Runtime: Node 22 LTS, pnpm 10.34.6, PostgreSQL 16, Redis 7, Caddy 2.
+Node 20 is EOL; see [Node's release table](https://nodejs.org/en/about/previous-releases).
 
----
+## First hardening release (migration from the old deploy scripts)
 
-# Deploying CANG to a Sprintbox VPS
+The old timer does not wait for CI and the old update script has no pre-deploy backup.
+Before the owner pushes this release to main:
 
-Step-by-step for a single Ubuntu VPS running the Docker Compose stack in `docker-compose.yml`
-(`db` PostgreSQL 16, `redis` 7, `app` Next.js standalone, `caddy` 2 for TLS). Architecture, environment
-variables, DNS and scaling are explained in [`../docs/06-system-architecture.md`](../docs/06-system-architecture.md) §12;
-this file is the runbook.
+1. On the VPS, `touch /opt/cang/.autodeploy-paused` and stop `cang-autodeploy.timer`.
+2. From the reviewed working copy, copy `deploy/update.sh`, `deploy/autodeploy.sh`,
+   `deploy/backup.sh` and `deploy/restore-check.sh` to `/opt/cang/deploy/` via the owner's SSH connection.
+3. Run an existing backup and verify a restore in a separate database. Check for
+   historical duplicate quotation orders before migration 0004:
 
-Domain: **cang.vn**, registered at iNET (`portal.inet.vn`), DNS managed there.
-Server: **Sprintbox** VPS, Ubuntu 22.04/24.04 LTS, 2 vCPU / 4 GB RAM / 80 GB minimum.
+   ```sql
+   SELECT quotation_id, count(*) FROM orders
+   WHERE quotation_id IS NOT NULL
+   GROUP BY quotation_id HAVING count(*) > 1;
+   ```
 
----
+   If there are duplicates, investigate them before release. Migration 0004 refuses
+   to create its unique index; it never deletes orders or rewrites financial history.
+4. The owner pushes main and waits for `Quality checks` to succeed. With a feature
+   branch checked out, `git push origin HEAD:main` updates remote main explicitly.
+5. Remove the pause marker and restart the timer. Verify the exact SHA at
+   `https://cang.vn/api/health` and inspect the deploy log.
 
-## 0. Prerequisites
+These steps require the owner's existing server access. Do not paste passwords or
+private keys into a chat. Bootstrap is for initial installation, not the routine
+update or rollback path.
 
-| What | Where |
-|---|---|
-| Sprintbox VPS with a public IPv4 (and IPv6 if offered), root or sudo SSH access | Sprintbox control panel |
-| Access to the `cang.vn` DNS zone | iNET portal → Quản lý tên miền → `cang.vn` → DNS |
-| A container registry (GitHub Container Registry works) or the ability to build on the VPS | GitHub |
-| Google OAuth client (optional) with redirect URI `https://cang.vn/api/auth/google/callback` | Google Cloud Console |
-| Transactional e-mail provider (SMTP or Resend) — optional for first boot; e-mails log to stdout until configured | provider dashboard |
-
-## 1. Prepare the server
-
-```bash
-# as root
-apt update && apt -y upgrade
-apt -y install ca-certificates curl gnupg ufw fail2ban unattended-upgrades rclone
-# Docker Engine + Compose plugin (official repo)
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
-apt update && apt -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-# deploy user
-adduser --disabled-password --gecos "" deploy && usermod -aG docker deploy
-mkdir -p /opt/cang /var/backups/cang && chown -R deploy:deploy /opt/cang /var/backups/cang
-# firewall: SSH + HTTP/HTTPS only (Postgres and Redis are never published)
-ufw default deny incoming && ufw default allow outgoing
-ufw allow OpenSSH && ufw allow 80/tcp && ufw allow 443/tcp && ufw allow 443/udp
-ufw enable
-timedatectl set-timezone Asia/Ho_Chi_Minh
-```
-
-Also enable the firewall in the Sprintbox panel if it has one (allow 22, 80, 443), disable password SSH
-login in `/etc/ssh/sshd_config` (`PasswordAuthentication no`) once your key works, and keep
-`unattended-upgrades` on for security patches.
-
-## 2. DNS at iNET
-
-In the iNET portal, create the records below (replace `VPS_IPV4` / `VPS_IPV6`). Set TTL to 300 for the
-cut-over and raise it to 3600 afterwards.
-
-| Type | Host | Value | Notes |
-|---|---|---|---|
-| A | `@` | `VPS_IPV4` | apex |
-| AAAA | `@` | `VPS_IPV6` | if available |
-| A | `www` | `VPS_IPV4` | Caddy redirects to apex |
-| AAAA | `www` | `VPS_IPV6` | |
-| CAA | `@` | `0 issue "letsencrypt.org"` | Caddy uses Let's Encrypt |
-| CNAME | `cdn` | CDN / bucket hostname | only when `CDN_URL` is used |
-| MX | `@` | mailbox provider's MX | placeholder until chosen |
-| TXT | `@` | `v=spf1 include:<transactional> include:<mailbox> -all` | placeholder values from providers |
-| TXT | `<selector>._domainkey` | DKIM key from the transactional provider | placeholder |
-| TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:dmarc@cang.vn` | tighten to `p=quarantine` later |
-
-Verify from your machine before continuing: `dig +short cang.vn` and `dig +short www.cang.vn` must return
-the VPS address. Caddy will fail certificate issuance (and hit rate limits) if DNS is not live.
-
-## 3. Get the code and configure
-
-```bash
-# as deploy
-cd /opt/cang
-git clone https://github.com/<org>/cang-platform.git .     # or: scp a release tarball
-cp .env.example .env
-chmod 600 .env
-```
-
-Edit `.env` — production values that **must** change:
-
-```dotenv
-NODE_ENV="production"
-APP_URL="https://cang.vn"
-NEXT_PUBLIC_APP_URL="https://cang.vn"
-SESSION_SECRET="<openssl rand -base64 48>"
-
-# The db container is initialised from POSTGRES_*; the app, seed and backup scripts use DATABASE_URL.
-# Set all four explicitly and keep the password identical (the localhost value from .env.example will not work
-# inside the compose network — the host is "db").
-POSTGRES_USER="cang"
-POSTGRES_PASSWORD="<openssl rand -base64 24 | tr -d '/+='>"
-POSTGRES_DB="cang"
-DATABASE_URL="postgresql://cang:<same password>@db:5432/cang"
-REDIS_URL="redis://redis:6379"
-
-SEED_ADMIN_EMAIL="admin@cang.vn"
-SEED_ADMIN_PASSWORD="<strong, then change it after first login>"
-SEED_DEMO_PASSWORD="<random — demo users should not be usable in production>"
-
-EMAIL_PROVIDER="console"            # switch to smtp/resend when configured
-EMAIL_FROM="CANG <no-reply@cang.vn>"
-GOOGLE_CLIENT_ID=""                 # optional
-GOOGLE_CLIENT_SECRET=""
-
-# Caddy
-SITE_DOMAIN="cang.vn"
-ACME_EMAIL="ops@cang.vn"
-```
-
-`NEXT_PUBLIC_APP_URL` is inlined into the client bundle at **build** time, so it is also passed as a build
-argument in `docker-compose.yml`. If you build images in CI, pass `--build-arg NEXT_PUBLIC_APP_URL=https://cang.vn`.
-
-## 4. First start
-
-```bash
-docker compose build app                       # or: docker compose pull app (CI-built image, set APP_IMAGE in .env)
-docker compose up -d db redis
-docker compose ps                              # wait until db is "healthy"
-docker compose up -d app                       # entrypoint waits for db, runs migrations, starts server
-docker compose logs -f app                     # expect "migrations applied" then "starting server"
-curl -s http://127.0.0.1:3000/api/health || docker compose exec app wget -qO- http://127.0.0.1:3000/api/health
-docker compose up -d caddy                     # obtains certificates; check: docker compose logs caddy
-curl -I https://cang.vn/en                     # 200 from the app
-curl -I https://www.cang.vn/en                 # 308 → https://cang.vn/en
-```
-
-## 5. Seed platform data (once)
-
-```bash
-docker compose exec app node_modules/.bin/tsx src/db/seed/index.ts
-```
-
-The seed is idempotent and creates, in order:
-
-1. **Reference data** — countries, currencies, provinces (8 industrial clusters), industries, product
-   categories, certifications. Required.
-2. **Platform configuration** — plans, badges, order statuses, fee rules, payment/financing/logistics/
-   inspection providers, ad products, homepage sections, settings, credit-scoring rules. Required (the app
-   expects `FREE` plan and `order_statuses` rows to exist).
-3. **Admin user** — `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` as `SUPER_ADMIN`. Required.
-4. **Demo marketplace data** — two users and two companies (`sales@saigonpack.vn` / Saigon Pack Manufacturing,
-   `buyer@nordwind-outdoor.de` / Nordwind Outdoor GmbH) with `SEED_DEMO_PASSWORD`. **Not wanted in
-   production.**
-
-> **Engineering TODO — `SEED_DEMO_DATA` flag.** `src/db/seed/index.ts` should skip step 4 when
-> `SEED_DEMO_DATA=false` (recommended default for `NODE_ENV=production`). Until that guard exists, production
-> operators must either (a) set `SEED_DEMO_PASSWORD` to a long random value so the demo logins are unusable
-> and then delete the two demo companies and users from `/admin/companies` and `/admin/users`, or (b) remove
-> them in SQL right after seeding:
->
-> ```sql
-> DELETE FROM users WHERE email IN ('sales@saigonpack.vn', 'buyer@nordwind-outdoor.de');
-> DELETE FROM companies WHERE slug IN ('saigon-pack-manufacturing', 'nordwind-outdoor');
-> ```
->
-> (`company_members`, profiles and subscriptions cascade.) Do not implement the flag from this runbook; it
-> belongs in the seed code with a test.
-
-## 6. First admin login and configuration
-
-1. Open `https://cang.vn/en/login`, sign in with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`. You land on
-   `/en/admin` (the `SUPER_ADMIN` role routes there).
-2. Change the password immediately (`/admin` → account settings, or `changePasswordAction` from the settings
-   page once built), and remove `SEED_ADMIN_PASSWORD` from `.env`.
-3. Configure payment providers (`/admin/providers`, Phase 2 UI; until then, update
-   `payment_providers.publicConfig` for `PARTNER_BANK_TA` with the real partner-bank beneficiary, account
-   number and SWIFT — the seeded values are placeholders and are shown to buyers verbatim).
-4. Review `/admin/settings` (`tradeAssurance.enabled`, `products.requireModeration`,
-   `compliance.sanctionsScreeningEnabled`, `rfq.autoMatchLimit`).
-5. Create additional staff accounts and assign platform roles (`/admin/users`).
-
-## 7. Backups
-
-```bash
-sudo cp /opt/cang/deploy/backup.sh /usr/local/bin/cang-backup && sudo chmod +x /usr/local/bin/cang-backup
-crontab -e
-# nightly 02:30 local time, 14-day rotation, off-host copy when BACKUP_REMOTE is configured
-30 2 * * * cd /opt/cang && BACKUP_REMOTE=r2:cang-backups /usr/local/bin/cang-backup >> /var/log/cang-backup.log 2>&1
-```
-
-Configure `rclone` (`rclone config`) with an S3-compatible bucket (Cloudflare R2, AWS S3, a Vietnamese cloud)
-that has versioning enabled. Test a restore into a scratch database once a month:
-
-```bash
-docker compose exec -T db createdb -U cang cang_restore_test
-docker compose exec -T db pg_restore -U cang -d cang_restore_test --no-owner < /var/backups/cang/db/<latest>.dump
-docker compose exec -T db dropdb -U cang cang_restore_test
-```
-
-## 8. Updating (near-zero downtime)
+## Useful commands (on the VPS)
 
 ```bash
 cd /opt/cang
-git pull                                                     # or bump APP_IMAGE tag in .env
-docker compose build app                                     # or docker compose pull app
-docker compose up -d --no-deps --scale app=2 --no-recreate app   # second replica boots, migrates, becomes healthy
-docker compose ps                                            # both app replicas healthy
-docker compose up -d --no-deps --scale app=1 app             # oldest replica stopped; Caddy keeps routing to the healthy one
-docker image prune -f
+docker compose ps
+docker compose logs --tail 100 app
+journalctl -u cang-autodeploy --since today
+cat .deployed-sha
+# pause / resume
+touch .autodeploy-paused
+rm .autodeploy-paused
+# retry a failed SHA after resolving its cause
+rm .failed-sha
+# explicit manual deploy (operator must check CI first)
+bash deploy/update.sh <40-character-commit-sha>
 ```
 
-Migrations must follow expand/contract (see `docs/06-system-architecture.md` §12.8) so the old replica keeps
-working against the new schema during the overlap.
+Logs: `/var/log/cang-deploy/`. A failed deploy exits nonzero and records `.failed-sha`.
+Configure external uptime and systemd failure alerts; the scripts log failures but
+no external alerting account is configured by this repository.
 
-Rollback: set the previous image tag and run the same two `up -d` commands.
+## Private GitHub repository and tokens
 
-## 9. Scheduled jobs (when implemented)
+Provision `/root/.cang-github-token` with mode 600 before changing repository visibility.
+A fine-grained token needs **Contents: read** and **Actions: read** on this repository.
+The latter is required to check CI. The token is passed in a temporary curl config,
+not embedded in command-line URLs. Revoke previously exposed tokens in GitHub;
+removing a value from a chat or Git history does not revoke it.
 
-The job endpoints under `/api/cron/[job]` are planned; when they land, add host cron lines such as:
+## Backups and restore checks
 
+```bash
+cd /opt/cang
+bash deploy/backup.sh
+bash deploy/restore-check.sh /var/backups/cang/db/<backup>.dump
 ```
-0 * * * *  curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" https://cang.vn/api/cron/rfq-expire
-15 3 * * * curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" https://cang.vn/api/cron/badge-engine
+
+`restore-check.sh` creates a unique temporary database, restores with
+`--exit-on-error`, reads core tables and drops only that temporary database.
+It never targets the live database. Verify uploaded files separately in a scratch
+volume. Configure `BACKUP_REMOTE` with rclone for an off-host copy; local-only
+backups do not protect against loss of the VPS. Default local retention is 14 days.
+Backups use private file permissions and validate the dump catalogue before rotation.
+
+## Email
+
+Use `EMAIL_PROVIDER=resend` + `RESEND_API_KEY`, or `EMAIL_PROVIDER=smtp` + `SMTP_URL`.
+Set `EMAIL_FROM`, verify the sending domain and SPF/DKIM/DMARC with the selected
+provider, then recreate the app container and send a test from Admin → Providers.
+Test registration, password reset and team invitations using real inboxes.
+Console transport only logs recipient/subject; it does not deliver reset links.
+The repository does not contain provider credentials. The current email sender
+has no durable delivery queue: delivery failures are logged, and mail-provider
+monitoring remains required.
+
+## Accounts and commercial readiness
+
+* The old bootstrap used shell tracing. Treat secrets in its historical logs as
+  exposed to anyone who could read those logs; rotate the DB password, session
+  secret and admin password through a coordinated maintenance procedure.
+* Set `SEED_DEMO_DATA=false` for production initialization. Existing demo records
+  are not deleted automatically. Review them before admitting real customers.
+* A fresh production admin requires an explicit strong `SEED_ADMIN_PASSWORD`.
+  Existing accounts are preserved. Change existing demo/admin passwords separately;
+  ordinary password changes now revoke all prior sessions.
+* The payment adapter is **manual bank transfer accounting**, not a banking API.
+  Finance staff must confirm real receipt/release/refund with the bank. The adapter
+  does not send money. Configure real beneficiary details before taking payments.
+* Future gateway adapters need provider-side idempotency in addition to DB locking.
+* Corporate bans disable company membership/API operations. Personal account access
+  can be suspended separately in Admin → Users.
+* DNS is managed at iNET. The owner reported expiry on **20 October 2026**; verify
+  renewal in iNET under “Gia hạn”. No renewal is performed by these scripts.
+
+## Local checks
+
+Use Node 22 and `corepack enable` to select the pinned pnpm version.
+
+```bash
+pnpm install --frozen-lockfile
+pnpm check
+pnpm build
+# Only a dedicated localhost database whose name ends with _test:
+DATABASE_URL=postgresql://cang:cang@127.0.0.1:5432/cang_integration_test pnpm db:migrate
+DATABASE_URL=postgresql://cang:cang@127.0.0.1:5432/cang_integration_test pnpm db:seed
+DATABASE_URL=postgresql://cang:cang@127.0.0.1:5432/cang_integration_test pnpm test:integration
+pnpm exec playwright install chromium
+# Start the production build locally with that test database before these commands:
+BASE=http://localhost:3216 pnpm test:e2e
+BASE=http://localhost:3216 pnpm test:links
 ```
 
-## 10. Troubleshooting
-
-| Symptom | Check |
-|---|---|
-| `caddy` logs show ACME errors | DNS not pointing here yet, or port 80/443 blocked (Sprintbox panel firewall + `ufw status`) |
-| `app` restarts with `Invalid environment configuration` | `SESSION_SECRET` < 32 chars or `DATABASE_URL` missing in `.env` |
-| `app` stuck "waiting for database" | `POSTGRES_PASSWORD` in `.env` differs from `DATABASE_URL`; `docker compose logs db` |
-| Uploaded images 404 after redeploy | the `uploads` volume was recreated — never `docker compose down -v` in production |
-| Google button missing | `GOOGLE_CLIENT_ID`/`SECRET` empty (by design) |
-| E-mails not arriving | `EMAIL_PROVIDER=console` logs them to `docker compose logs app`; configure SMTP/Resend and SPF/DKIM |
-| Healthcheck `degraded` | `db: down` — Postgres restarted or out of connections (`max_connections` vs `DB_POOL_MAX × replicas`) |
+Provide `SESSION_SECRET` (32+ characters, test-only) for integration tests and app
+startup. Set `PW_CHROMIUM` only to use an existing Chrome binary; otherwise Playwright
+uses its installed Chromium. Both E2E scripts now return a failing exit code when
+their assertions fail. `TEST_REDIS_URL` enables the cross-process Redis regression.

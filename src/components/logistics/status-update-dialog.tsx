@@ -22,7 +22,7 @@ export function StatusUpdateDialog({
   size = "md",
   variant = "primary",
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   action: (prev: ActionResult<any> | null, formData: FormData) => Promise<ActionResult<any>>;
   shipmentId: string;
   allowed: ShipmentStatus[];

@@ -16,11 +16,11 @@ export function BannerImage({ src, alt, className, photo }: { src: string | null
   const stock = photo ? productPhoto(photo, "banner") : null;
   if (failed || typeof src !== "string") {
     if (stock && !stockFailed) {
-      // eslint-disable-next-line @next/next/no-img-element
+
       return <img src={stock} alt={alt} decoding="async" onError={() => setStockFailed(true)} className={cn("h-full w-full object-cover", className)} />;
     }
     return <div role="img" aria-label={alt} className={cn("h-full w-full overflow-hidden", className)} dangerouslySetInnerHTML={{ __html: placeholderArt(alt, true) }} />;
   }
-  // eslint-disable-next-line @next/next/no-img-element
+
   return <img src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} className={cn("h-full w-full object-cover", className)} />;
 }

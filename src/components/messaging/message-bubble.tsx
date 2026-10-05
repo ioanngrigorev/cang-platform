@@ -122,7 +122,7 @@ function Attachments({ items, own }: { items: ThreadAttachment[]; own: boolean }
         <div className="flex flex-wrap gap-2">
           {images.map((a) => (
             <a key={a.id} href={a.url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-hairline bg-surface" title={a.name}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              { }
               <img src={a.url} alt={a.name} className="max-h-48 max-w-full object-cover" loading="lazy" />
             </a>
           ))}

@@ -10,7 +10,7 @@ import { useActionForm } from "@/components/ui/form";
 import type { ActionResult } from "@/lib/action";
 import { CARRIERS } from "@/modules/logistics/tracking/carriers";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 type AnyAction = (prev: ActionResult<any> | null, formData: FormData) => Promise<ActionResult<any>>;
 
 export type TrackingValues = {

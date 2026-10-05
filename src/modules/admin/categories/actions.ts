@@ -11,7 +11,7 @@ import { categoryFormSchema, categoryToggleSchema } from "./schemas";
 type Row = typeof productCategories.$inferSelect;
 
 async function uniqueSlug(base: string, excludeId: string | null, tx: Tx) {
-  let slug = slugify(base) || "category";
+  const slug = slugify(base) || "category";
   for (let i = 0; i < 50; i++) {
     const candidate = i === 0 ? slug : `${slug}-${i + 1}`;
     const [hit] = await tx

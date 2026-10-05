@@ -1,12 +1,16 @@
 #!/bin/bash
 # CANG production bootstrap — runs as root on first boot (Vultr startup script).
 exec > >(tee -a /var/log/cang-bootstrap.log) 2>&1
-set -x
+set -euo pipefail
+umask 077
+[ ! -f /opt/cang/.env ] || { echo "Existing installation: use deploy/update.sh"; exit 1; }
+exec 9>/var/lock/cang-deploy.lock
+flock -n 9 || { echo "Another deployment is running"; exit 1; }
 echo "=== CANG bootstrap started $(date -u) ==="
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq ca-certificates curl gnupg ufw jq >/dev/null
+apt-get install -y -qq ca-certificates curl gnupg ufw jq python3 rsync util-linux openssl >/dev/null
 
 # swap (2 GB RAM is not enough to build Next.js)
 if [ ! -f /swapfile ]; then
@@ -28,12 +32,18 @@ systemctl enable --now docker
 # firewall
 ufw allow OpenSSH; ufw allow 80/tcp; ufw allow 443/tcp; ufw --force enable
 
-# source: the current head of main (update.sh below syncs exactly this commit and bakes it into the image)
+# Source: current main; private repositories use an owner-provisioned read token.
 apt-get install -y -qq git rsync >/dev/null
 REPO=ioanngrigorev/cang-platform
-SHA="$(git ls-remote https://github.com/$REPO.git refs/heads/main | cut -f1)"
+auth_config="$(mktemp)"
+trap 'rm -f "$auth_config"' EXIT
+if [ -s /root/.cang-github-token ]; then
+  printf 'header = "Authorization: Bearer %s"\n' "$(tr -d '[:space:]' < /root/.cang-github-token)" > "$auth_config"
+fi
+SHA="$(curl -fsS --config "$auth_config" "https://api.github.com/repos/$REPO/commits/main" | jq -r '.sha')"
+[[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || exit 1
 mkdir -p /opt/cang && cd /opt/cang
-curl -fsSL -o /tmp/src.tgz "https://codeload.github.com/$REPO/tar.gz/${SHA}"
+curl -fsSL --config "$auth_config" -o /tmp/src.tgz "https://codeload.github.com/$REPO/tar.gz/${SHA}"
 tar xzf /tmp/src.tgz --strip-components=1 -C /opt/cang
 rm -f /tmp/src.tgz
 
@@ -56,14 +66,14 @@ DATABASE_URL=postgresql://cang:${DB_PASS}@db:5432/cang
 REDIS_URL=redis://redis:6379
 SESSION_SECRET=${SESSION_SECRET}
 
-SEED_DEMO_DATA=true
+SEED_DEMO_DATA=false
 SEED_ADMIN_EMAIL=admin@cang.vn
 SEED_ADMIN_PASSWORD=${ADMIN_PASS}
 
 STORAGE_PROVIDER=local
 SEARCH_PROVIDER=postgres
 EMAIL_PROVIDER=console
-EMAIL_FROM=CANG <no-reply@cang.vn>
+EMAIL_FROM="CANG <no-reply@cang.vn>"
 OTP_PROVIDER=console
 
 GOOGLE_CLIENT_ID=
@@ -72,10 +82,19 @@ SMTP_URL=
 ENVEOF
 chmod 600 /opt/cang/.env; fi
 
-# build, start, wait for the new version, seed — the same path the auto-deploy timer uses
-exec 9>/var/lock/cang-deploy.lock
-flock 9
-bash /opt/cang/deploy/update.sh "$SHA"
+# First installation has no previous image to roll back to. Stop on any failure.
+export BUILD_SHA="$SHA"
+BUILD_NODE_OPTIONS="--max-old-space-size=3072" docker compose build app
+docker compose up -d
+healthy=false
+for _ in $(seq 1 60); do
+  version="$(docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health 2>/dev/null | jq -r '.version' || true)"
+  if [ "$version" = "$SHA" ]; then healthy=true; break; fi
+  sleep 5
+done
+[ "$healthy" = true ] || { echo "Initial app did not become healthy"; exit 1; }
+docker compose exec -T app ./node_modules/.bin/tsx src/db/seed/index.ts
+echo "$SHA" > .deployed-sha
 flock -u 9
 
 # from now on every push to main deploys itself (deploy/autodeploy.sh, checked every 2 minutes)

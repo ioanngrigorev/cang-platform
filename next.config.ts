@@ -14,6 +14,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingRoot: process.cwd(),
   reactStrictMode: true,
   poweredByHeader: false,
   images: {

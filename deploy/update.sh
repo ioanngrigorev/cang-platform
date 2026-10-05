@@ -1,71 +1,92 @@
-#!/bin/bash
-# CANG — deploy one commit of main to /opt/cang (run as root on the server).
-#
-#   bash /opt/cang/deploy/update.sh [<commit sha>]      # default: the current head of main
-#
-# Downloads that commit's source, syncs it into /opt/cang (keeping .env and local state), rebuilds the
-# app image with the commit baked in (GET /api/health → "version"), restarts it, waits until the new
-# version answers, then runs the idempotent seed. If the new container does not come up healthy the
-# previous image is started again, so a bad commit never leaves the site down.
-# Used by the auto-deploy timer (deploy/autodeploy.sh) and safe to run by hand.
-set -euo pipefail
+#!/usr/bin/env bash
+# Deploy a commit with a database/upload backup and verified image/config rollback.
+# Schema rollback is deliberately not automatic: migrations must remain backward compatible.
+set -Eeuo pipefail
+umask 077
 
-REPO="${CANG_REPO:-ioanngrigorev/cang-platform}"
-APP_DIR="${APP_DIR:-/opt/cang}"
-TOKEN_FILE=/root/.cang-github-token   # optional read token, needed once the repository is private
-log() { printf '%s [update] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
-
-auth_url="https://github.com/$REPO.git"
-curl_auth=()
-if [ -s "$TOKEN_FILE" ]; then
-  token="$(tr -d '[:space:]' < "$TOKEN_FILE")"
-  auth_url="https://x-access-token:${token}@github.com/$REPO.git"
-  curl_auth=(-H "Authorization: token ${token}")
-fi
-
-SHA="${1:-}"
-if [ -z "$SHA" ]; then SHA="$(git ls-remote "$auth_url" refs/heads/main | cut -f1)"; fi
-[[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { log "cannot resolve commit (got '$SHA')"; exit 1; }
-log "deploying $SHA"
-
-# 1. source → staging dir → /opt/cang (deleted files disappear; .env and runtime files stay)
-stage="$(mktemp -d /tmp/cang-src.XXXXXX)"
-trap 'rm -rf "$stage"' EXIT
-curl -fsSL "${curl_auth[@]}" -o "$stage/src.tgz" "https://codeload.github.com/$REPO/tar.gz/$SHA"
-mkdir -p "$stage/src" && tar xzf "$stage/src.tgz" --strip-components=1 -C "$stage/src"
-mkdir -p "$APP_DIR"
-rsync -a --delete \
-  --exclude '/.env' --exclude '/.deployed-sha' --exclude '/.failed-sha' --exclude '/storage/' \
-  "$stage/src/" "$APP_DIR/"
-chmod +x "$APP_DIR"/deploy/*.sh 2>/dev/null || true
-
-# 2. build with the commit baked in; keep the running image as a fallback
-cd "$APP_DIR"
-if docker image inspect cang/app:latest >/dev/null 2>&1; then docker tag cang/app:latest cang/app:previous; fi
-export BUILD_SHA="$SHA"
-BUILD_NODE_OPTIONS="--max-old-space-size=3072" docker compose build app
-docker compose up -d
-
-# 3. wait for the new version (migrations run in the entrypoint before the server starts)
-healthy=false
-for _ in $(seq 1 60); do
-  v="$(docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health 2>/dev/null </dev/null | sed -n 's/.*"version":"\([0-9a-f]*\)".*/\1/p' || true)"
-  if [ "$v" = "$SHA" ]; then healthy=true; break; fi
-  sleep 5
-done
-if [ "$healthy" != true ]; then
-  log "new version did not become healthy — rolling back to the previous image"
-  docker compose logs --tail 80 app || true
-  if docker image inspect cang/app:previous >/dev/null 2>&1; then
-    docker tag cang/app:previous cang/app:latest
-    docker compose up -d app
+main() {
+  repo="${CANG_REPO:-ioanngrigorev/cang-platform}"
+  app_dir="${APP_DIR:-/opt/cang}" token_file="${TOKEN_FILE:-/root/.cang-github-token}"
+  sha="${1:-}"
+  stage=""
+  previous_sha=""
+  previous_image=""
+  changed=false
+  log() { printf '%s [update] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"; }
+  if [ "${CANG_DEPLOY_LOCK_HELD:-0}" != 1 ]; then
+    exec 9>/var/lock/cang-deploy.lock
+    flock -n 9 || { log 'another deployment is running'; return 1; }
   fi
-  exit 1
-fi
+  stage="$(mktemp -d /tmp/cang-release.XXXXXX)"
+  : > "$stage/auth"
+  curl_auth=(--config "$stage/auth")
+  # Credentials stay in a private curl config, never in a URL or process argument.
+  if [ -s "$token_file" ]; then
+    printf 'header = "Authorization: Bearer %s"\n' "$(tr -d '[:space:]' < "$token_file")" > "$stage/auth"
+  fi
+  if [ -z "$sha" ]; then
+    sha="$(curl -fsS --max-time 30 "${curl_auth[@]}" "https://api.github.com/repos/$repo/commits/main" | python3 -c 'import json,sys;print(json.load(sys.stdin)["sha"])')"
+  fi
+  [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { rm -rf "$stage"; log 'invalid commit'; return 1; }
+  cd "$app_dir"
+  previous_sha="$(cat .deployed-sha 2>/dev/null || true)"
+  previous_image="$(docker inspect --format '{{.Image}}' "$(docker compose ps -q app)" 2>/dev/null || true)"
+  if [ -z "$previous_image" ]; then rm -rf "$stage"; log 'no running app: use bootstrap for initial installation'; return 1; fi
+  mkdir -p "$stage/previous" "$stage/source"
+  rsync -a --exclude='/.env' --exclude='/storage/' --exclude='/node_modules/' --exclude='/.git/' --exclude='/.next/' ./ "$stage/previous/"
 
-# 4. reference/demo data (idempotent), bookkeeping, cleanup
-docker compose exec -T app sh -lc 'node_modules/.bin/tsx src/db/seed/index.ts' </dev/null || log "seed failed (the site is up; check the log)"
-echo "$SHA" > "$APP_DIR/.deployed-sha"
-rm -f "$APP_DIR/.failed-sha"
-docker image prune -f >/dev/null 2>&1 || true
-log "deployed $SHA"
+  healthy() {
+    local expected="$1" v
+    for _ in $(seq 1 60); do
+      v="$(docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/health 2>/dev/null </dev/null | sed -n 's/.*"version":"\([0-9a-f]*\)".*/\1/p' || true)"
+      if [ -n "$v" ] && { [ -z "$expected" ] || [ "$v" = "$expected" ]; }; then return 0; fi
+      sleep 5
+    done
+    return 1
+  }
+  sync_source() {
+    rsync -ac --delete --exclude='/.env' --exclude='/.deployed-sha' --exclude='/.failed-sha' --exclude='/.autodeploy-paused' --exclude='/storage/' --exclude='/node_modules/' --exclude='/.git/' --exclude='/.next/' "$1/" "$app_dir/"
+  }
+  finish() {
+    local code=$?
+    trap - EXIT
+    if [ "$code" -ne 0 ]; then
+      echo "$sha" > "$app_dir/.failed-sha"
+      if [ "$changed" = true ]; then
+        log 'deployment failed; restoring previous source, Compose, Caddy and app image'
+        sync_source "$stage/previous" || true
+        # Resolve the actual configured image name instead of assuming cang/app:latest.
+        local image_name
+        image_name="$(docker compose config --format json | python3 -c 'import json,sys;print(json.load(sys.stdin)["services"]["app"]["image"])')"
+        docker tag "$previous_image" "$image_name" || true
+        export BUILD_SHA="$previous_sha"
+        docker compose up -d --no-build app || true
+        docker compose up -d --no-build --force-recreate caddy || true
+        docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1 || true
+        if healthy "$previous_sha"; then log 'rollback verified'; else log 'CRITICAL: rollback did not become healthy; operator action required'; fi
+      fi
+    fi
+    rm -rf "$stage"
+    exit "$code"
+  }
+  trap finish EXIT
+  log "downloading $sha"
+  curl -fsSL --max-time 180 "${curl_auth[@]}" -o "$stage/src.tgz" "https://codeload.github.com/$repo/tar.gz/$sha"
+  tar xzf "$stage/src.tgz" --strip-components=1 -C "$stage/source"
+  # A failed backup aborts before application files or schema are changed.
+  bash deploy/backup.sh
+  changed=true
+  sync_source "$stage/source"
+  export BUILD_SHA="$sha"
+  BUILD_NODE_OPTIONS="--max-old-space-size=3072" docker compose build app
+  docker compose run --rm --no-deps caddy caddy validate --config /etc/caddy/Caddyfile
+  docker compose up -d --no-build app
+  docker compose up -d --no-build --force-recreate caddy
+  docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+  healthy "$sha" || { log 'new app did not become healthy'; return 1; }
+  # Business settings and demo data are not re-seeded on release.
+  echo "$sha" > .deployed-sha
+  rm -f .failed-sha
+  log "deployed $sha"
+}
+main "$@"

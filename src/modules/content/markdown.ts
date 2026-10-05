@@ -1,17 +1,16 @@
 import { marked } from "marked";
 
-/**
- * Server-side markdown → HTML for CMS pages.
- * Content is authored by staff in the admin console, but we still strip anything executable:
- * script/style/iframe/object/embed elements, inline event handlers and javascript: URLs.
- */
-const BLOCKED_TAGS = /<\/?(script|style|iframe|object|embed|form|input|button|link|meta|base)\b[^>]*>/gi;
-const EVENT_ATTRS = /\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi;
-const JS_URLS = /\s+(href|src)\s*=\s*("|')\s*javascript:[^"']*("|')/gi;
-const DATA_URLS = /\s+(href|src)\s*=\s*("|')\s*data:(?!image\/)[^"']*("|')/gi;
+import sanitize from "sanitize-html";
 
+/** Parse HTML before validating URLs; regexes cannot safely decode HTML entities. */
 export function sanitizeHtml(html: string): string {
-  return html.replace(BLOCKED_TAGS, "").replace(EVENT_ATTRS, "").replace(JS_URLS, ' $1="#"').replace(DATA_URLS, ' $1="#"');
+  return sanitize(html, {
+    allowedTags: [...sanitize.defaults.allowedTags, "img"],
+    allowedAttributes: { a: ["href", "title"], img: ["src", "alt", "width", "height"], th: ["colspan", "rowspan"], td: ["colspan", "rowspan"] },
+    allowedSchemes: ["http", "https", "mailto"],
+    allowedSchemesByTag: { img: ["https"] },
+    allowProtocolRelative: false,
+  });
 }
 
 marked.setOptions({ gfm: true, breaks: false });

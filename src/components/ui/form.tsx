@@ -33,7 +33,7 @@ export function useActionForm<T = undefined>(action: ServerAction<T>, opts: { on
     } else if (state.code !== "VALIDATION") {
       toast({ title: state.error, variant: "error" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [state]);
   const fieldError = (name: string) => (state && !state.ok ? state.fieldErrors?.[name]?.[0] : undefined);
   return { state, formAction, pending, fieldError };

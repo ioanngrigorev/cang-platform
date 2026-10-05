@@ -138,7 +138,7 @@ export async function renderOgCard(card: OgCard, cacheSeconds = 86_400) {
         ) : null}
         {card.photo ? (
           <div style={{ display: "flex", width: photoW, height: "100%", position: "relative" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <img src={card.photo} width={photoW} height={OG_SIZE.height} style={{ objectFit: "cover" }} />
             <div style={{ display: "flex", position: "absolute", left: 0, top: 0, width: 6, height: "100%", background: C.brand }} />
           </div>

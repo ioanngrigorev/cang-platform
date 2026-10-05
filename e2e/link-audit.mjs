@@ -41,7 +41,7 @@ function pattern(u) {
   return q ? `${p}?${q}` : p;
 }
 
-const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+const browser = await chromium.launch({ ...(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {}) });
 const report = { links: [], pages: [], errors: [] };
 
 for (const role of ROLES) {
@@ -63,7 +63,7 @@ for (const role of ROLES) {
     let res = { code: 0, final: u };
     try {
       const r = await ctx.request.get(u, { maxRedirects: 5, timeout: 30000 });
-      res = { code: r.status(), final: r.url() };
+      res = { code: r.status(), final: r.url(), download: (r.headers()["content-disposition"] ?? "").startsWith("attachment") };
     } catch (e) {
       res = { code: -1, final: String(e).slice(0, 120) };
     }
@@ -79,9 +79,10 @@ for (const role of ROLES) {
     if (n >= PER_PATTERN) continue;
     patternCount.set(pat, n + 1);
     crawled++;
+    if ((await check(u)).download) continue;
     let resp;
     try {
-      resp = await page.goto(u, { waitUntil: "domcontentloaded", timeout: 45000 });
+      resp = await page.goto(u, { waitUntil: "networkidle", timeout: 45000 });
     } catch (e) {
       report.errors.push({ role: role.name, url: u, error: String(e).slice(0, 200) });
       continue;
@@ -126,3 +127,5 @@ for (const l of uniqBad.slice(0, 80)) console.log(l.role, l.code, l.href.replace
 const loginBounce = report.links.filter((l) => l.role !== "anon" && /\/login/.test(l.final));
 console.log("logged-in links bouncing to login:", new Set(loginBounce.map((l) => l.href)).size);
 console.log("page errors:", report.errors.length);
+
+if (uniqBad.length || loginBounce.length || report.errors.length) process.exitCode = 1;

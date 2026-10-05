@@ -33,9 +33,10 @@ async function main() {
   const platform = await seedPlatform(db);
   console.log("→ admin user");
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@cang.vn";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin123!";
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? (process.env.NODE_ENV === "production" ? "" : "Admin123!");
   const existingAdmin = await db.query.users.findFirst({ where: eq(schema.users.email, adminEmail) });
   if (!existingAdmin) {
+    if (adminPassword.length < 12 && process.env.NODE_ENV === "production") throw new Error("Set a strong SEED_ADMIN_PASSWORD before initial production seed.");
     await db.insert(schema.users).values({
       email: adminEmail,
       name: "CANG Admin",
@@ -45,7 +46,7 @@ async function main() {
       emailVerifiedAt: new Date(),
     });
   }
-  const seedDemo = (process.env.SEED_DEMO_DATA ?? "true").toLowerCase() !== "false";
+  const seedDemo = (process.env.SEED_DEMO_DATA ?? (process.env.NODE_ENV === "production" ? "false" : "true")).toLowerCase() !== "false";
   if (seedDemo) {
     console.log("→ marketplace demo data");
     await seedMarketplace(db, { ...ref, ...platform });

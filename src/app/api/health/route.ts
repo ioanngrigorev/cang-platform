@@ -10,7 +10,7 @@ export async function GET() {
   try {
     await db.execute(sql`SELECT 1`);
     return NextResponse.json({ status: "ok", db: "up", version, time: new Date().toISOString() }, { headers: { "Cache-Control": "no-store" } });
-  } catch (err) {
-    return NextResponse.json({ status: "degraded", db: "down", version, error: (err as Error).message }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  } catch {
+    return NextResponse.json({ status: "degraded", db: "down", version }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }

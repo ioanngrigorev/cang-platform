@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ActionError } from "@/lib/action";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
-import { requireAuth } from "@/modules/auth/current-user";
+import { requireAuth, requireCompany, requireAdmin } from "@/modules/auth/current-user";
 import { saveUpload, type UploadScope } from "@/modules/storage/upload";
 
 const SCOPES: UploadScope[] = ["product", "company", "rfq", "quotation", "order", "message", "verification", "dispute", "shipment", "financing", "avatar", "cms"];
@@ -18,6 +18,11 @@ export async function POST(req: NextRequest) {
     const visibility = String(form.get("visibility") ?? "COMPANY");
     if (!(file instanceof File)) return NextResponse.json({ error: "file is required" }, { status: 400 });
     if (!SCOPES.includes(scope as UploadScope)) return NextResponse.json({ error: "invalid scope" }, { status: 400 });
+    if (scope === "cms") await requireAdmin("admin.cms.write");
+    else if (scope !== "avatar") {
+      const permissions = { product: "products.write", company: "company.profile.write", rfq: "rfq.write", quotation: "quotation.write", order: "orders.write", message: "messages.write", verification: "company.verification.submit", dispute: "disputes.manage", shipment: "shipments.update", financing: "financing.apply" } as const;
+      await requireCompany({ permission: permissions[scope as keyof typeof permissions] });
+    }
     const doc = await saveUpload({
       file,
       scope: scope as UploadScope,
@@ -27,7 +32,7 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ id: doc.id, url: doc.url, name: doc.name, mimeType: doc.mimeType, sizeBytes: doc.sizeBytes });
   } catch (err) {
-    if (err instanceof ActionError) return NextResponse.json({ error: err.message, code: err.code }, { status: err.code === "UNAUTHORIZED" ? 401 : 400 });
+    if (err instanceof ActionError) return NextResponse.json({ error: err.message, code: err.code }, { status: err.code === "UNAUTHORIZED" ? 401 : err.code === "FORBIDDEN" ? 403 : 400 });
     console.error("[upload]", err);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }

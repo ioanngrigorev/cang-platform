@@ -20,7 +20,7 @@ const BASE = process.env.BASE ?? "http://localhost:3216";
 const DB = new pg.Pool({ connectionString: process.env.DATABASE_URL ?? "postgres://cang:cang@localhost:5432/cang" });
 const q = async (sql, params = []) => (await DB.query(sql, params)).rows;
 const stamp = Date.now().toString(36);
-const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+const browser = await chromium.launch({ ...(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {}) });
 const results = [];
 const problems = [];
 
@@ -538,6 +538,7 @@ try {
   // fallthrough to report
 } finally {
   console.log(`\n${results.filter((r) => r.ok).length}/${results.length} steps passed`);
+  if (results.length !== 29 || results.some((r) => !r.ok) || problems.length) process.exitCode = 1;
   console.log("problems:", problems.length);
   for (const p of problems.slice(0, 40)) console.log(" -", p);
   await browser.close();

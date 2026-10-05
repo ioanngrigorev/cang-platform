@@ -4,18 +4,18 @@
 #   deps       install all dependencies (needed for `next build`)
 #   build      next build → .next/standalone (output: "standalone" in next.config.ts)
 #   prod-deps  production node_modules + tsx, used only to run drizzle migrations at start
-#   runner     node:20-alpine, non-root, runs deploy/entrypoint.sh → migrations → node server.js
+#   runner     node:22-alpine, non-root, runs deploy/entrypoint.sh → migrations → node server.js
 #
 # Build:  docker build -t cang:local --build-arg NEXT_PUBLIC_APP_URL=https://cang.vn .
 # NEXT_PUBLIC_* values are inlined into client bundles at build time, so pass them as build args.
 
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 # ---------- deps ----------
 FROM node:${NODE_VERSION}-alpine AS deps
-RUN apk add --no-cache libc6-compat && corepack enable && corepack prepare pnpm@10 --activate
+RUN apk add --no-cache libc6-compat && corepack enable && corepack prepare pnpm@10.34.6 --activate
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
@@ -38,10 +38,10 @@ RUN SESSION_SECRET=build-time-placeholder-secret-not-used-at-runtime \
 # Production dependencies only (drizzle-orm, pg, dotenv, ...) plus tsx so the entrypoint can run
 # src/db/migrate.ts without a compile step. tsx is a devDependency in package.json, hence the explicit add.
 FROM node:${NODE_VERSION}-alpine AS prod-deps
-RUN apk add --no-cache libc6-compat && corepack enable && corepack prepare pnpm@10 --activate
+RUN apk add --no-cache libc6-compat && corepack enable && corepack prepare pnpm@10.34.6 --activate
 WORKDIR /app
 ENV NODE_ENV=production
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     pnpm install --prod --frozen-lockfile && pnpm add tsx@4.23.15
 

@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull, notInArray } from "drizzle-orm";
 import { cache } from "react";
 import { db } from "@/db";
 import { companies, companyMembers, users } from "@/db/schema";
@@ -32,7 +32,7 @@ export const getAuth = cache(async (): Promise<AuthContext | null> => {
     .select({ member: companyMembers, company: companies })
     .from(companyMembers)
     .innerJoin(companies, eq(companies.id, companyMembers.companyId))
-    .where(and(eq(companyMembers.userId, user.id), eq(companyMembers.status, "ACTIVE")));
+    .where(and(eq(companyMembers.userId, user.id), eq(companyMembers.status, "ACTIVE"), isNull(companies.deletedAt), notInArray(companies.status, ["SUSPENDED", "BANNED"])));
   const memberships: Membership[] = rows.map((r) => ({ ...r.member, company: r.company }));
 
   let activeMembership = memberships.find((m) => m.companyId === session.activeCompanyId) ?? null;

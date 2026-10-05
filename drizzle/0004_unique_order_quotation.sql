@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "orders_quotation_idx" ON "orders" USING btree ("quotation_id");
