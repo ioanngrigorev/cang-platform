@@ -1,6 +1,8 @@
 # CANG production operations
 
-Source of truth: Ivan's `~/CANG/cang-push`. Only the owner pushes to GitHub.
+Source of truth: Ivan's `~/CANG/cang-push`. Assistants may push and deploy on Ivan's
+explicit release request (authorization updated 2026-10-05); see `AGENTS.md` and
+[assistant release setup](assistant-release.md).
 VPS: `cang-prod`, 149.28.158.60, Vultr Singapore; app directory `/opt/cang`.
 Secrets belong in `/opt/cang/.env`, never in Git, logs or support messages.
 
@@ -29,11 +31,11 @@ Node 20 is EOL; see [Node's release table](https://nodejs.org/en/about/previous-
 ## First hardening release (migration from the old deploy scripts)
 
 The old timer does not wait for CI and the old update script has no pre-deploy backup.
-Before the owner pushes this release to main:
+Before the first authorized push of this release to main:
 
 1. On the VPS, `touch /opt/cang/.autodeploy-paused` and stop `cang-autodeploy.timer`.
 2. From the reviewed working copy, copy `deploy/update.sh`, `deploy/autodeploy.sh`,
-   `deploy/backup.sh` and `deploy/restore-check.sh` to `/opt/cang/deploy/` via the owner's SSH connection.
+   `deploy/backup.sh` and `deploy/restore-check.sh` to `/opt/cang/deploy/` via the verified SSH connection.
 3. Run an existing backup and verify a restore in a separate database. Check for
    historical duplicate quotation orders before migration 0004:
 
@@ -45,7 +47,7 @@ Before the owner pushes this release to main:
 
    If there are duplicates, investigate them before release. Migration 0004 refuses
    to create its unique index; it never deletes orders or rewrites financial history.
-4. The owner pushes main and waits for `Quality checks` to succeed. With a feature
+4. The authorized releaser pushes main and waits for `Quality checks` to succeed. With a feature
    branch checked out, `git push origin HEAD:main` updates remote main explicitly.
 5. Remove the pause marker and restart the timer. Verify the exact SHA at
    `https://cang.vn/api/health` and inspect the deploy log.
