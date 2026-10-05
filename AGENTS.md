@@ -17,7 +17,7 @@
 - GitHub: `ioanngrigorev/cang-platform`. Use the existing `gh` login/credential helper;
   never print tokens or copy them into the repository or command-line arguments.
 - Server: `ssh cang-prod` (149.28.158.60, root). A dedicated local SSH identity is
-  configured on Ivan's Mac. Server-side installation must be verified before use.
+  configured on Ivan's Mac; passwordless server access was verified on 2026-10-05.
 - First-time setup status and release procedure: `deploy/assistant-release.md`.
 - Production secrets remain in `/opt/cang/.env`; do not display them or ADMIN-LOGIN.txt.
 
