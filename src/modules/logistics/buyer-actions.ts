@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
@@ -19,6 +21,7 @@ export async function createLogisticsRequestAction(
   _prev: ActionResult<{ id: string; matchedProviders: number }> | null,
   formData: FormData,
 ): Promise<ActionResult<{ id: string; matchedProviders: number }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "logistics.manage", buyer: true });
     const parsed = parseInput(logisticsRequestSchema, formDataToObject(formData));

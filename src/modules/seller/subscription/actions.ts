@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -33,6 +35,7 @@ function revalidate() {
  * (the enum has no PENDING status) and platform admins are notified to confirm it.
  */
 export async function requestUpgradeAction(_prev: ActionResult<{ planCode: string }> | null, formData: FormData): Promise<ActionResult<{ planCode: string }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "company.billing.manage", seller: true });
     const parsed = parseInput(upgradeSchema, formDataToObject(formData));

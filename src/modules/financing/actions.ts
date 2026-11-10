@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
@@ -18,6 +20,7 @@ export async function applyForFinancingAction(
   _prev: ActionResult<{ id: string; matched: boolean }> | null,
   formData: FormData,
 ): Promise<ActionResult<{ id: string; matched: boolean }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "financing.apply", buyer: true });
     const parsed = parseInput(financingApplicationSchema, formDataToObject(formData));

@@ -1,3 +1,4 @@
+import { intakeNotice, intakePaused } from "@/lib/mvp-intake";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -60,6 +61,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   return (
     <html lang={locale} data-theme={theme} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
+        {intakePaused && <aside role="note" id="mvp-intake-notice" className="bg-slate-900 px-4 py-2 text-center text-sm text-white">{intakeNotice[locale === "vi" ? "vi" : "en"]}</aside>}
         <FormResetGuard />
         <ClientMessages>
           {holiday ? <HolidayBanner holiday={holiday} locale={locale} /> : null}

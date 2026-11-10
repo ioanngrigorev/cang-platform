@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
@@ -31,6 +33,7 @@ export async function saveQuotationDraftAction(_prev: ActionResult<QuotationRef>
 }
 
 export async function submitQuotationAction(_prev: ActionResult<QuotationRef> | null, formData: FormData): Promise<ActionResult<QuotationRef>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "quotation.write", seller: true });
     const parsed = parseInput(quotationFormSchema, formDataToObject(formData));

@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
@@ -21,6 +23,7 @@ function revalidateRfqs(rfqId?: string) {
 
 /** Create an RFQ from the multi-section form. `intent` = draft | publish. */
 export async function createRfqAction(_prev: ActionResult<{ id: string }> | null, formData: FormData): Promise<ActionResult<{ id: string; matched: number; published: boolean }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "rfq.write", buyer: true });
     const rl = await rateLimit(`rfq:${company.id}`, RATE_LIMITS.rfq);
@@ -36,6 +39,7 @@ export async function createRfqAction(_prev: ActionResult<{ id: string }> | null
 }
 
 export async function updateRfqAction(_prev: ActionResult<{ id: string }> | null, formData: FormData): Promise<ActionResult<{ id: string; matched: number; published: boolean }>> {
+  if (intakePaused && formData.get("intent") === "publish") return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "rfq.write", buyer: true });
     const rfqId = String(formData.get("rfqId") ?? "");
@@ -51,6 +55,7 @@ export async function updateRfqAction(_prev: ActionResult<{ id: string }> | null
 }
 
 export async function publishRfqAction(_prev: ActionResult<{ matched: number }> | null, formData: FormData): Promise<ActionResult<{ matched: number }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "rfq.write", buyer: true });
     const parsed = parseInput(rfqIdSchema, formDataToObject(formData));
@@ -84,6 +89,7 @@ export async function cancelRfqAction(_prev: ActionResult | null, formData: Form
 }
 
 export async function duplicateRfqAction(_prev: ActionResult<{ id: string }> | null, formData: FormData): Promise<ActionResult<{ id: string }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "rfq.write", buyer: true });
     const parsed = parseInput(rfqIdSchema, formDataToObject(formData));
