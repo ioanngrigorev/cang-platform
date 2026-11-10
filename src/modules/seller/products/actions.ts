@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
@@ -60,6 +62,7 @@ export async function updateProductAction(_prev: ActionResult<SavedProduct> | nu
 }
 
 export async function submitProductAction(_prev: ActionResult<SavedProduct> | null, formData: FormData): Promise<ActionResult<SavedProduct>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "products.publish", seller: true });
     const parsed = parseInput(productIdSchema, formDataToObject(formData));

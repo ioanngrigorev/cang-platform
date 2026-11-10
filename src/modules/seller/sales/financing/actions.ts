@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { revalidatePath } from "next/cache";
 import { formDataToObject, ok, parseInput, runAction, type ActionResult } from "@/lib/action";
 import { requireCompany } from "@/modules/auth/current-user";
@@ -15,6 +17,7 @@ function revalidate(applicationId?: string) {
 }
 
 export async function applySellerFinancingAction(_prev: ActionResult<{ id: string; matched: boolean }> | null, formData: FormData): Promise<ActionResult<{ id: string; matched: boolean }>> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "financing.apply", seller: true });
     const parsed = parseInput(sellerFinancingSchema, formDataToObject(formData));

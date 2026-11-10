@@ -1,3 +1,4 @@
+import { intakePaused } from "@/lib/mvp-intake";
 import { and, eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/db";
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
     const email = profile.email.toLowerCase();
     let user = await db.query.users.findFirst({ where: eq(users.email, email) });
     let isNew = false;
+    if (!user && intakePaused) return fail("intake_paused");
     if (!user) {
       const [created] = await db
         .insert(users)

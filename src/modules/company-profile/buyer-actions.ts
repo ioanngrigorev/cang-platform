@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
@@ -97,6 +99,7 @@ export async function updateBuyerCompanyAction(_prev: ActionResult | null, formD
  * a KYB verification goes into the review queue and compliance staff are notified.
  */
 export async function submitKybAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const { user, company } = await requireCompany({ permission: "company.verification.submit" });
     if (company.kybStatus === "PENDING" || company.kybStatus === "IN_REVIEW") {

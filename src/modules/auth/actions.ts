@@ -1,5 +1,7 @@
 "use server";
 
+import { intakePaused, pausedApplication } from "@/lib/mvp-intake";
+
 import { and, eq, gt, isNull } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
@@ -64,6 +66,7 @@ export async function loginAction(_prev: ActionResult | null, formData: FormData
 }
 
 export async function registerAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (intakePaused) return pausedApplication();
   return runAction(async () => {
     const parsed = parseInput(registerSchema, Object.fromEntries(formData));
     if (!parsed.success) return parsed.result;
