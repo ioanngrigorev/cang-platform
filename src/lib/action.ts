@@ -1,4 +1,4 @@
-import type { ZodSchema, ZodTypeDef } from "zod";
+import type { ZodType } from "zod";
 
 /**
  * Standard result shape for every Server Action in the platform.
@@ -46,7 +46,7 @@ export class NotFoundError extends ActionError {
 
 /** Parse form input with a zod schema; returns a typed failure on validation error. */
 export function parseInput<Out, In = unknown>(
-  schema: ZodSchema<Out, ZodTypeDef, In>,
+  schema: ZodType<Out, In>,
   input: unknown,
 ): { success: true; data: Out } | { success: false; result: ActionResult<never> } {
   const parsed = schema.safeParse(input);

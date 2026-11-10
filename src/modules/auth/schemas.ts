@@ -30,7 +30,7 @@ export const registerSchema = z
     countryCode: z.string().trim().length(2, "Select a country").toUpperCase(),
     phone: z.string().trim().max(32).optional().or(z.literal("")),
     acceptTerms: z.union([z.literal("on"), z.literal(true), z.literal("true")], {
-      errorMap: () => ({ message: "You must accept the Terms of Service" }),
+      error: "You must accept the Terms of Service",
     }),
     locale: z.string().optional(),
     next: z.string().optional(),

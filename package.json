@@ -41,7 +41,7 @@
     "ioredis": "^6.0.0",
     "lucide-react": "1.47.0",
     "marked": "^18.0.13",
-    "next": "15.5.25",
+    "next": "15.5.28",
     "next-intl": "4.14.5",
     "nodemailer": "^10.0.12",
     "pg": "8.23.0",
@@ -51,11 +51,11 @@
     "sanitize-html": "^2.18.0",
     "server-only": "^0.0.1",
     "tailwind-merge": "3.7.0",
-    "zod": "3.25.76"
+    "zod": "4.6.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
-    "@next/eslint-plugin-next": "15.5.25",
+    "@next/eslint-plugin-next": "15.5.28",
     "@playwright/test": "1.63.0",
     "@types/node": "22.20.4",
     "@types/nodemailer": "^8.0.2",
