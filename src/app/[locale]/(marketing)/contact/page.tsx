@@ -1,4 +1,3 @@
-import { getLocale as getLocaleForIntake } from "next-intl/server";
 import { intakePaused, intakeNotice } from "@/lib/mvp-intake";
 import { Building2, Clock, Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ContactPage({ params }: Props) {
-  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await getLocaleForIntake()) === "vi" ? "vi" : "en"]}</p></main>;
+  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await params).locale === "vi" ? "vi" : "en"]}</p></main>;
   const { locale } = await params;
   setRequestLocale(locale);
   const [t, page, auth] = await Promise.all([getTranslations("content"), getRenderedPage("contact", locale, "PAGE"), getAuth()]);

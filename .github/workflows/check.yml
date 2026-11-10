@@ -52,7 +52,20 @@ jobs:
       - run: pnpm test:integration
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
+      - name: Verify paused public intake on the release build
+        run: |
+          mkdir -p test-results
+          node_modules/.bin/next start -p 3220 > test-results/paused-server.log 2>&1 &
+          server=$!
+          trap 'kill "$server" || true' EXIT
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:3220/api/health && break
+            sleep 2
+          done
+          node e2e/paused-intake.mjs
       - name: Journey and link audit
+        env:
+          CANG_TEST_OPEN_INTAKE: '1'
         run: |
           mkdir -p test-results
           pnpm exec next start -p 3216 > test-results/server.log 2>&1 &

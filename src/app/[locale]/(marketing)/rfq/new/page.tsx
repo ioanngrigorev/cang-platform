@@ -1,4 +1,3 @@
-import { getLocale as getLocaleForIntake } from "next-intl/server";
 import { intakePaused, intakeNotice } from "@/lib/mvp-intake";
 import { CheckCircle2, ClipboardList, ShieldCheck, Users } from "lucide-react";
 import type { Metadata } from "next";
@@ -27,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NewRfqLandingPage({ params }: Props) {
-  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await getLocaleForIntake()) === "vi" ? "vi" : "en"]}</p></main>;
+  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await params).locale === "vi" ? "vi" : "en"]}</p></main>;
   const { locale } = await params;
   setRequestLocale(locale);
   const auth = await getAuth();

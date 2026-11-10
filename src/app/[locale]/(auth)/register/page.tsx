@@ -1,4 +1,3 @@
-import { getLocale as getLocaleForIntake } from "next-intl/server";
 import { intakePaused, intakeNotice } from "@/lib/mvp-intake";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -15,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ type?: string; next?: string }> }) {
-  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await getLocaleForIntake()) === "vi" ? "vi" : "en"]}</p></main>;
+  if (intakePaused) return <main className="mx-auto max-w-2xl p-8"><p>{intakeNotice[(await getLocale()) === "vi" ? "vi" : "en"]}</p></main>;
   const { type, next } = await searchParams;
   const auth = await getAuth();
   const locale = await getLocale();
